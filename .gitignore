@@ -87,3 +87,6 @@ lib/data/*.log
 
 # Lockfile uv
 uv.lock
+
+# OpenCode skills lock (locale, non serve nel repo pubblico)
+skills-lock.json
