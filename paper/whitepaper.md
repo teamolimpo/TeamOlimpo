@@ -1,7 +1,7 @@
 ---
 title: "Team Olimpo: An Agent Qualification Framework for Production-Ready Multi-Agent Systems"
 author: "Team Olimpo"
-date: "2026-05-16"
+date: "2026-06-03"
 tags:
   - multi-agent-systems
   - agent-qualification
@@ -9,25 +9,25 @@ tags:
   - agent-factory
   - quality-assurance
   - orchestration
-status: draft
+status: ready-for-arxiv
 arxiv_id: ""
 doi: "not-submitted"
-repository: "https://github.com/RangO1972/teamolimpo-paper"
+repository: "https://github.com/teamolimpo/teamolimpo-paper"
 ---
 
 # Team Olimpo: An Agent Qualification Framework for Production-Ready Multi-Agent Systems
 
 ## 1. Abstract
 
-The rapid proliferation of multi-agent systems (MAS) has exposed a critical gap: while frameworks for building agent teams abound, no systematic methodology exists for certifying that individual agents operate reliably, consistently, and verifiably over time. This paper presents **Team Olimpo**, a production multi-agent system operating since February 2026, and its primary contribution: the **Agent Qualification Framework (AQF)**, a five-phase quality assurance lifecycle inspired by pharmaceutical validation standards (IQ/OQ/PQ/CPV) and the FDA's Computer Software Assurance (CSA) framework. Unlike existing MAS approaches that treat agents as ephemeral computational units, Team Olimpo introduces a file-based handoff communication system providing complete audit trails, an Agent Factory Pipeline for systematic agent creation, and a multi-agent adaptation of the LLM Wiki pattern for knowledge persistence across sessions. The system comprises 13 specialized agents orchestrated by a pure orchestrator (Hermes) that never executes tasks directly, operating across three distinct LLM models (big-pickle, Grok-4.3, and Claude Sonnet). Over three months of continuous operation, Team Olimpo has completed 64+ documented handoffs, demonstrated 50-90% latency reduction on parallelizable tasks, and achieved a measured 6.7x ROI on knowledge compounding through its wiki layer. The AQF represents, to our knowledge, the first documented framework for structured agent qualification in the MAS literature.
+The rapid proliferation of multi-agent systems (MAS) has exposed a critical gap: while frameworks for building agent teams abound, no systematic methodology exists for certifying that individual agents operate reliably, consistently, and verifiably over time. This paper presents **Team Olimpo**, a production multi-agent system operating since February 2026, and its primary contribution: the **Agent Qualification Framework (AQF)**, a five-phase quality assurance lifecycle inspired by pharmaceutical validation standards (IQ/OQ/PQ/CPV) and the FDA's Computer Software Assurance (CSA) framework. Unlike existing MAS approaches that treat agents as ephemeral computational units, Team Olimpo introduces a file-based handoff communication system providing complete audit trails, an Agent Factory Pipeline for systematic agent creation, a multi-agent adaptation of the LLM Wiki pattern for knowledge persistence across sessions, and a novel Deliverable Hash System (CRC32) for content-addressable artifact management. The system comprises 10 specialized agents orchestrated by a pure orchestrator (Poros) that never executes tasks directly, operating across two LLM model families (opencode/big-pickle and DeepSeek v4 Flash). Over four months of continuous operation, Team Olimpo has completed 777+ documented handoffs, accumulated 217+ wiki pages across 5 categories, demonstrated 50-90% latency reduction on parallelizable tasks, and achieved a measured 6.7x ROI on knowledge compounding through its wiki layer. The AQF represents, to our knowledge, the first documented framework for structured agent qualification in the MAS literature.
 
-**Keywords:** multi-agent systems, agent qualification framework, LLM wiki, agent factory, quality assurance, orchestrator-workers, knowledge persistence
+**Keywords:** multi-agent systems, agent qualification framework, LLM wiki, agent factory, quality assurance, orchestrator-workers, knowledge persistence, content-addressable storage
 
 ---
 
 ## 2. Introduction
 
-The year 2025-2026 has witnessed an explosion of multi-agent system (MAS) frameworks and tools. Projects such as AutoGPT [1], CrewAI [2], LangGraph [3], OpenAI Agents SDK [4], and AutoGen [5] have demonstrated the power of coordinating multiple LLM-powered agents to tackle complex tasks. Yet a fundamental question remains unaddressed: **how do we certify that an agent consistently performs its designated function?**
+The years 2025-2026 have witnessed an explosion of multi-agent system (MAS) frameworks and tools. Projects such as AutoGPT [1], CrewAI [2], LangGraph [3], OpenAI Agents SDK [4], and AutoGen [5] have demonstrated the power of coordinating multiple LLM-powered agents to tackle complex tasks. Yet a fundamental question remains unaddressed: **how do we certify that an agent consistently performs its designated function?**
 
 Current practice in the field reveals four persistent challenges:
 
@@ -49,26 +49,28 @@ Current practice in the field reveals four persistent challenges:
 
 4. **Multi-Agent LLM Wiki**: An adaptation of Karpathy's single-agent wiki pattern to multi-agent contexts, with multi-author contribution, cross-agent verification, and periodic linting.
 
-5. **Multi-Model Orchestration**: Native integration of three distinct LLM models across 13 agents, with task-based routing rather than uniform model assignment.
+5. **Deliverable Hash System (CRC32)**: A content-addressable artifact registry that maps every produced file to an 8-character CRC32 hash, enabling deterministic resolution of deliverables across the system.
 
-The paper is organized as follows. Section 3 describes the overall system architecture. Section 4 details the handoff communication protocol. Section 5, the core contribution, presents the AQF in depth. Sections 6, 7, and 8 cover the Agent Factory Pipeline, Knowledge Persistence, and Multi-Model Orchestration respectively. Section 9 describes the quality assurance system, Section 10 presents operational results, Section 11 surveys related work, and Section 12 concludes with future directions.
+6. **IntentGate Routing**: A fixed-category classification system for routing incoming requests to the optimal agent with zero ambiguity, backed by decomposition rules for multi-intent inputs.
+
+The paper is organized as follows. Section 3 describes the overall system architecture, including IntentGate routing, the Deliverable Hash System, and the three workflow types. Section 4 details the handoff communication protocol and the HARD GATE workflow for complex tasks. Section 5, the core contribution, presents the AQF in depth. Sections 6, 7, and 8 cover the Agent Factory Pipeline, Knowledge Persistence, and Multi-Model Orchestration respectively. Section 9 describes the quality assurance system, Section 10 presents operational results, Section 11 surveys related work, and Section 12 concludes with future directions.
 
 ---
 
 ## 3. System Architecture
 
-Team Olimpo follows a strict **orchestrator-workers** architectural pattern. At its core is **Hermes**, a pure orchestrator agent whose sole function is to decompose incoming tasks, delegate them to the most suitable specialized agent, and synthesize the results. Critically, Hermes never executes tasks directly — this separation of orchestration from execution is a foundational architectural principle.
+Team Olimpo follows a strict **orchestrator-workers** architectural pattern. At its core is **Poros**, a pure orchestrator agent whose sole function is to decompose incoming tasks, delegate them to the most suitable specialized agent, and synthesize the results. Critically, Poros never executes tasks directly — this separation of orchestration from execution is a foundational architectural principle.
 
 ### 3.1 Architectural Diagram
 
 ```mermaid
 flowchart TB
-    User[("User")] -->|"request"| Hermes
+    User[("User")] -->|"request"| Poros
     
     subgraph "Orchestration Layer"
-        Hermes["Hermes
+        Poros["Poros
         (Orchestrator)
-        Model: big-pickle"]
+        Model: opencode/big-pickle"]
     end
     
     subgraph "Research & Analysis"
@@ -78,33 +80,29 @@ flowchart TB
         Metis["Metis
         Strategist & Thinking Partner
         Risk: High"]
-        Pythagoras["Pythàgoras
+        Pythagoras["Pythagoras
         Web Researcher
         Risk: Low"]
     end
     
     subgraph "Design & Construction"
         Atena["Atena
-        HR & Agent Designer
+        Agent Designer
+        Model: deepseek-v4-flash
         Risk: High"]
-        Calliope["Calliope
-        Nomenclature Specialist
-        Risk: Low"]
     end
     
     subgraph "Development & Tools"
         Efesto["Efesto
         Python Developer
+        Model: deepseek-v4-flash
         Risk: Medium"]
     end
     
     subgraph "Quality & Audit"
         Clio["Clio
-        Documentation Verifier
+        Vault Archivist & QC
         Risk: High"]
-        Dike["Dike
-        Process Analyst
-        Risk: Medium"]
     end
     
     subgraph "Content Production"
@@ -112,36 +110,27 @@ flowchart TB
         Technical Writer
         Risk: Medium"]
         Euterpe["Euterpe
-        Creative Writer
-        Model: xai/grok-4.3
-        Risk: Low"]
-        Demetra["Demetra
-        Environmental Analyst
-        Model: sonnet
+        Italian Essay Writer
         Risk: Low"]
         Eunomia["Eunomia
-        Email & Contacts
-        Model: sonnet
+        Email Contextual Analyst
         Risk: Medium"]
     end
     
-    Hermes --> Proteo
-    Hermes --> Metis
-    Hermes --> Pythagoras
-    Hermes --> Atena
-    Hermes --> Calliope
-    Hermes --> Efesto
-    Hermes --> Clio
-    Hermes --> Dike
-    Hermes --> Hermione
-    Hermes --> Euterpe
-    Hermes --> Demetra
-    Hermes --> Eunomia
+    Poros --> Proteo
+    Poros --> Metis
+    Poros --> Pythagoras
+    Poros --> Atena
+    Poros --> Efesto
+    Poros --> Clio
+    Poros --> Hermione
+    Poros --> Euterpe
+    Poros --> Eunomia
     
-    Atena -.->|"creates new agents"| Hermes
+    Atena -.->|"creates new agents"| Poros
     Metis -.->|"direct user interaction"| User
     
-    style Hermes fill:#2d5a87,color:#fff
+    style Poros fill:#2d5a87,color:#fff
     style User fill:#4a4a4a,color:#fff
 ```
 
@@ -151,19 +140,16 @@ Each agent in Team Olimpo has a specialized role, assigned LLM model, and AQF ri
 
 | Agent | Role | Model | Risk Class |
 |-------|------|-------|------------|
-| **Hermes** | Pure orchestrator; decomposes, delegates, synthesizes | big-pickle | High |
-| **Proteo** | Senior researcher; domain analysis, comparative studies | big-pickle | Medium |
-| **Atena** | Agent designer; builds new AI team members | big-pickle | High |
-| **Efesto** | Python developer; CLI tools, automation, API integration | big-pickle | Medium |
-| **Clio** | Documentation verifier; vault compliance, quality gate | big-pickle | High |
-| **Dike** | Process analyst; audits, gap analysis, workflow mapping | big-pickle | Medium |
-| **Metis** | Thinking partner; strategic analysis, dual-role agent | big-pickle | High |
-| **Calliope** | Nomenclature specialist; mythological naming | big-pickle | Low |
-| **Pythàgoras** | Web researcher; school-level academic research | big-pickle | Low |
-| **Hermione** | Technical writer; deep documentation synthesis | big-pickle | Medium |
-| **Euterpe** | Creative writer; school essay composition | xai/grok-4.3 | Low |
-| **Demetra** | Environmental analyst; ecosystem planning | sonnet | Low |
-| **Eunomia** | Email cataloging; contact management | sonnet | Medium |
+| **Poros** | Pure orchestrator; decomposes, delegates, synthesizes | opencode/big-pickle | High |
+| **Proteo** | Senior researcher; domain analysis, comparative studies | opencode/big-pickle | Medium |
+| **Atena** | Agent designer; builds new AI team members | openrouter/deepseek/deepseek-v4-flash | High |
+| **Efesto** | Python developer; CLI tools, automation, API integration | openrouter/deepseek/deepseek-v4-flash | Medium |
+| **Clio** | Vault archivist & QC; PDF conversion, structure validation | opencode/big-pickle | High |
+| **Metis** | Thinking partner; strategic analysis, independent reviewer | opencode/big-pickle | High |
+| **Pythagoras** | Academic web researcher; scholastic multi-source research | opencode/big-pickle | Low |
+| **Hermione** | Technical writer; deep documentation synthesis | opencode/big-pickle | Medium |
+| **Euterpe** | Italian essay writer (middle/high school) | opencode/big-pickle | Low |
+| **Eunomia** | Email contextual analyst; threading, cross-referencing | opencode/big-pickle | Medium |
 
 ### 3.3 Architectural Principles
 
@@ -175,6 +161,61 @@ Three principles govern the architecture:
 
 3. **Asynchronous Communication**: All inter-agent communication occurs through the file-based handoff system (Section 4), never through shared memory or direct function calls. This ensures complete traceability and enables crash recovery.
 
+### 3.4 IntentGate Routing
+
+Before any task reaches an agent, it passes through **IntentGate**, a fixed-category routing system embedded in Poros's classification layer. IntentGate classifies every incoming request into exactly one of 17 predefined categories, eliminating creative interpretation at the routing stage.
+
+**Routing categories:**
+
+| Category | Destination | Description |
+|----------|-------------|-------------|
+| New agent creation | Proteo → Atena | Two-phase: research then build |
+| Agent revision | Atena | Modify existing agent profile |
+| Professional research | Proteo | Multi-source domain analysis |
+| Academic research | Pythagoras | Scholastic multi-source research |
+| Technical writing | Hermione | Structured documentation |
+| Italian essay | Euterpe | Middle/high school composition |
+| Code | Efesto | Python scripts, tools, automation |
+| Brainstorming / Strategy | Metis | Strategic analysis, thinking partnership |
+| PDF conversion | Clio | Document format transformation |
+| OpenCode configuration | (skill customize-opencode) | System-level config changes |
+| Vault QC / Audit | Clio | Structure validation, compliance |
+| Email vault | Eunomia | Email threading, cross-referencing |
+| Simple question / Status | Poros (direct) | Direct response without delegation |
+| Session memory / Context | Poros (direct) | Context retrieval and management |
+| Task / State / Tracking | Poros (direct) | Task lifecycle operations |
+| Ambiguous | — | Clarification requested from user |
+| Multi-intent | (decomposed sequence) | Split into ordered sub-tasks |
+
+Multi-intent requests are decomposed into sequential sub-tasks, each routed independently through the IntentGate. This prevents the system from attempting to handle compound requests with a single agent invocation.
+
+### 3.5 Deliverable Hash System (CRC32)
+
+Team Olimpo implements a **content-addressable artifact registry** based on CRC32 hashing. Every file produced by the system — handoffs, wiki pages, documents, deliverables, project files, prompts — is registered with a deterministic 8-character hex hash.
+
+**Resolution protocol via `synapsis_d_get`:**:
+- **Level 1 (l=1)**: Returns metadata only — file path, timestamp, size
+- **Level 2 (l=2)**: Returns approximately 500-character summary of content
+- **Level 3 (l=3)**: Returns full file content
+
+Registration occurs via `synapsis_d_set(p=...)`, which accepts a file path and returns its CRC32 hash. This system serves three purposes:
+
+1. **Deterministic referencing**: Any artifact can be referenced by its hash, independent of file system location or renaming.
+2. **Integrity verification**: Hash collisions are detectable; a mismatched hash indicates content alteration.
+3. **Cross-session persistence**: Handoffs and deliverables from previous sessions are resolvable by hash alone, without path reconstruction.
+
+The hash system is layered atop the existing file-based storage: the canonical file path remains the source of truth, and the hash provides a content-addressable index. As of June 2026, over 2,000 files have been registered in the deliverable hash system.
+
+### 3.6 Workflow Types
+
+Team Olimpo defines three operational workflows, selected by Poros based on task complexity:
+
+**Flow 1 — Simple (Direct Response):** For status inquiries, simple questions, or context retrieval. Classification → direct response. Maximum 1 tool call. No delegation.
+
+**Flow 2 — Single Worker Delegation:** For tasks requiring a single specialized agent. Create task → launch worker → read handoff → synthesize. Maximum 3 tool calls. Suitable for research queries, document writing, code generation, and similar single-domain tasks.
+
+**Flow 3 — HARD GATE (Complex Multi-Step):** For tasks spanning multiple domains, requiring ≥3 steps or involving more than one worker agent. Follows a structured sequence: **Spec** → **Plan** → [User Approval] → **Execute**. Each stage produces a handoff. Execution blocks until explicit user approval of the plan. Detailed in Section 4.4.
+
 ---
 
 ## 4. The Handoff System
@@ -185,7 +226,7 @@ Inter-agent communication in Team Olimpo is mediated exclusively through a **fil
 
 Handoff files follow a strict naming convention and contain YAML frontmatter:
 
-**Path:** `lib/Fucina/Handoff/YYYY/MM/data_mittente-destinatario_titolo.md`
+**Path:** `Library/Handoff/YYYY/MM/data_mittente-destinatario_titolo.md`
 
 **Frontmatter fields:**
 - `date`: ISO date of creation
@@ -202,29 +243,29 @@ Handoff files follow a strict naming convention and contain YAML frontmatter:
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant H as Hermes (Orchestrator)
+    participant P as Poros (Orchestrator)
     participant A as Agent (Worker)
-    participant Q as Quality Gate (Clio/Dike)
+    participant Q as Quality Gate (Clio)
     
-    U->>H: Task request
-    H->>H: Task decomposition
-    H->>A: Handoff file (delegation)
-    Note over H,A: lib/Fucina/Handoff/YYYY/MM/hermes-agent_title.md
+    U->>P: Task request
+    P->>P: Task decomposition
+    P->>A: Handoff file (delegation)
+    Note over P,A: Library/Handoff/YYYY/MM/poros-agent_title.md
     
     A->>A: Execute task
-    A->>H: Handoff file (result)
-    Note over A,H: lib/Fucina/Handoff/YYYY/MM/agent-hermes_title.md
+    A->>P: Handoff file (result)
+    Note over A,P: Library/Handoff/YYYY/MM/agent-poros_title.md
     
-    H->>Q: Send for quality verification
+    P->>Q: Send for quality verification
     Q->>Q: Quality checklist
-    Q->>H: Verification result
+    Q->>P: Verification result
     
     alt Quality passed
-        H->>U: Synthesized output
+        P->>U: Synthesized output
     else Quality failed
-        H->>A: Revision handoff
-        A->>H: Revised output
-        H->>U: Synthesized output
+        P->>A: Revision handoff
+        A->>P: Revised output
+        P->>U: Synthesized output
     end
 ```
 
@@ -241,7 +282,48 @@ The file-based approach provides several advantages over in-memory communication
 | **Version Control** | Not applicable | Git-versionable |
 | **Debugging** | Requires execution replay | Direct file inspection |
 
-As of May 2026, Team Olimpo has produced **64+ handoff files** across all agents, with an average completion time of approximately 5 minutes per handoff task. The handoff protocol has proven robust across three months of continuous operation, surviving session interruptions, model switches, and concurrent task execution.
+As of June 2026, Team Olimpo has produced **777+ handoff files** across all agents, with an average completion time of approximately 5 minutes per handoff task. The handoff protocol has proven robust across four months of continuous operation, surviving session interruptions, model switches, and concurrent task execution.
+
+### 4.4 HARD GATE Workflow for Complex Tasks
+
+For multi-step tasks spanning multiple agents or requiring more than three steps, Team Olimpo employs the **HARD GATE** workflow. This is a structured, approval-gated process that prevents resource waste on misunderstood or misaligned complex tasks.
+
+**The HARD GATE sequence:**
+
+```mermaid
+flowchart LR
+    subgraph "HARD GATE"
+        S["SPEC
+        Poros produces
+        structured spec"]
+        P["PLAN
+        Poros decomposes
+        into step sequence"]
+        A["APPROVAL
+        User reviews
+        spec + plan"]
+        E["EXECUTE
+        Delegation + 
+        synthesis"]
+    end
+    
+    S -->|"handoff (spec)"| P
+    P -->|"handoff (plan)"| A
+    A -->|"user approves"| E
+    A -.->|"user rejects"| S
+    
+    style A fill:#f0ad4e,color:#222
+```
+
+**Step 1 — Spec (Specification):** Poros produces a structured specification document describing the task scope, required agents, expected outputs, and success criteria. This is written as a handoff file.
+
+**Step 2 — Plan (Execution Plan):** Poros decomposes the spec into a sequential execution plan with explicit agent assignments, dependencies, and estimated step count. The plan is also written as a handoff file.
+
+**Step 3 — Approval:** Both spec and plan are presented to the user for review. Execution blocks until the user explicitly approves. If the user rejects or requests changes, Poros revises the spec and plan accordingly.
+
+**Step 4 — Execute:** Upon approval, Poros delegates each step to the appropriate agents using the standard handoff protocol, then synthesizes results.
+
+The HARD GATE ensures that complex, multi-step tasks receive proportional planning effort before execution begins, reducing the risk of costly rework.
 
 ---
 
@@ -378,7 +460,7 @@ The agent enters continuous monitoring for its operational lifetime. This phase 
 - **Drift detection**: Statistical comparison of current performance vs. APQ baseline
 
 **Alert thresholds:**
-- Deviation rate > 20%: Hermes receives notification
+- Deviation rate > 20%: Poros receives notification
 - Deviation rate > 40%: Agent is suspended pending requalification
 
 ### 5.3 Risk-Based Assurance (CSA Principle)
@@ -400,18 +482,18 @@ date: 2026-05-16
 member: euterpe
 deviation_type: frontmatter_error
 description: "Outdated frontmatter fields (tools: instead of permission:, name: instead of nome:)"
-root_cause: "Athena instructions not updated; no verification step"
+root_cause: "Atena instructions not updated; no verification step"
 corrective_action: "Manual frontmatter correction; template update triggered"
 outcome: resolved
 ```
 
 ### 5.5 Concrete Example: Qualifying Eunomia
 
-Eunomia, a new agent for email cataloging and contact management created on 2026-05-13, provides an illustrative qualification case:
+Eunomia, an agent for email contextual analysis and contact management created on 2026-05-13, provides an illustrative qualification case:
 
-1. **ADQ**: Design reviewed by Atena — role defined as email processing specialist, model assigned (sonnet based on Claude's text analysis strengths), risk class set to Medium (indirect user impact).
+1. **ADQ**: Design reviewed by Atena — role defined as email analysis specialist, model assigned (originally sonnet based on text classification strengths, later migrated to opencode/big-pickle during system consolidation), risk class set to Medium (indirect user impact).
 
-2. **AEQ**: Environment verified — dependency on `email_processor` tool (developed by Efesto), fallback manual parsing defined, write permissions to `lib/Persone/` confirmed.
+2. **AEQ**: Environment verified — dependency on email threading pipeline (developed by Efesto), fallback manual analysis defined, write permissions to person records confirmed.
 
 3. **AOQ**: Tested on 6 cases — 3 standard email formats, 2 edge cases (multilingual, attachments), 1 failure mode (malformed email). Pass rate: 5/6 (83%).
 
@@ -430,7 +512,7 @@ Team Olimpo has industrialised the process of creating new AI agents through a d
 ```mermaid
 flowchart TB
     subgraph "Phase 1: Domain Identification"
-        H1["Hermes identifies
+        H1["Poros identifies
         new domain/role needed"]
     end
     
@@ -444,7 +526,7 @@ flowchart TB
     end
     
     subgraph "Phase 3: Evaluation"
-        H2["Hermes evaluates
+        H2["Poros evaluates
         Proteo's analysis"]
     end
     
@@ -456,9 +538,6 @@ flowchart TB
         - System prompt architecture
         - Boundaries and anti-patterns
         - Agent file (.opencode/agents/)"]
-        
-        C1["Calliope (optional)
-        mythological naming"]
     end
     
     subgraph "Phase 5: Qualification"
@@ -475,8 +554,6 @@ flowchart TB
     H1 --> P1
     P1 --> H2
     H2 --> A1
-    A1 -.-> C1
-    C1 --> A1
     A1 --> AQF
     AQF --> D1
     
@@ -494,7 +571,7 @@ This separation prevents bias (the analyst does not become attached to their des
 
 ### 6.3 Results
 
-Using this pipeline, Team Olimpo has created **13 agents** in approximately three months, with an average creation cycle of 2-3 days per agent. The pipeline has produced agents across diverse domains: research (Proteo), development (Efesto), creative writing (Euterpe), environmental analysis (Demetra), and email management (Eunomia).
+Using this pipeline, Team Olimpo has created **10 agents** in approximately four months, with an average creation cycle of 2-3 days per agent. The pipeline has produced agents across diverse domains: research (Proteo), development (Efesto), creative writing (Euterpe), technical documentation (Hermione), and email analysis (Eunomia).
 
 ---
 
@@ -510,7 +587,9 @@ Library/Wiki/
 ├── log.md                # Append-only chronological operation log
 ├── concepts/YYYY/MM/     # Persistent conceptual knowledge
 ├── decisions/YYYY/MM/    # Architectural decision records
-└── research/YYYY/MM/     # Completed research syntheses
+├── research/YYYY/MM/     # Completed research syntheses
+├── references/           # External reference collection
+└── projects/             # Project-specific knowledge
 ```
 
 ### 7.2 Multi-Agent vs. Single-Agent Adaptation
@@ -519,10 +598,10 @@ The key differences from Karpathy's original single-agent pattern are:
 
 | Dimension | Single-Agent (Karpathy) | Multi-Agent (Team Olimpo) |
 |-----------|------------------------|---------------------------|
-| **Authorship** | Single LLM | Hermes orchestrates, Proteo contributes concepts, Dike contributes decisions |
+| **Authorship** | Single LLM | Poros orchestrates, multiple agents contribute by competence |
 | **Readership** | Single LLM | Each agent reads according to its competence |
 | **Audit Trail** | None | Every wiki operation traced via handoff system |
-| **Quality** | Unverified (LLM alone) | Clio verifies format, Dike lints content, Hermes approves |
+| **Quality** | Unverified (LLM alone) | Clio verifies format, multiple agents cross-check content |
 | **Error Correction** | Undetected hallucinations | Cross-agent verification; one agent corrects another's error |
 | **Persistence** | Session-based context file | Structured wiki with index and log |
 
@@ -554,6 +633,8 @@ Primary savings sources:
 - Reduced context reconstruction time (~5,384 tokens → ~500 tokens per lookup)
 - Accelerated new member onboarding (~40% faster)
 
+As of June 2026, the wiki contains **217+ pages** across **5 categories** (concepts, decisions, research, references, projects).
+
 ---
 
 ## 8. Multi-Model Orchestration
@@ -562,9 +643,8 @@ Unlike most MAS frameworks that assume a uniform LLM across all agents [2][3][4]
 
 | Model | Agents | Rationale |
 |-------|--------|-----------|
-| **big-pickle** (OpenCode default) | Hermes, Proteo, Atena, Efesto, Clio, Dike, Metis, Calliope, Pythàgoras, Hermione | General-purpose orchestration and task execution |
-| **xai/grok-4.3** | Euterpe | Optimized for creative writing tasks |
-| **sonnet** (Claude) | Demetra, Eunomia | Environmental analysis and text classification |
+| **opencode/big-pickle** | Poros, Proteo, Clio, Metis, Pythagoras, Hermione, Euterpe, Eunomia | General-purpose orchestration and execution |
+| **openrouter/deepseek/deepseek-v4-flash** | Atena, Efesto | Optimized for agent design and code generation tasks |
 
 This multi-model architecture provides three key benefits:
 
@@ -572,7 +652,7 @@ This multi-model architecture provides three key benefits:
 
 2. **No Vendor Lock-In**: The system can add or replace models without architectural changes. New model integrations require only updating the target agent's configuration.
 
-3. **Empirical Model Selection**: Model assignments are driven by observed performance on specific task types, not by provider preference. Demetra and Eunomia were assigned to sonnet after comparative testing showed superior results for environmental analysis and email classification respectively.
+3. **Empirical Model Selection**: Model assignments are driven by observed performance on specific task types, not by provider preference. Atena and Efesto were assigned to DeepSeek v4 Flash after comparative testing showed superior results for structured agent design and code generation respectively.
 
 ---
 
@@ -582,19 +662,17 @@ Quality assurance in Team Olimpo operates at multiple levels, providing layered 
 
 ### 9.1 Quality Layers
 
-1. **Hermes** (orchestrator-level): Applies a 6-point quick checklist before accepting any agent's output: (i) format compliance, (ii) factual consistency, (iii) source attribution, (iv) completion of all required sections, (v) appropriate citations, (vi) no hallucinated content.
+1. **Poros** (orchestrator-level): Applies a 6-point quick checklist before accepting any agent's output: (i) format compliance, (ii) factual consistency, (iii) source attribution, (iv) completion of all required sections, (v) appropriate citations, (vi) no hallucinated content.
 
-2. **Clio** (documentation gate): Specialized quality gate for Obsidian vault compliance — verifies frontmatter YAML, wikilinks, image paths, naming conventions, and structural adherence to vault standards.
+2. **Clio** (documentation gate): Specialized quality gate for Obsidian vault compliance — verifies frontmatter YAML, wikilinks, image paths, naming conventions, and structural adherence to vault standards. Also handles PDF conversion pipeline quality and structure validation audits.
 
-3. **Dike** (process audit): Produces structured audits, process mapping, gap analysis, and compliance metrics. Example: the AQF adoption audit [14] that measured handoff compliance rates and identified template gaps.
-
-4. **ACM** (continuous monitoring): The AQF's Phase 5 provides longitudinal quality tracking with automated deviation logging and threshold-based alerting.
+3. **ACM** (continuous monitoring): The AQF's Phase 5 provides longitudinal quality tracking with automated deviation logging and threshold-based alerting.
 
 ### 9.2 Quality Metrics
 
 | Metric | Calculation | Threshold | Action |
 |--------|-------------|-----------|--------|
-| **Deviation Rate** | Deviations / Total tasks (rolling 20) | >20% → notify; >40% → suspend | Hermes notification / agent suspension |
+| **Deviation Rate** | Deviations / Total tasks (rolling 20) | >20% → notify; >40% → suspend | Poros notification / agent suspension |
 | **Quality Score** | Composite: 30% completeness + 40% accuracy + 20% conformance + 10% efficiency | ≥0.85 (High risk) | Pass/fail per risk class |
 | **OQ Pass Rate** | Tests passed / Total tests | ≥90% (High), ≥80% (Medium), ≥70% (Low) | Qualification gate |
 
@@ -614,18 +692,19 @@ outcome: "resolved | in_progress | escalated | won_t_fix"
 
 ## 10. Operational Results
 
-Team Olimpo has been in continuous operation since February 2026. As of May 2026, the following metrics have been recorded:
+Team Olimpo has been in continuous operation since February 2026. As of June 2026, the following metrics have been recorded:
 
 ### 10.1 Summary Metrics
 
 | Metric | Value |
 |--------|-------|
-| Active agents | 13 |
-| Completed handoffs | 64+ |
-| Months of operation | 3+ |
-| LLM models in use | 3 |
-| Wiki pages created | 10+ |
-| Wiki categories | 3 (concepts, decisions, research) |
+| Active agents | 10 |
+| Completed handoffs | 777+ |
+| Months of operation | 4+ (Feb–Jun 2026) |
+| LLM models in use | 2 families (opencode/big-pickle, deepseek-v4-flash) |
+| Wiki pages created | 217+ |
+| Wiki categories | 5 (concepts, decisions, research, references, projects) |
+| Public repository commits | 12+ |
 | GitHub issues referenced | ~11012 (OpenCode subagent limitation) |
 
 ### 10.2 Task Categories Completed
@@ -636,21 +715,22 @@ Team Olimpo has successfully executed tasks across diverse domains:
 - **Research Synthesis**: AI agent architecture comparison, IQ/OQ/PQ regulatory research
 - **Technical Development**: CLI tool development (Typer-based), PDF conversion pipeline
 - **Documentation**: Deep-dive technical whitepapers, wiki implementation, compliance audits
-- **Environmental Analysis**: Ecosystem planning, water resource management analysis (US context)
-- **Communication**: Email cataloging, contact management, structured person records
-- **Content Creation**: School essays (Euterpe on Grok), technical reports (Hermione)
+- **Communication**: Email contextual analysis, threading, cross-referencing
+- **Content Creation**: Italian school essays (Euterpe), technical reports (Hermione)
+- **Agent Design**: Full pipeline agent creation (Proteo → Atena), agent revision cycles
+- **Strategic Analysis**: Brainstorming, option mapping, independent review (Metis)
 
 ### 10.3 Parallelism Performance
 
-The system's ability to execute independent subtasks in parallel — governed by a 4-criteria filter (no data dependency, no shared exclusive resources, independent execution possible, post-hoc synthesis feasible) — has demonstrated **50-90% latency reduction** on multi-subtask operations compared to sequential execution [15].
+The system's ability to execute independent subtasks in parallel — governed by a 4-criteria filter (no data dependency, no shared exclusive resources, independent execution possible, post-hoc synthesis feasible) — has demonstrated **50-90% latency reduction** on multi-subtask operations compared to sequential execution [14].
 
 ### 10.4 Case Examples
 
-**Case 1 — Agent Architecture Research (2026-05-01)**: Hermes delegated a comparative analysis of single-agent vs. multi-agent architectures to Proteo. The resulting 81-line report synthesized findings from 9 sources (Anthropic, OpenAI, Azure, arXiv, LangChain) and delivered a structured recommendation within one session. The report was subsequently wiki-ized into a persistent concept page.
+**Case 1 — Agent Architecture Research (2026-05-01)**: Poros delegated a comparative analysis of single-agent vs. multi-agent architectures to Proteo. The resulting 81-line report synthesized findings from 9 sources (Anthropic, OpenAI, Azure, arXiv, LangChain) and delivered a structured recommendation within one session. The report was subsequently wiki-ized into a persistent concept page.
 
-**Case 2 — AQF Implementation (2026-05-16)**: A coordinated effort involving Metis (strategic analysis of qualification frameworks), Dike (audit of existing processes), and Atena (risk classification and ADQ checklist creation). The AQF was designed, documented, and partially deployed in a single day across 13 agents.
+**Case 2 — AQF Implementation (2026-05-16)**: A coordinated effort involving Metis (strategic analysis of qualification frameworks), Clio (audit of existing processes and quality gaps), and Atena (risk classification and ADQ checklist creation). The AQF was designed, documented, and partially deployed in a single day across all 10 agents.
 
-**Case 3 — Email Integration Pipeline**: Eunomia (cataloging agent, sonnet) was created via the Agent Factory Pipeline, qualified through AQF gates, and deployed to process email inbox data into structured person records in `lib/Persone/`, with a fallback to manual parsing when the `email_processor` tool is unavailable.
+**Case 3 — Email Integration Pipeline**: Eunomia (contextual analyst) was created via the Agent Factory Pipeline, qualified through AQF gates, and deployed to process email inbox data into structured records, with a fallback to manual analysis when automated threading is unavailable.
 
 ---
 
@@ -662,7 +742,7 @@ Several frameworks have advanced the state of the art in MAS:
 
 **AutoGPT** [1] pioneered autonomous agent loops but lacks structured inter-agent communication. **CrewAI** [2] introduced role-based agents with shared tools, though communication remains in-memory. **LangGraph** [3] provides stateful graph-based execution with checkpointing, but traceability is execution-level rather than document-level. **OpenAI Agents SDK** [4] offers handoff between specialized agents but with no persistent audit trail. **AutoGen** [5] from Microsoft provides conversational agent patterns but similarly lacks structured qualification.
 
-The **AgentOrchestra** benchmark [16] (arXiv 2506.12508) provides empirical evidence that hierarchical multi-agent systems outperform single-agent approaches by 30% on GAIA benchmarks, supporting Team Olimpo's architectural choice.
+The **AgentOrchestra** benchmark [15] (arXiv 2506.12508) provides empirical evidence that hierarchical multi-agent systems outperform single-agent approaches by 30% on GAIA benchmarks, supporting Team Olimpo's architectural choice.
 
 ### 11.2 LLM Wiki Pattern
 
@@ -674,7 +754,7 @@ The IQ/OQ/PQ framework originates from FDA's 21 CFR Part 11 [9] and ISPE's GAMP 
 
 ### 11.4 Quality in Agent Systems
 
-Anthropic's research on multi-agent reliability [17] and OpenAI's practical guide to building agents [4] address quality at the design level but do not propose structured qualification frameworks. The MAS literature lacks standardized metrics for agent output quality, a gap that AQF's composite quality score begins to address.
+Anthropic's research on multi-agent reliability [16] and OpenAI's practical guide to building agents [4] address quality at the design level but do not propose structured qualification frameworks. The MAS literature lacks standardized metrics for agent output quality, a gap that AQF's composite quality score begins to address.
 
 ---
 
@@ -692,6 +772,8 @@ Team Olimpo demonstrates that **reliability, traceability, and quality assurance
 
 5. **Multi-model orchestration** is practical and beneficial, allowing task-optimized model selection without architectural complexity.
 
+6. **IntentGate routing** and the **Deliverable Hash System** provide unambiguous task routing and content-addressable artifact management, two capabilities previously absent from the MAS toolkit.
+
 ### 12.1 Future Work
 
 Several directions for future research and development are planned:
@@ -702,7 +784,7 @@ Several directions for future research and development are planned:
 
 3. **Open Standard Development**: Publishing the AQF specification as an open standard on arXiv and inviting external contributions through the `teamolimpo-paper` repository.
 
-4. **Model Expansion**: Integrating additional LLM providers (Gemini, DeepSeek, Mistral) and developing a formal model-to-task routing framework.
+4. **Model Expansion**: Integrating additional LLM providers (Gemini, Mistral, Claude) and developing a formal model-to-task routing framework.
 
 5. **AQF Follow-Up Paper**: A dedicated paper providing the complete AQF specification, including detailed phase protocols, test case templates, and quality score calculation methodology.
 
@@ -742,21 +824,19 @@ Team Olimpo operates within the OpenCode ecosystem and acknowledges the foundati
 
 [13] Team Olimpo, Metis. "Analisi Costi-Benefici: 5 Miglioramenti LLM Wiki per Team Olimpo." Internal Report, 2026-05-11.
 
-[14] Team Olimpo, Dike. "Audit di Adozione — Criteri AQF per Handoff." Internal Report, 2026-05-16.
+[14] Anthropic Engineering. "Multi-Agent Research System." 2026. https://www.anthropic.com/engineering/multi-agent-research-system
 
-[15] Anthropic Engineering. "Multi-Agent Research System." 2026. https://www.anthropic.com/engineering/multi-agent-research-system
+[15] AgentOrchestra. "AgentOrchestra: A Multi-Agent Orchestration Framework." arXiv:2506.12508v3, 2026.
 
-[16] AgentOrchestra. "AgentOrchestra: A Multi-Agent Orchestration Framework." arXiv:2506.12508v3, 2026.
+[16] Anthropic. "Building Effective Agents." 2025. https://docs.anthropic.com/en/docs/build-with-claude/agent-patterns
 
-[17] Anthropic. "Building Effective Agents." 2025. https://docs.anthropic.com/en/docs/build-with-claude/agent-patterns
+[17] Arun Baby. "Role-Based Agent Design." 2026. https://arunbaby.com/ai-agents/0031-role-based-agent-design/
 
-[18] Arun Baby. "Role-Based Agent Design." 2026. https://arunbaby.com/ai-agents/0031-role-based-agent-design/
+[18] Microsoft Azure. "Single-Agent vs Multi-Agent Systems." 2025. https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ai-agents/single-agent-multiple-agents
 
-[19] Microsoft Azure. "Single-Agent vs Multi-Agent Systems." 2025. https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ai-agents/single-agent-multiple-agents
+[19] OpenCode. "AI Agents — Autonomous Coding." 2026. https://open-code.ai/docs/en/agents
 
-[20] OpenCode. "AI Agents — Autonomous Coding." 2026. https://open-code.ai/docs/en/agents
-
-[21] GitHub. "Issue #11012: SubAgents are enclosed, prohibiting genuine task management." 2026. https://github.com/anomalyco/opencode/issues/11012
+[20] GitHub. "Issue #11012: SubAgents are enclosed, prohibiting genuine task management." 2026. https://github.com/anomalyco/opencode/issues/11012
 
 ---
 

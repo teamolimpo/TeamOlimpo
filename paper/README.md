@@ -22,7 +22,9 @@ The rapid proliferation of multi-agent systems (MAS) has exposed a critical gap:
 - **File-Based Handoff System** — Complete audit trail via structured Markdown
 - **Agent Factory Pipeline** — Systematic agent creation with quality gates
 - **Multi-Agent LLM Wiki** — Knowledge persistence with measured 6.7x ROI
-- **Multi-Model Orchestration** — Grok, Claude Sonnet, and big-pickle in one system
+- **Multi-Model Orchestration** — DeepSeek v4 Flash and opencode/big-pickle in one system
+- **IntentGate Routing** — Fixed-category task classification and decomposition
+- **Deliverable Hash System (CRC32)** — Content-addressable artifact management
 
 ### Citation
 
@@ -31,6 +33,6 @@ The rapid proliferation of multi-agent systems (MAS) has exposed a critical gap:
   title={Team Olimpo: An Agent Qualification Framework for Production-Ready Multi-Agent Systems},
   author={Team Olimpo},
   year={2026},
-  howpublished={\url{https://github.com/RangO1972/teamolimpo-paper}}
+  howpublished={\url{https://github.com/teamolimpo/teamolimpo-paper}}
 }
 ```
