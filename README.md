@@ -381,4 +381,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-*Team Olimpo Team*
+*Team Olimpo*
