@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import sqlite3
 
-import sqlite_vec
 from loguru import logger
 
 # ---------------------------------------------------------------------------
@@ -17,16 +16,19 @@ from loguru import logger
 # module is instant unless you actually call the function.)
 # ---------------------------------------------------------------------------
 
-_MODEL = None  # type: ignore  # Set by get_model() → SentenceTransformer
+_MODEL: object = None  # Cached SentenceTransformer instance (lazy-loaded)
 _MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 
-def get_model():  # -> SentenceTransformer
+def get_model():  # noqa: ANN201  # return type omitted intentionally (heavy import)
     """Return the SentenceTransformer model (lazy singleton).
 
     The model is loaded once and cached for the lifetime of the process.
     Downloads from HuggingFace Hub on first use (~90 MB), cached in
     ``~/.cache/huggingface/hub/``.
+
+    Raises:
+        RuntimeError: If ``sentence-transformers`` is not installed.
 
     The SentenceTransformer type is intentionally omitted from the
     return annotation to avoid a module-level import (which takes ~8s
@@ -34,7 +36,13 @@ def get_model():  # -> SentenceTransformer
     """
     global _MODEL
     if _MODEL is None:
-        from sentence_transformers import SentenceTransformer
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError:
+            logger.warning("sentence-transformers not available")
+            raise RuntimeError(
+                "sentence-transformers not installed. Run: uv sync --group embeddings"
+            ) from None
 
         logger.info(f"Loading embedding model: {_MODEL_NAME}")
         _MODEL = SentenceTransformer(_MODEL_NAME)
@@ -53,9 +61,18 @@ def ensure_vec_table(conn: sqlite3.Connection) -> None:
     The virtual table stores 384-dimensional float embeddings (matching
     all-MiniLM-L6-v2 output dimension).
 
+    Raises:
+        RuntimeError: If ``sqlite-vec`` is not installed.
+
     Args:
         conn: SQLite connection with the chunks schema.
     """
+    try:
+        import sqlite_vec  # noqa: PLC0415
+    except ImportError:
+        logger.warning("sqlite-vec not available")
+        raise RuntimeError("sqlite-vec not installed. Run: uv sync --group embeddings") from None
+
     conn.enable_load_extension(True)
     sqlite_vec.load(conn)
     conn.enable_load_extension(False)

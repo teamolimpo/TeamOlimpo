@@ -56,9 +56,6 @@ dependencies = [
     "thefuzz",
     "python-levenshtein",
     "mcp>=1.27.1",
-    # Embedding search
-    "sentence-transformers>=3.0",
-    "sqlite-vec>=0.1.9",
 ]
 
 [project.optional-dependencies]
@@ -70,6 +67,10 @@ dev = [
     "ipython>=8.24",
     "types-requests>=2.32",
     "types-pyyaml>=6.0",
+]
+embeddings = [
+    "sentence-transformers>=3.0",
+    "sqlite-vec>=0.1.9",
 ]
 
 [tool.setuptools.packages.find]

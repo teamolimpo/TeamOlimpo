@@ -332,11 +332,14 @@ def rebuild(
         f"in {elapsed:.1f}s"
     )
 
-    # Generate embeddings
-    logger.info("Generating embeddings for all chunks...")
-    ensure_vec_table(conn)
-    n_emb = index_all_embeddings(conn)
-    logger.info(f"Indexed {n_emb} embeddings")
+    # Generate embeddings (optional dependency)
+    try:
+        logger.info("Generating embeddings for all chunks...")
+        ensure_vec_table(conn)
+        n_emb = index_all_embeddings(conn)
+        logger.info(f"Indexed {n_emb} embeddings")
+    except RuntimeError as e:
+        logger.warning(f"Embeddings skipped — {e}")
 
     # Extract entities
     logger.info("Extracting entities for all chunks...")
@@ -430,9 +433,14 @@ def update(
     conn.commit()
 
     # Clean orphan vectors, index embeddings, and entities for new chunks
-    ensure_vec_table(conn)
-    n_cleaned = clean_orphan_vectors(conn)
-    n_emb = index_all_embeddings(conn)
+    try:
+        ensure_vec_table(conn)
+        n_cleaned = clean_orphan_vectors(conn)
+        n_emb = index_all_embeddings(conn)
+    except RuntimeError as e:
+        logger.warning(f"Embedding maintenance skipped — {e}")
+        n_cleaned = 0
+        n_emb = 0
 
     dictionary = load_dictionary(DICTIONARY_PATH)
     ensure_entities_table(conn)
@@ -520,7 +528,12 @@ def clean_vectors(
     """Remove orphan vectors (chunk_ids no longer in chunks table)."""
     _setup_logging(verbose)
     conn = _get_conn()
-    ensure_vec_table(conn)
+    try:
+        ensure_vec_table(conn)
+    except RuntimeError as e:
+        logger.warning(f"Vector cleaning skipped — {e}")
+        conn.close()
+        return
 
     if dry_run:
         cur = conn.cursor()
@@ -779,14 +792,21 @@ def _embedding_search(
         # Check vec table exists
         try:
             ensure_vec_table(conn)
-        except sqlite3.OperationalError:
+        except (RuntimeError, sqlite3.OperationalError) as exc:
+            logger.warning(f"Embedding search skipped — {exc}")
             conn.close()
             return []
 
         # Get query embedding
         from tools.knowledge_base.vector_indexer import get_model
 
-        model = get_model()
+        try:
+            model = get_model()
+        except RuntimeError as exc:
+            logger.warning(f"Embedding search skipped — {exc}")
+            conn.close()
+            return []
+
         query_emb = model.encode([query], normalize_embeddings=True)[0]
 
         cur = conn.cursor()
