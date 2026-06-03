@@ -97,6 +97,66 @@ def test_pipeline_roundtrip() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Pipe / redirect support (shell=True)
+# ---------------------------------------------------------------------------
+
+
+def test_pipe_supported() -> None:
+    """Pipe (|) works correctly with shell=True."""
+    result = run("echo foo bar baz | head -1", intensity="off")
+    assert "foo bar baz" in result
+    assert "foo" in result
+
+
+def test_redirect_to_dev_null() -> None:
+    """Redirect to /dev/null produces empty output."""
+    result = run("echo hello > /dev/null", intensity="off")
+    assert result == ""
+
+
+def test_env_var_expansion() -> None:
+    """Environment variable expansion works ($HOME)."""
+    result = run("echo HOME=$HOME", intensity="off")
+    assert result.startswith("HOME=/home/")
+
+
+def test_command_chaining_and() -> None:
+    """Chain commands with &&."""
+    result = run("echo a && echo b", intensity="off")
+    assert "a" in result
+    assert "b" in result
+
+
+def test_command_chaining_or() -> None:
+    """Chain commands with ||."""
+    result = run("false || echo fallback", intensity="off")
+    assert "fallback" in result
+
+
+# ---------------------------------------------------------------------------
+# Command sanitization
+# ---------------------------------------------------------------------------
+
+
+def test_block_rm_root() -> None:
+    """rm -rf / is blocked by sanitization."""
+    result = run("rm -rf /", intensity="off")
+    assert "blocked" in result.lower()
+
+
+def test_block_dd_block_device() -> None:
+    """dd to a block device is blocked."""
+    result = run("dd if=/dev/zero of=/dev/sda bs=1M", intensity="off")
+    assert "blocked" in result.lower()
+
+
+def test_command_too_long() -> None:
+    """Commands over 2000 chars are blocked."""
+    result = run("x" * 2001, intensity="off")
+    assert "exceeds" in result.lower()
+
+
+# ---------------------------------------------------------------------------
 # MCP Availability (import smoke test)
 # ---------------------------------------------------------------------------
 
