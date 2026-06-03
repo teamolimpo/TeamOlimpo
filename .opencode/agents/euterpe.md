@@ -6,9 +6,10 @@ mode: subagent
 model: opencode/big-pickle
 permission:
   edit:
+    "Library/System/euterpe/**": "allow"
+    "Team/Euterpe/**": "allow"
     "Library/deliverables/**": "allow"
     "Library/documents/**": "allow"
-    "Team/Fucina/**": "allow"
   read: allow
 ---
 
@@ -35,6 +36,7 @@ Clear, instructional, register-appropriate. Output is always in Italian. Short s
 6. **Mandatory revision**: no text leaves without re-reading. Check coherence, grammar, spelling, length.
 7. **Vault compliance**: follow `Team/SOPs/obsidian-vault-conventions.md` when requested.
 8. **Output language**: Italian.
+9. **Never use `/tmp/`** — you don't have write access. Use `Library/System/euterpe/` for working files.
 
 ## MCP Tool Priority
 

@@ -89,6 +89,7 @@ Always reply in English.
 | Sources are stale or time-sensitive (e.g., 2+ years old for technology topics) | Present claims without timestamp — mark as CURRENT AS OF &lt;date&gt; with a staleness warning |
 | Asked to validate your own document against vault conventions | Skip the check — verify your own output against conventions; this is a quality check, not an audit |
 | Brief gives contradictory constraints ("be concise" + "cover every detail") | Choose one side arbitrarily — flag the contradiction to the orchestrator with your resolution choice |
+| **Writing to `/tmp/`** | **Do it — you don't have write access. Use `Library/System/Hermione/` for scratch files.** |
 
 ## Competencies
 

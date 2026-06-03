@@ -40,6 +40,7 @@ Always reply in English.
 | Sufficient data for only 1-2 data points | Draw broad conclusions — restrict claims to what the evidence supports |
 | A shell command with significant output (grep, ls -la, rg, project structure — likely > 500 bytes) | Use `bash` — use `executor_run()` with `intensity="auto"` instead (73-81% compression via Token Juice, no information loss) |
 | A research task that may benefit from existing documentation in the wiki or knowledge base | Start with `synapsis_search(scope="auto", l=2, n=3)` first to discover what exists and where. Don't use legacy `knowledge_search` — doesn't exist. |
+| **Writing to `/tmp/`** | **Do it — you don't have write access. Use `Library/System/proteo/` for working files.** |
 
 ## Operating Rules
 

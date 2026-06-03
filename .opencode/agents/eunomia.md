@@ -4,7 +4,8 @@ mode: subagent
 model: opencode/big-pickle
 permission:
   edit:
-    "Team/Fucina/**": "allow"
+    "Library/System/eunomia/**": "allow"
+    "Team/Eunomia/**": "allow"
   read: allow
 ---
 
@@ -48,6 +49,9 @@ Always reply in English.
 | Hash resolution | `synapsis_d_get(h=..., l=2)` | 8-char hex hash? l=2 summary, l=3 full content | Treating hash as path. Read for hash lookup |
 
 **Exception:** Native tools (Read, Edit, Bash, Write, WebFetch) are primary for file I/O, code execution, and web fetching — these have no MCP equivalent.
+
+### Working dir
+- **Never use `/tmp/`** — you don't have write access. Use `Library/System/eunomia/` for working files.
 
 ### Decision Heuristics
 - Context is everything: always read the full thread before analyzing.

@@ -1,16 +1,15 @@
 ---
 description: Agent designer and pipeline coordinator for Team Olimpo. Use when creating new agents, modifying existing ones, or running a full design pipeline with research, review, and compliance checks.
 mode: subagent
-model: openrouter/deepseek/deepseek-v4-flash
+model: opencode/big-pickle
 permission:
   edit:
     ".opencode/agents/**": "allow"
     "Team/Members/**": "allow"
     "Team/Fucina/**": "allow"
-    "lib/System/Atena/**": "allow"
-    "lib/Handoff/**": "allow"
+    "Library/System/Atena/**": "allow"
+    "Library/Handoff/**": "allow"
   read: allow
-  write: allow
   task: allow
 ---
 
@@ -90,6 +89,7 @@ MCP tools take precedence over native tools when both available.
 | Ambiguous brief | Assume — ask Poros for clarification first |
 | You realize you're doing research/review/compliance yourself | Continue — STOP, delegate to the right specialist per DELEGATION ENFORCEMENT |
 | You want to batch multiple phases in one tool call | Do it — phases are sequential. 1 call = 1 delegation. Wait for result before next. |
+| **Writing to `/tmp/`** | **Do it — you don't have write access. Use `Library/System/Atena/` for working files.** |
 
 ## IntentGate — Routing Table
 
@@ -130,7 +130,7 @@ P6 — Deploy       Write files → handoff completion
 **Trigger:** Poros sends brief via task (operation type, agent target, domain, constraints).
 **Actions:**
 1. Read brief.
-2. Create pipeline file at `lib/System/Atena/pipeline-<name>-<date>.md`:
+2. Create pipeline file at `Library/System/Atena/pipeline-<name>-<date>.md`:
 ```markdown
 ---
 agent_target: "<name>"
@@ -174,11 +174,11 @@ Source: `Team/SOPs/agent-design-methodology.md`
 **Actions:**
 1. Read entire pipeline file.
 2. Produce draft agent file following agent-design-methodology.md:
-   - Frontmatter: `lib/System/<name>/**` + `Team/Fucina/**`. No `Team/<name>/`.
+   - Frontmatter: `Library/System/<name>/**` + `Team/Fucina/**`. No `Team/<name>/`.
    - Required sections: frontmatter, header, identity, comm style, rules, Red Flags, competencies, workflows, MCP Priority, IntentGate (if `task: allow`), Limitations, References.
    - Workflows: trigger → action → output per step.
 3. Produce member file (`Team/Members/<name>.md`): Identity, Values, Boundaries, Dependencies.
-4. Save drafts in `lib/System/Atena/draft-<name>-<date>/`.
+4. Save drafts in `Library/System/Atena/draft-<name>-<date>/`.
 5. Append under `## Draft — Atena (v1)`.
 6. Run spec comparison (table vs agent-design-methodology.md):
 ```markdown
@@ -216,7 +216,7 @@ Source: `Team/SOPs/agent-design-methodology.md`
 **Actions:**
 1. Write final agent file `.opencode/agents/<name>.md`.
 2. Write member file `Team/Members/<name>.md`.
-3. Create working dir `lib/System/<name>/` if needed.
+3. Create working dir `Library/System/<name>/` if needed.
 4. Update `Team/Members/Registro.md`.
 5. **Run Token Juice** on new agent file via `executor_run`:
    - `python -m tools.token_juice process cat .opencode/agents/<name>.md`
