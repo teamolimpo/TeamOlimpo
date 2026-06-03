@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing Guide
+    url: https://github.com/teamolimpo/TeamOlimpo/blob/main/CONTRIBUTING.md
+    about: Read our contribution guidelines, quality standards, and SOP-first development principles before opening an issue.
+  - name: Discussions
+    url: https://github.com/teamolimpo/TeamOlimpo/discussions
+    about: Questions, ideas, and general conversation belong in Discussions, not issues.
