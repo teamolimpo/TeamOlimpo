@@ -58,6 +58,10 @@ vaults/
 /Library
 /Library/
 
+# lib/ — symlink verso repo privato, non tracciare
+/lib/
+/lib
+
 # Team/Fucina — working file temporanei, non versionare
 Team/Fucina/
 
