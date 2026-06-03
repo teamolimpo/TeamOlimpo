@@ -11,6 +11,7 @@ from tools.hermes_cli.models import Decision, Scratchpad, Task
 
 
 def read_frontmatter(path: Path) -> tuple[dict[str, Any], list[str]]:
+    """Reads and parses the YAML frontmatter from a Markdown file, returning a tuple of (parsed dict, warnings)."""
     warnings: list[str] = []
     try:
         text = path.read_text(encoding="utf-8")
@@ -42,6 +43,7 @@ def read_frontmatter(path: Path) -> tuple[dict[str, Any], list[str]]:
 
 
 def read_scratchpad(path: Path = SCRATCHPAD_PATH) -> Scratchpad:
+    """Reads and parses the scratchpad Markdown file, returning a Scratchpad with tasks, decisions, errors, and warnings."""
     sp = Scratchpad(path=path)
 
     if not path.exists():
@@ -169,6 +171,7 @@ def read_scratchpad(path: Path = SCRATCHPAD_PATH) -> Scratchpad:
 
 
 def _is_scannable(path: Path) -> bool:
+    """Returns True if the path is a scannable Markdown handoff file, excluding the registro and skip directories."""
     if path.suffix.lower() != ".md":
         return False
     if path.resolve() == REGISTRO_PATH.resolve():
@@ -180,6 +183,7 @@ def _is_scannable(path: Path) -> bool:
 
 
 def scan_handoff_files(handoff_dir: Path = HANDOFF_DIR) -> list[Path]:
+    """Scans the handoff directory recursively and returns a sorted list of scannable Markdown file paths."""
     if not handoff_dir.exists():
         return []
     paths: list[Path] = []
@@ -191,6 +195,7 @@ def scan_handoff_files(handoff_dir: Path = HANDOFF_DIR) -> list[Path]:
 
 
 def read_handoff_body(path: Path) -> str:
+    """Reads and returns the body content of a handoff Markdown file, stripping the YAML frontmatter if present."""
     try:
         text = path.read_text(encoding="utf-8")
     except OSError:
