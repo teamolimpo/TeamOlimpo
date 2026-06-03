@@ -117,16 +117,15 @@ Every Team Olimpo agent MUST have an `## MCP Tool Priority` section with a table
 
 ### Variable Layer — by role
 
-| Role | executor_run | email_processor | synapsis_admin | synapsis_d_set |
-|------|-------------|-----------------|----------------|----------------|
-| **Research** (Proteo, Pythagoras) | **REQUIRED** — grep/ls/rg with compressed output | — | — | — |
-| **Code** (Efesto) | **REQUIRED** — build/test/structure analysis | — | — | — |
-| **Design** (Atena) | **REQUIRED** — YAML validation, coherence check | — | — | **REQUIRED** |
-| **Audit** (Clio, Dike) | **RECOMMENDED** — batch file checks | — | — | — |
-| **Writing** (Hermione, Euterpe) | — | — | — | — |
-| **Strategy** (Metis) | — | — | — | — |
-| **Email** (Eunomia) | — | **REQUIRED** | — | — |
-| **Orchestrator** (Poros) | **RECOMMENDED** | **RECOMMENDED** | **REQUIRED** | **REQUIRED** |
+| Role | executor_run | synapsis_admin | synapsis_d_set |
+|------|-------------|----------------|----------------|
+| **Research** (Proteo, Pythagoras) | **REQUIRED** — grep/ls/rg with compressed output | — | — |
+| **Code** (Efesto) | **REQUIRED** — build/test/structure analysis | — | — |
+| **Design** (Atena) | **REQUIRED** — YAML validation, coherence check | — | **REQUIRED** |
+| **Audit** (Clio) | **RECOMMENDED** — batch file checks | — | — |
+| **Writing** (Hermione, Euterpe) | — | — | — |
+| **Strategy** (Metis) | — | — | — |
+| **Orchestrator** (Poros) | **RECOMMENDED** | **REQUIRED** | **REQUIRED** |
 
 ### Validation rules (for Atena in Phase 3)
 
@@ -142,7 +141,6 @@ Every Team Olimpo agent MUST have an `## MCP Tool Priority` section with a table
 |------|-------------------|-------------------|
 | `synapsis_search` | Unified context retrieval | Research: "first step before any read — discover via l=2". Code: "find existing patterns, docs, examples" |
 | `executor_run` | Shell command execution with Token Juice compression. **Replaces `bash` for most uses.** | Research: "grep, ls, rg, project structure queries". Design: "YAML linting, coherence checks". Code: "build, test, lint" |
-| `email_processor_*` | Email vault operations | Only Poros and Eunomia. For all others: do not include |
 | `synapsis_admin` | System administration | Only Poros and admin agents |
 | `synapsis_d_set` | Register path → get hash | Only file-creating agents: Atena, Poros |
 

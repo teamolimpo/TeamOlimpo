@@ -26,7 +26,7 @@ PROJECT_ROOT/
 │   ├── _templates/                 ← Template vault (daily.md, email.md)
 │   └── .obsidian/                  ← Config Obsidian
 │
-├── tools/email_processor/          ← Tool Python per import/elaborazione
+├── Library/tools/email_processor/          ← Tool Python per import/elaborazione
 ├── lib/                        ← VAULT PRINCIPALE Team Olimpo (NON toccato dalle email)
 └── Inbox/                     ← Documenti/PDF in ingresso (NON email)
 ```
@@ -147,7 +147,7 @@ ultimo_contatto: 2026-05-18
         │                              │
         ▼                              ▼
 ┌──────────────────────────────────────────────┐
-│  tools/email_processor                       │
+│  Library/tools/email_processor                       │
 │                                              │
 │  import    → Inbox/emails/YYYY/MM/note.md    │
 │  elabora   → arricchimento AI (TODO)         │
@@ -201,7 +201,7 @@ email_processor:
 | Path | `emails/` | `lib/` |
 | Contatti | `Addressbook/` | N/A |
 | Email | `Inbox/emails/` | N/A |
-| Tool | `tools/email_processor/` | Tutti gli altri tool |
+| Tool | `Library/tools/email_processor/` | Tutti gli altri tool |
 
 **Nessun incrocio**. I due vault sono indipendenti. Eunomia opera solo nel vault email.
 
@@ -210,7 +210,7 @@ email_processor:
 ## 8. Roadmap
 
 - [x] **Addressbook**: `Persone/` rinominato in `Addressbook/`
-- [ ] **elabora**: implementare comando `email_processor elabora`
-- [ ] **status**: implementare comando `email_processor status`
+- [ ] **elabora**: implementare comando `Library/tools/email_processor/ elabora`
+- [ ] **status**: implementare comando `Library/tools/email_processor/ status`
 - [ ] **Pipeline Eunomia**: testare flusso completo import → contatti → report
 - [ ] **Archivio**: definire politica di archiviazione dopo elaborazione

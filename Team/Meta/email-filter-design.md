@@ -4,7 +4,7 @@ status: draft
 date: 2026-05-19
 version: 0.1
 autori: Poros, Stefano (user)
-strumenti: tools/email_processor/
+strumenti: Library/tools/email_processor/
 stato: da implementare
 ---
 
@@ -132,7 +132,7 @@ Il comando `discover --generate` produce il file YAML completo sulla base delle 
 
 ## 4. Layer 2 — Runtime Filter Engine
 
-### 4.1 File: `tools/email_processor/filter.py`
+### 4.1 File: `Library/tools/email_processor/filter.py`
 
 Componenti:
 
@@ -309,7 +309,7 @@ uv run python -m tools.email_processor feedback --apply
 
 ## 6. Aggregator
 
-### 6.1 File: `tools/email_processor/aggregator.py`
+### 6.1 File: `Library/tools/email_processor/aggregator.py`
 
 ```python
 class Aggregator:
@@ -388,7 +388,7 @@ File `_review/daily/zabbix-2026-05-19.md`:
 | Disk Predictive | `"predictive failure"`, `"disk media error"` in subject | `_review/daily/hw-warnings-{date}.md` |
 | Alert Recap | `"ALERT RECAP"` in subject | `_review/daily/zabbix-{date}.md` |
 | CyberArk | `"CyberArk"` in subject | `_review/daily/security-{date}.md` |
-| KBA | `"KBA"` in subject | `_review/daily/kba-{date}.md` |
+
 
 ### KEEP
 | Regola | Pattern | Label |
@@ -404,15 +404,15 @@ File `_review/daily/zabbix-2026-05-19.md`:
 ## 8. Implementazione — Roadmap
 
 ### Fase 1 — Discovery Tool (Layer 1)
-- [ ] `tools/email_processor/discovery.py` — analisi pattern
+- [ ] `Library/tools/email_processor/discovery.py` — analisi pattern
 - [ ] `discover` comando CLI
 - [ ] Output tabellare dei pattern trovati
 - [ ] Generazione YAML da pattern
 
 ### Fase 2 — Runtime Engine (Layer 2)
-- [ ] `tools/email_processor/filter.py` — RuleEngine
-- [ ] `tools/email_processor/filter_rules.yaml` — regole iniziali
-- [ ] `tools/email_processor/aggregator.py` — Aggregator
+- [ ] `Library/tools/email_processor/filter.py` — RuleEngine
+- [ ] `Library/tools/email_processor/filter_rules.yaml` — regole iniziali
+- [ ] `Library/tools/email_processor/aggregator.py` — Aggregator
 - [ ] Integrazione in `cli.py` (`_run_import`)
 
 ### Fase 3 — Feedback (Layer 3)

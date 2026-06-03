@@ -1,5 +1,5 @@
 """
-Parsing degli argomenti CLI e logica principale per il tool consulto.
+Parsing degli argomenti CLI e logica principale per il tool llm.
 
 Gestisce:
 - Due app Typer separate: app_main (comando principale) e app_models (subcommand models)
@@ -18,7 +18,7 @@ Utilizzo:
   python -m tools.llm --stdin < file.txt
   python -m tools.llm models
   python -m tools.llm models --provider grok
-  python -m tools.llm --prompt Team/Prompts/kba/analisi-rischio.md --input lib/documents/*.md
+  python -m tools.llm --prompt Team/Prompts/valutazione-impatto.md --input docs/*.md
   python -m tools.llm -i
 """
 
@@ -63,7 +63,7 @@ app_models = typer.Typer(
 
 def _setup_logging(verbose: bool = False) -> None:
     """
-    Configura loguru per il tool consulto.
+    Configura loguru per il tool llm.
 
     In modalita' normale: solo WARNING+ su stderr.
     In modalita' verbose: DEBUG su stderr.

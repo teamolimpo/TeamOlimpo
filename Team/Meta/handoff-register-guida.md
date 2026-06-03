@@ -294,7 +294,7 @@ Ultimo aggiornamento: 2026-03-26 14:32:05
 | Mittente | Destinatario | Data | Tipo | Stato | Titolo | Processato Da | Processato Il |
 |----------|--------------|------|------|-------|--------|---------------|----------------|
 | proteo | poros | 2026-03-20 | analisi | completato | Analisi dominio Finance | poros | 2026-03-22 |
-| atena | poros | 2026-03-21 | profilo | completato | Profilo Dike | poros | 2026-03-23 |
+
 
 ---
 
@@ -487,7 +487,7 @@ Poros coordina:
 3. Poros esegue `uv run python -m tools.handoff_register sync` periodicamente
 4. Il Registro.md rimane aggiornato automaticamente
 
-### Flusso con i Membri (Proteo, Atena, Efesto, Clio, Dike)
+### Flusso con i Membri (Proteo, Atena, Efesto, Clio)
 
 Ogni membro:
 1. Riceve un handoff (file `.md` in `Team/Handoff/`)

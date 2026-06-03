@@ -7,7 +7,7 @@ tool_version: 0.4.0
 
 # Specifica struttura vault email
 
-> **Stato**: ✅ Implementato in `tools/email_processor/cli.py` (T-EMAIL-V2-001 + T-EMAIL-ATTACH-001), tool `v0.4.0`
+> **Stato**: ✅ Implementato in `Library/tools/email_processor/cli.py` (T-EMAIL-V2-001 + T-EMAIL-ATTACH-001), tool `v0.4.0`
 > **Base**: `Team/Meta/email-processor-design.md`
 > **Brainstorming**: 2026-05-19
 

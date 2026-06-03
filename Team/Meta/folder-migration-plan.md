@@ -61,7 +61,6 @@ Team/Fucina/
 - [ ] `mkdir -p Team/Handoff`
 - [ ] `mkdir -p Team/Fucina/repos`
 - [ ] `mkdir -p Team/Fucina/analyses`
-- [ ] `mkdir -p Team/Fucina/KBA`
 
 ---
 
@@ -74,10 +73,6 @@ Team/Fucina/
 mv lib/Fucina/Handoff/2024   Team/Handoff/2024
 mv lib/Fucina/Handoff/2026   Team/Handoff/2026
 
-# Batch KBA
-mv lib/Fucina/Handoff/kba_batch   Team/Handoff/kba_batch
-mv lib/Fucina/Handoff/kba_batch2  Team/Handoff/kba_batch2
-
 # Altri
 mv lib/Fucina/Handoff/Legacy     Team/Handoff/Legacy
 mv lib/Fucina/Handoff/tucson     Team/Handoff/tucson
@@ -86,7 +81,6 @@ mv lib/Fucina/Handoff/templates  Team/Handoff/templates
 mv lib/Fucina/Handoff/Registro.md Team/Handoff/Registro.md
 
 # File sparsi nella root (se esistono)
-mv lib/Fucina/Handoff/2026-05-16_dike-hermes_mappatura-processi.md Team/Handoff/
 ```
 
 - [ ] Verificare count: `find Team/Handoff -name '*.md' | wc -l` → deve dare 370
@@ -99,14 +93,6 @@ mv lib/Fucina/Poros/.taskmanager state.lock Team/Poros/.taskmanager state.lock
 ```
 
 - [ ] `Team/Poros/` ora contiene `Scratchpad.md` + `taskmanager state` + lock file
-
-### 3.3 KBA → `Team/Fucina/KBA/`
-
-```bash
-mv lib/Fucina/KBA/* Team/Fucina/KBA/
-```
-
-- [ ] Verificare presenza di: `kba-flusso-umano.md`, `kba-workflow.md`, `kba-vecchi/`, `prompts-kba/`, `tools-kba/`
 
 ### 3.4 Repo → `Team/Fucina/repos/`
 
@@ -130,7 +116,6 @@ mv lib/Fucina/*.md Team/Fucina/analyses/
 - [ ] `rmdir lib/Fucina/Handoff` (se vuota)
 - [ ] `rmdir lib/Fucina/Poros` (se vuota)
 - [ ] `rmdir lib/Fucina/repos` (se vuota)
-- [ ] `rmdir lib/Fucina/KBA` (se vuota)
 - [ ] `rmdir lib/Fucina` (se vuota)
 - [ ] **NOTA**: `lib/Fucina/` è dentro il symlink → la directory viene eliminata sul target `/home/stra/lib/Fucina/`
 
@@ -175,7 +160,7 @@ Azione: `rg 'lib/Fucina/Handoff' --files-with-matches Team/Meta/handoff-register
 - [ ] `Team/Meta/adq-checklist.md` — 1 ref
 - [ ] `Team/Meta/acm-report-template.md` — 3 refs
 - [ ] `Team/Meta/automation_video_ia-guida.md` — 3 refs
-- [ ] `Team/Meta/consulto-guida.md` — 4 refs
+- [x] `Team/Meta/consulto-guida.md` → eliminato (rinominato in `tools/llm/guida.md`)
 - [ ] `Team/Meta/tools/llm/guida.md` — 4 refs
 - [ ] `Team/Meta/tools/handoff/guide.md` — 2 refs
 - [ ] `Team/Prompts/_indice.md` — 4 refs
@@ -185,7 +170,7 @@ Azione: `rg 'lib/Fucina/Handoff' --files-with-matches Team/Meta/handoff-register
 - [ ] `Team/Quarantine/preflight-checklist-poros.md` — 1 ref
 - [ ] `Team/Quarantine/2026-05-04_task-ricorrente-manutenzione-scratchpad.md` — 8 refs
 
-> **Strategia**: Sostituzione massiva con `sed` o `rg --replace` per `lib/Fucina/Handoff` → `Team/Handoff`. Pochi casi hanno `lib/Fucina/` senza `Handoff` (es. riferimenti a `lib/Fucina/Poros/` o `lib/Fucina/KBA/`) — questi vanno uno per uno.
+> **Strategia**: Sostituzione massiva con `sed` o `rg --replace` per `lib/Fucina/Handoff` → `Team/Handoff`. Pochi casi hanno `lib/Fucina/` senza `Handoff` (es. riferimenti a `lib/Fucina/Poros/`) — questi vanno uno per uno.
 
 ---
 
@@ -199,11 +184,7 @@ Azione: `rg 'lib/Fucina/Handoff' --files-with-matches Team/Meta/handoff-register
 
 - [ ] `tools/handoff/server.py` — riga ~124: docstring del tool `handoff_create`
 - [ ] `tools/handoff/cli.py` — commenti e help text
-- [ ] `tools/kba_indexer/__init__.py` — path batch KBA
-- [ ] `tools/kba_reporter/cli.py` — path batch KBA
-- [ ] `tools/kba/indexer/__init__.py` — path batch KBA
-- [ ] `tools/kba/reporter/cli.py` — path batch KBA
-- [ ] `tools/extract_kba_excel.py` — path batch KBA
+
 - [ ] `tools/preflight_check/cli.py` — path handoff
 - [ ] `tools/taskmanager/state.py` — se referenzia lib/Fucina
 - [ ] `tools/taskmanager/migration.py` — se referenzia lib/Fucina

@@ -8,7 +8,7 @@ tags: [meta, workflow, quality, acm, monitoring, report]
 
 ## Cos'è
 
-L'**ACM (Agent Continuous Monitoring)** è il processo settimanale di Dike per tracciare le performance dei membri del Team Olimpo. Il report ACM è uno strumento di **osservazione operativa**, non di giudizio — serve a identificare pattern, tendenze e aree di miglioramento.
+L'**ACM (Agent Continuous Monitoring)** è il processo settimanale di Clio per tracciare le performance dei membri del Team Olimpo. Il report ACM è uno strumento di **osservazione operativa**, non di giudizio — serve a identificare pattern, tendenze e aree di miglioramento.
 
 Il report viene generato **ogni settimana** (tipicamente il lunedì) e comprende:
 - Analisi delle deviazioni della settimana precedente
@@ -26,7 +26,7 @@ Il report viene generato **ogni settimana** (tipicamente il lunedì) e comprende
 title: "ACM Report — Settimana XX"
 data: 2026-MM-DD
 settimana: "YYYY-WW"
-autore: dike
+autore: clio
 tags: [acm, report, quality]
 ---
 
@@ -34,7 +34,7 @@ tags: [acm, report, quality]
 
 **Periodo**: [data inizio] — [data fine]
 **Generato**: [data generazione]
-**Autore**: Dike
+**Autore**: Clio
 
 ---
 
@@ -159,7 +159,7 @@ Arrotondato a 1 decimale.
 title: "ACM Report — Settimana 20"
 data: 2026-05-16
 settimana: "2026-W20"
-autore: dike
+autore: clio
 tags: [acm, report, quality]
 ---
 
@@ -167,7 +167,7 @@ tags: [acm, report, quality]
 
 **Periodo**: 2026-05-09 — 2026-05-15
 **Generato**: 2026-05-16
-**Autore**: Dike
+**Autore**: Clio
 
 ---
 

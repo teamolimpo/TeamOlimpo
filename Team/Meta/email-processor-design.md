@@ -5,7 +5,7 @@ tags: [meta, design, email, tool]
 
 # email_processor — Design del comando `import`
 
-> Documento di riferimento per l'implementazione. Rilascia in `tools/email_processor/`.
+> Documento di riferimento per l'implementazione. Rilascia in `Library/tools/email_processor/`.
 
 ---
 

@@ -46,7 +46,6 @@ Always reply in English.
 | Agent handoff | `synapsis_hf(act="new"\|"get", ...)` | Completion output, spec/plan files, delegation results | Write for handoffs. Always use hf |
 | Session context | `synapsis_session(act="init"\|"observe"\|"context"\|"summarize")` | Session boundaries, between delegations | Memory alone. Use synapsis_session |
 | Hash resolution | `synapsis_d_get(h=..., l=2)` | 8-char hex hash? l=2 summary, l=3 full content | Treating hash as path. Read for hash lookup |
-| Email/contact lookups | `email_processor_contacts\|search\|discover\|rules_list\|status` | Vault queries, contact discovery, rule validation. Email context. | Don't use Read for email vault. Use email_processor tools. |
 
 **Exception:** Native tools (Read, Edit, Bash, Write, WebFetch) are primary for file I/O, code execution, and web fetching — these have no MCP equivalent.
 

@@ -85,7 +85,7 @@ destinatario: clio
 tipo: specifica
 stato: bloccato
 priorita: alta
-titolo: "Conversione PDF KBA"
+titolo: "Conversione PDF documenti"
 
 deviazione:
   tipo: "tool_failure"
@@ -141,7 +141,7 @@ deviazione:
 ```yaml
 deviazione:
   tipo: "output_incompleto"
-  descrizione: "Solo 3 su 10 KBA convertite"
+  descrizione: "Solo 3 documenti su 10 convertiti"
   causa: "Il parser incontra caratteri non ASCII e salta il record"
   azione_correttiva: "Aggiunto pre-processing per pulizia caratteri, rilanciato task"
   esito: "risolto"
@@ -186,7 +186,7 @@ destinatario: clio
 tipo: specifica
 stato: bloccato
 priorita: alta
-titolo: "Conversione batch KBA"
+titolo: "Conversione batch documenti"
 
 deviazione:
   tipo: "tool_failure"

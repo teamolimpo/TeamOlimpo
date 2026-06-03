@@ -94,7 +94,7 @@ Output: research/deltav-arch-report.md
 Verifica:
 1. Completezza ✅ — copre tutti e 5 i punti del briefing (architettura, moduli, API, sicurezza, costi). Limiti dichiarati: "non copre deployment on-prem perché fuori scope".
 2. Accuratezza ✅ — logica coerente, fonti citate: documentazione ufficiale DeltaV e 3 paper revisionati. Link verificati funzionanti.
-3. Formattazione ✅ — frontmatter presente (tags: [deltav, research]), wikilink [[kba-workflow]] corretti, immagini in ../assets/images/deltav-arch/.
+3. Formattazione ✅ — frontmatter presente (tags: [deltav, research]), wikilink [[documento-di-riferimento]] corretti, immagini in ../assets/images/deltav-arch/.
 
 Decisione: ✅ PASS → consegna a Poros per inoltro utente.
 ```

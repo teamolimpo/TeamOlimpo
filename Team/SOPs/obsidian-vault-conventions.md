@@ -21,7 +21,6 @@ lib/
 │   └── images/         # Images extracted from PDFs, organized by slug
 │       └── <slug>/     # One folder per document
 ├── data/               # SQLite databases and logs (NOT Markdown — ignored by Obsidian)
-│   └── kba_catalog/    # KBA records
 ├── documents/          # Markdown files converted from PDFs
 ├── Meta/               # Tool guides, templates, and system docs
 └── SOPs/               # Operational procedures referenced by agents
@@ -119,7 +118,7 @@ converted_at: '2026-03-25 10:00:00'
 num_pages: 10
 author: Author Name
 num_images: 3
-tags: [kba, deltav, security]
+tags: [engineering, deltav, security]
 ---
 ```
 
@@ -140,15 +139,15 @@ tags: [kba, deltav, security]
 ```yaml
 # Correct — YAML list
 tags:
-  - kba
+  - engineering
   - deltav
   - security
 
 # Correct — inline list
-tags: [kba, deltav, security]
+tags: [engineering, deltav, security]
 
 # Wrong — single string
-tags: kba deltav security
+tags: engineering deltav security
 ```
 
 ---
@@ -158,7 +157,7 @@ tags: kba deltav security
 | File type | Convention | Example |
 |-----------|------------|---------|
 | PDF-converted docs | `pdf-slug.md` | `nk-2400-0150.md` |
-| KBA records | `kba-slug.md` | `nk-2400-0150.md` |
+
 | Meta/SOP files | `descriptive-name.md` | `obsidian-vault-conventions.md` |
 | Image folders | `document-slug/` | `nk-2400-0150/` |
 
@@ -207,7 +206,5 @@ Files with other extensions (e.g. `.xlsx`, `.db`, `.log`, `.yaml`) are treated a
 ## Notes per team role
 
 **Cataloger (library management)** — verify that every converted file has valid frontmatter and images with correct relative path before considering the conversion complete.
-
-**KBA analyst** — KBA records go in `lib/data/kba_catalog/records/`. Frontmatter must include at least `title` and `tags`. Links to source documents use wikilink syntax `[[document-slug]]`.
 
 **Developer (scripts writing `.md` to vault)** — every script must produce: (1) valid frontmatter, (2) images with path relative to the `.md` file, (3) wikilinks for internal vault links. No absolute paths in output.

@@ -25,9 +25,9 @@ Regole di scrittura e manutenzione per i prompt del Team Olimpo.
 {dominio}-{scopo}.md
 ```
 
-- **Dominio**: `team`, `kba`, `general` (corrisponde alla directory)
+- **Dominio**: `team`, `general` (corrisponde alla directory)
 - **Scopo**: trattino singolo, lowercase, max 4 parole
-- **Ok**: `valutazione-ricerca.md`, `analisi-rischio-kba.md`, `prompt-template.md`
+- **Ok**: `valutazione-ricerca.md`, `analisi-impatto.md`, `prompt-template.md`
 - **Vietato**: underscore, camelCase, spazi, numeri in sequenza
 
 ---
@@ -64,7 +64,7 @@ updated: YYYY-MM-DD
 Nei prompt `scope: public` è VIETATO:
 
 - Path a `lib/`, `tools/`, `.claude/agents/`
-- Referimenti a strumenti interni (`consulto`, `kba_merger`)
+- Referimenti a strumenti interni (`llm`, `kba_merger`)
 - Nomi reali di persone o clienti
 - Placeholder che rivelano strutture dati interne
 

@@ -70,7 +70,6 @@ TeamOlimpo/                          ← git principale
 │   ├── Fucina/                      ← Working file temporanei, GITIGNORATO
 │   │   ├── repos/                   ←   Repo clonati per analisi
 │   │   ├── analyses/                ←   Note di analisi temporanee
-│   │   └── KBA/                     ←   Working file KBA
 │   ├── Members/                     ← Identità agenti
 │   ├── Meta/                        ← Documentazione sistema
 │   ├── Prompts/                     ← Prompt library
@@ -118,8 +117,6 @@ Team/Handoff/
 ├── YYYY/
 │   └── MM/
 │       └── YYYY-MM-DD_HHMM_agent_type_slug.md
-├── kba_batch/              ← Batch di analisi KBA (file .md/.json)
-├── kba_batch2/             ← Secondo batch
 ├── Legacy/                 ← Handoff pre-standardizzazione
 ├── tucson/                 ← Progetto Tucson
 ├── scripts/                ← Script associati
@@ -127,7 +124,7 @@ Team/Handoff/
 └── Registro.md             ← Indice centralizzato (auto-generato)
 ```
 
-> Nota: `kba_batch/`, `Legacy/`, `tucson/` sono fluttuazioni storiche. Al momento restano così; in futuro si può decidere di normalizzare.
+> Nota: `Legacy/`, `tucson/` sono fluttuazioni storiche. Al momento restano così; in futuro si può decidere di normalizzare.
 
 ### `Team/Fucina/`
 
@@ -142,12 +139,6 @@ Team/Fucina/
 │   ├── claude-context-chunker-analysis.md
 │   ├── memvid-smartframes-analysis.md
 │   └── openhuman-chunker-analysis.md
-├── KBA/                    ← Working file KBA
-│   ├── kba-flusso-umano.md
-│   ├── kba-workflow.md
-│   ├── kba-vecchi/
-│   ├── prompts-kba/
-│   └── tools-kba/
 └── .gitkeep
 ```
 
@@ -170,7 +161,6 @@ Team/Poros/
 |----|---|------|
 | `lib/Fucina/Handoff/` | `Team/Handoff/` | 📦 Spostamento fisico |
 | `lib/Fucina/Poros/` | `Team/Poros/` | 📦 Spostamento fisico |
-| `lib/Fucina/KBA/` | `Team/Fucina/KBA/` | 📦 Spostamento fisico |
 | `lib/Fucina/repos/` | `Team/Fucina/repos/` | 📦 Spostamento fisico |
 | `lib/Fucina/*.md` | `Team/Fucina/analyses/` | 📦 Spostamento fisico |
 | `lib/Fucina/` | *(eliminata)* | 🗑️ Eliminazione |
@@ -192,9 +182,7 @@ Team/Poros/
 | `tools/handoff/cli.py` | Commenti interni |
 | `tools/handoff-register-guida.md` | Molteplici riferimenti `lib/Fucina/Handoff` → `Team/Handoff` |
 | `tools/preflight_check/cli.py` | Se referenzia `lib/Fucina/` |
-| `tools/kba_indexer/__init__.py` | `lib/Fucina/Handoff/kba_batch/` → `Team/Handoff/kba_batch/` |
-| `tools/kba_reporter/cli.py` | Idem |
-| `tools/extract_kba_excel.py` | Idem |
+
 
 ### 5.4 Documentation changes
 
@@ -212,7 +200,7 @@ Oltre a `AGENTS.md`, i seguenti file in `Team/` contengono riferimenti a `lib/Fu
 | `Team/Meta/adq-checklist.md` | Bassa |
 | `Team/Meta/acm-report-template.md` | Bassa |
 | `Team/Meta/automation_video_ia-guida.md` | Bassa |
-| `Team/Meta/consulto-guida.md` | Bassa |
+| `Team/Meta/tools/llm/guida.md` | Bassa |
 | `Team/Meta/tools/llm/guida.md` | Bassa |
 | `Team/Meta/tools/handoff/guide.md` | Bassa |
 | `Team/Prompts/_indice.md` | Bassa |

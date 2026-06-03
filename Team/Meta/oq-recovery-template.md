@@ -150,7 +150,7 @@ destinatario: clio
 tipo: specifica
 stato: in-corso
 priorita: alta
-titolo: "Conversione PDF KBA"
+titolo: "Conversione PDF"
 
 deviazione:
   tipo: "tool_failure"

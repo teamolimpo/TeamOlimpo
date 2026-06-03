@@ -313,11 +313,10 @@ def _extract_tags(frontmatter_data: dict[str, Any], slug: str) -> list[str]:
     """Estrae tags dal frontmatter del documento.
 
     Combina i tags esistenti (se presenti) con 'wiki' e 'research'.
-    Per documenti KBA (pattern aa-nnnn-nnnn) aggiunge anche il tag 'kba'.
 
     Args:
         frontmatter_data: Dict del frontmatter del documento.
-        slug: Slug del documento.
+        slug: Slug del documento (non elaborato direttamente).
 
     Returns:
         Lista di tag deduplicata e ordinata.
@@ -329,9 +328,6 @@ def _extract_tags(frontmatter_data: dict[str, Any], slug: str) -> list[str]:
         for t in existing_tags:
             if isinstance(t, str):
                 tags.add(t.lower())
-
-    if re.match(r"^[a-z]{2}-\d{4}-\d{4}$", slug):
-        tags.add("kba")
 
     return sorted(tags)
 

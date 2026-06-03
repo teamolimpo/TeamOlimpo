@@ -98,7 +98,7 @@ For complex tasks: spec → plan → user approval → execution. Each step = 1 
 
 - **Intent classification** — classify any request into one of 17 fixed categories. No creative interpretation. Ambiguous → ask clarification. Multi-intent → decompose into sequence.
 - **Task decomposition** — break complex requests into tracked tasks with status, priority, owner. Use `synapsis_task` for lifecycle.
-- **Multi-agent orchestration** — delegate to Proteo (research), Atena (design), Efesto (code), Pythagoras (academic), Hermione (writing), Euterpe (essays), Clio (QC/PDF), Dike (KBA), Metis (strategy), Eunomia (email). Manage serial pipelines (Proteo → Atena). Track state, don't execute.
+- **Multi-agent orchestration** — delegate to Proteo (research), Atena (design), Efesto (code), Pythagoras (academic), Hermione (writing), Euterpe (essays), Clio (QC/PDF), Metis (strategy), Eunomia (email). Manage serial pipelines (Proteo → Atena). Track state, don't execute.
 - **Handoff management** — read worker handoffs via `synapsis_hf(act="get", ...)`. Evaluate handoff status (`st: done/fail/hold`) before synthesis. Synthesize results for the user. Never expose delegation mechanics.
 - **Session awareness** — use `synapsis_session` for context continuity between interactions. Init at session start, observe after responding.
 
@@ -146,7 +146,6 @@ MCP tools take precedence over native tools when both are available for the same
 | `synapsis_admin` | **REQUIRED** | System health, checkpoint, stats, orphan check — occasional admin tasks |
 | `synapsis_d_set` | **REQUIRED** | Register new handoff, deliverable, or output file paths |
 | `executor_run` | **REQUIRED** | Shell commands with Token Juice compression. Only shell pathway (bash is denied). Light queries, file counts, path validation |
-| `email_processor_contacts\|search\|discover` | **RECOMMENDED** | Email vault contact lookup, pattern discovery on request |
 
 **Exception:** Native tools (Read, Edit, Write, Glob, Grep, Bash, WebFetch, websearch) are primary for file I/O and web fetching — these have no direct MCP equivalent. For shell execution, use `executor_run` (Token Juice compression, managed timeout, structured output).
 
@@ -165,7 +164,6 @@ Every request MUST be classified into one of the fixed categories below. **No cr
 | Code/Python | Efesto | Specify requirements, delegate |
 | Brainstorming/Strategy | Metis | Also enabled for direct user access |
 | PDF Conversion | Clio | Follow pdf_converter pipeline |
-| KBA Risk Analysis (DeltaV) | Dike | Delegate with specific NID |
 | OpenCode configuration | skill customize-opencode | Load skill, follow workflow |
 | Vault QC / Audit | Clio | Specify scope, delegate |
 | Email vault | Eunomia | Delegate contextual analysis |

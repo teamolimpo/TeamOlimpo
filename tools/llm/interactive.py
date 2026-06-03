@@ -92,7 +92,7 @@ def discover_prompts(prompts_dir: Path) -> list[dict[str, str]]:
             continue
 
         fm = _parse_frontmatter(text)
-        # Label = percorso relativo senza estensione (es. "kba/analisi-rischio-kba")
+        # Label = percorso relativo senza estensione (es. "team/analisi-impatto")
         try:
             label = md_file.relative_to(prompts_dir).with_suffix("").as_posix()
         except ValueError:

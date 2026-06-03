@@ -105,7 +105,7 @@ permission:
 - **Significato**: modello AI che alimenta l'agente
 - **Valori comuni nel team**:
   - `xai/grok-code-fast-1` — veloce, efficace per compiti strutturati (Poros, Efesto)
-  - `opencode/big-pickle` — bilanciato, adatto a ragionamento e ricerca (Proteo, Atena, Clio, Dike, Metis, Calliope)
+  - `opencode/big-pickle` — bilanciato, adatto a ragionamento e ricerca (Proteo, Atena, Clio, Metis, Calliope)
 
 ### `permission`
 - **Tipo**: oggetto YAML con campi annidati
@@ -122,7 +122,7 @@ permission:
 - **Configurazione globale**: definito in `opencode.json` come `default_agent: "poros"`
 
 ### `mode: subagent`
-- **Chi**: tutti gli altri membri (Proteo, Atena, Efesto, Clio, Dike, Metis, Calliope)
+- **Chi**: tutti gli altri membri (Proteo, Atena, Efesto, Clio, Metis, Calliope)
 - **Cosa significa**: agente specializzato, mai esposto direttamente all'utente
 - **Comportamento**: riceve compiti da Poros o da altri, produce output, non comunica con l'utente
 - **Invocazione**: via `@nome-agente` nei messaggi o tasto Tab
@@ -153,7 +153,6 @@ Le permissioni controllano l'interazione con il filesystem e il sistema. Ogni ag
 | **Atena** | allow | allow | deny | allow | HR Manager: crea agenti, delega a Calliope per i nomi |
 | **Efesto** | allow | allow | ask | deny | Sviluppa script, chiede conferma per bash, non delega |
 | **Clio** | allow | allow | ask | deny | Gestisce vault, verifica, non esegue codice |
-| **Dike** | allow | allow | deny | deny | Analizza KBA, solo lettura e scrittura record |
 | **Metis** | allow | deny | deny | deny | Thinking partner: solo lettura, non scrive né esegue |
 | **Calliope** | allow | allow | deny | deny | Documentazione creativa, non esegue codice né delega |
 
@@ -174,7 +173,7 @@ La scelta del modello non è estetica, è funzionale. Atena ha codificato questo
 | Modello | Quando usarlo | Esempi nel team |
 |---------|---------------|-----------------|
 | **xai/grok-code-fast-1** | Compiti strutturati, orchestrazione, sviluppo codice. Velocità ed efficienza. | Poros (orchestrazione), Efesto (sviluppo Python) |
-| **opencode/big-pickle** | Ragionamento profondo, ricerca, analisi, sintesi creativa. Bilanciato. | Proteo (ricerca), Atena (design), Clio (verifiche), Dike (analisi KBA), Metis (strategia), Calliope (documentazione) |
+| **opencode/big-pickle** | Ragionamento profondo, ricerca, analisi, sintesi creativa. Bilanciato. | Proteo (ricerca), Atena (design), Clio (verifiche), Metis (strategia), Calliope (documentazione) |
 
 **Regola di Atena**: se il compito richiede giudizio e il prompt non può coprire ogni caso, serve un modello più capace. Se il compito è procedurale e le istruzioni sono esaustive, il modello leggero basta.
 
@@ -191,11 +190,6 @@ La `description` nel frontmatter è la stringa più importante dopo il nome. È 
 ```
 
 ### Esempi dal Team Olimpo
-
-**Dike (Analista KBA)**:
-```
-Analista di processi e workflow per il Team Olimpo. Monitora l'evoluzione del sistema, documenta decisionsi chiave, garantisce trasparenza operativa e traccia la provenienza delle modifiche.
-```
 
 **Clio (Archivista)**:
 ```
@@ -311,7 +305,7 @@ Ordine non arbitrario — segue la priorità di lettura di Claude Code:
 
 ### 5. Calibrazione della profondità
 - Membro con dominio ristretto e procedurale (Clio, Calliope): istruzioni dettagliate ma concise
-- Membro con dominio ampio che richiede giudizio (Metis, Dike): istruzioni più ricche, con principi e framework
+- Membro con dominio ampio che richiede giudizio (Metis): istruzioni più ricche, con principi e framework
 - Lunghezza del prompt consuma contesto: se puoi dire la stessa cosa in meno parole senza perdere precisione, fallo
 
 ### 6. Anti-pattern comuni
@@ -380,9 +374,9 @@ La responsabilità degli aggiornamenti è distribuita secondo dominio e competen
 
 - **Calliope** (io stessa): per tutto ciò che riguarda i **contenuti creativi** — nomenclatura, stile narrativo, tono, struttura delle sezioni di identità, esempi di scrittura. Se la guida deve raccontare meglio un concetto o acquisire una nuova voce, è compito mio.
 
-- **Dike**: per tutto ciò che riguarda i **processi e la conformità** — flussi di lavoro, permessi, strutture decisionali, anti-pattern, verifiche di qualità. Se un processo cambia o richiede maggiore trasparenza, Dike interviene.
+- **Clio**: per tutto ciò che riguarda i **processi e la conformità** — flussi di lavoro, permessi, strutture decisionali, anti-pattern, verifiche di qualità. Se un processo cambia o richiede maggiore trasparenza, Clio interviene.
 
-> **Principio di coerenza**: Calliope detta la forma, Dike garantisce la sostanza. Nessun aggiornamento è considerato completo se entrambi i piani — creativo e procedurale — sono stati ponderati.
+> **Principio di coerenza**: Calliope detta la forma, Clio garantisce la sostanza. Nessun aggiornamento è considerato completo se entrambi i piani — creativo e procedurale — sono stati ponderati.
 
 ### Quando aggiornare
 
@@ -397,9 +391,9 @@ La guida deve essere aggiornata in questi scenari:
 
 Il flusso segue il principio di orchestrazione di Poros:
 
-1. **Proposta**: chiunque individui una necessità di aggiornamento formula una proposta chiara (Calliope per creatività, Dike per processi, o qualsiasi membro che rilevi un problema).
+1. **Proposta**: chiunque individui una necessità di aggiornamento formula una proposta chiara (Calliope per creatività, Clio per processi, o qualsiasi membro che rilevi un problema).
 2. **Verifica Poros**: la proposta passa a Poros, che valuta l'impatto sul sistema esistente e la coerenza con il resto della documentazione.
-3. **Implementazione**: Poros delega l'aggiornamento al responsabile competente (Calliope o Dike).
+3. **Implementazione**: Poros delega l'aggiornamento al responsabile competente (Calliope o Clio).
 4. **Revisione**: il responsabile aggiorna la guida seguendo le [convenzioni del vault]([[obsidian-vault]]).
 5. **Pubblicazione**: la modifica viene salvata, verificata e integrata.
 

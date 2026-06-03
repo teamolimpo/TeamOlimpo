@@ -30,11 +30,6 @@ Per la matrice ruolo→tool, vedi `Team/SOPs/agent-design-methodology.md` → *M
 | `session_memory_session_context` | session_memory | session_id, layer (1/2/3), max_tokens | — | — | Layer 1 ~200 token, Layer 2 ~800, Layer 3 ~1500 |
 | `session_memory_session_recall` | session_memory | query, entity, agent, type, session_id, max_results, since | — | ✅ FTS5 BM25 | FTS5 syntax supportata ("phrase queries", AND, OR, NOT) |
 | `session_memory_session_summarize` | session_memory | session_id, level, force | — | — | force=True → ricomprime tutto |
-| `email_processor_status` | email_processor | nessuno | — | — | Statistiche vault: totale, per stato, thread, contatti |
-| `email_processor_search` | email_processor | query, field (subject/from/body/label/all), limit, status_filter | — | — | field omesso → all |
-| `email_processor_discover` | email_processor | days | — | — | Scansiona soggetti simili, produce pattern |
-| `email_processor_rules_list` | email_processor | nessuno | — | — | Elenca tutte le regole di filtro attive |
-| `email_processor_contacts` | email_processor | search_query | — | — | search_query opzionale (filtra per nome/email) |
 
 ---
 

@@ -2,11 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "poros",
   "mcp": {
-    "email_processor": {
-      "type": "local",
-      "command": ["uv", "run", "python", "-m", "tools.email_processor.server"],
-      "enabled": true
-    },
     "executor": {
       "type": "local",
       "command": ["uv", "run", "python", "-m", "tools.executor.server"],

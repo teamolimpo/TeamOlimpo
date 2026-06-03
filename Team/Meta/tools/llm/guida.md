@@ -1,22 +1,22 @@
 ---
-title: "consulto — Guida d'uso"
-aliases: [consulto, tool consulto, ai esterne, grok, gemini]
-tags: [meta, strumenti, ai, consulto, guida]
+title: "llm — Guida d'uso"
+aliases: [llm, tool llm, ai esterne, grok, gemini]
+tags: [meta, strumenti, ai, llm, guida]
 ---
 
-# consulto — Guida completa
+# llm — Guida completa
 
 ## Cos'è
 
-`consulto` è il modulo Python del Team Olimpo che automatizza le consulte a LLM di terze parti (xAI/Grok e Google/Gemini) da linea di comando, con un'interfaccia unificata e configurazione minimale.
+`llm` è il modulo Python del Team Olimpo che automatizza le consulte a LLM di terze parti (xAI/Grok e Google/Gemini) da linea di comando, con un'interfaccia unificata e configurazione minimale.
 
-**Percorso nel repository**: `tools/consulto/`
+**Percorso nel repository**: `tools/llm/`
 **Versione**: 0.4.0
 **Responsabile**: Efesto
 
 ### Cosa permette di fare
 
-`consulto` consente di:
+`llm` consente di:
 - Inviare prompt testuali a Grok (xAI) o Gemini (Google) con una singola riga di comando
 - Configurare facilmente quale provider e quale modello usare
 - Usare system prompt opzionali per guidare il comportamento del modello
@@ -74,7 +74,7 @@ GEMINI_API_KEY=AI...
 - **Directory di lavoro**: deve essere la root del progetto (`TeamOlimpo/`)
 - **Python**: 3.10+
 - **OS**: Windows, macOS, Linux
-- **Encoding**: Windows usa UTF-8 automaticamente (gestito da `consulto` internamente)
+- **Encoding**: Windows usa UTF-8 automaticamente (gestito da `llm` internamente)
 
 ---
 
@@ -85,27 +85,27 @@ Tutti i comandi si eseguono dalla root del progetto. Il tool supporta quattro mo
 ### 1. Consulto singolo (modo base)
 
 ```powershell
-uv run python -m tools.consulto [opzioni] PROMPT
+uv run python -m tools.llm [opzioni] PROMPT
 ```
 
 ### 2. Comando `models` (lista modelli)
 
 ```powershell
-uv run python -m tools.consulto models
-uv run python -m tools.consulto models --provider grok
+uv run python -m tools.llm models
+uv run python -m tools.llm models --provider grok
 ```
 
 ### 3. Modalità batch (elabora più file con template)
 
 ```powershell
-uv run python -m tools.consulto --prompt <template.md> --input <file_o_glob> [--output <cartella>] [opzioni]
+uv run python -m tools.llm --prompt <template.md> --input <file_o_glob> [--output <cartella>] [opzioni]
 ```
 
 ### 4. Modalità interattiva (menu)
 
 ```powershell
-uv run python -m tools.consulto              # nessun argomento
-uv run python -m tools.consulto -i           # flag esplicito
+uv run python -m tools.llm              # nessun argomento
+uv run python -m tools.llm -i           # flag esplicito
 ```
 
 ### Flag globali
@@ -119,7 +119,7 @@ Flag disponibili su tutti i comandi (salvo dove diversamente indicato):
 --system          → messaggio di sistema opzionale
 --stdin           → legge il prompt da stdin
 --interactive/-i  → avvia il menu interattivo
---version         → mostra la versione di consulto
+--version         → mostra la versione di llm
 ```
 
 ---
@@ -129,7 +129,7 @@ Flag disponibili su tutti i comandi (salvo dove diversamente indicato):
 ### Consulto semplice (provider default = Grok)
 
 ```powershell
-uv run python -m tools.consulto "Qual è la capitale della Francia?"
+uv run python -m tools.llm "Qual è la capitale della Francia?"
 ```
 
 **Output**: (solo il testo della risposta)
@@ -140,13 +140,13 @@ La capitale della Francia è Parigi.
 ### Con provider diverso (Gemini)
 
 ```powershell
-uv run python -m tools.consulto --provider gemini "Spiega il teorema di Bayes in 3 righe"
+uv run python -m tools.llm --provider gemini "Spiega il teorema di Bayes in 3 righe"
 ```
 
 ### Con system prompt
 
 ```powershell
-uv run python -m tools.consulto --system "Rispondi sempre in italiano, con linguaggio semplice" "What is entropy?"
+uv run python -m tools.llm --system "Rispondi sempre in italiano, con linguaggio semplice" "What is entropy?"
 ```
 
 ### Con override del modello
@@ -154,31 +154,31 @@ uv run python -m tools.consulto --system "Rispondi sempre in italiano, con lingu
 Per usare il modello flagship di Grok (piu' potente, piu' lento, piu' costoso):
 
 ```powershell
-uv run python -m tools.consulto --provider grok --model grok-4.20-0309-non-reasoning "Analizza in profondità questa questione complessa: ..."
+uv run python -m tools.llm --provider grok --model grok-4.20-0309-non-reasoning "Analizza in profondità questa questione complessa: ..."
 ```
 
 Per usare il modello standard di Gemini:
 
 ```powershell
-uv run python -m tools.consulto --provider gemini --model gemini-2.5-flash "..."
+uv run python -m tools.llm --provider gemini --model gemini-2.5-flash "..."
 ```
 
 ### Lettura da stdin (pipe e file)
 
 ```powershell
-cat documento.txt | uv run python -m tools.consulto --stdin
+cat documento.txt | uv run python -m tools.llm --stdin
 
 # Oppure con redirect da file
-uv run python -m tools.consulto --stdin < mio_prompt.txt
+uv run python -m tools.llm --stdin < mio_prompt.txt
 
 # Oppure con echo su Windows
-echo "Analizza questo testo" | uv run python -m tools.consulto --stdin
+echo "Analizza questo testo" | uv run python -m tools.llm --stdin
 ```
 
 ### Output verbose (mostra token e tempo)
 
 ```powershell
-uv run python -m tools.consulto --verbose "Cos'è un API gateway?"
+uv run python -m tools.llm --verbose "Cos'è un API gateway?"
 ```
 
 **Output su stdout** (testo della risposta):
@@ -211,7 +211,7 @@ Token out: 393
 | `--stdin` | — | — | Legge il prompt da stdin invece che da argomento |
 | `--agent-count` | — | `N` | Numero agenti per modelli multi-agent (4 o 16). Ignorato per modelli standard. Default: 4 |
 | `--verbose` | `-v` | — | Mostra metadati su stderr (token, tempo, modello effettivo) |
-| `--version` | — | — | Mostra la versione di consulto e esce |
+| `--version` | — | — | Mostra la versione di llm e esce |
 
 ### Flag della modalità batch
 
@@ -233,20 +233,20 @@ Token out: 393
 
 ```powershell
 # Valido
-uv run python -m tools.consulto "il mio prompt"
-echo "il mio prompt" | uv run python -m tools.consulto --stdin
+uv run python -m tools.llm "il mio prompt"
+echo "il mio prompt" | uv run python -m tools.llm --stdin
 
 # Errore — manca il prompt
-uv run python -m tools.consulto
+uv run python -m tools.llm
 ```
 
 **Output**: L'output della risposta va su **stdout** (pulito, senza decorazioni), gli errori e i log vanno su **stderr**.
 
-Questo design rende possibile usare consulto in pipe:
+Questo design rende possibile usare llm in pipe:
 
 ```powershell
 # Estrarre solo la risposta per ulteriore elaborazione
-uv run python -m tools.consulto "Dammi una lista di 5 elementi" | sort
+uv run python -m tools.llm "Dammi una lista di 5 elementi" | sort
 ```
 
 ---
@@ -272,15 +272,15 @@ uv run python -m tools.consulto "Dammi una lista di 5 elementi" | sort
 | `grok-4-1-fast-non-reasoning` | $0.20 in / $0.50 out | Default — veloce ed economico |
 | `grok-4-1-fast-reasoning` | $0.20 in / $0.50 out | Aggiunge ragionamento chain |
 | `grok-4.20-0309-non-reasoning` | $2.00 in / $6.00 out | Flagship, qualità massima |
-| `grok-4.20-0309-reasoning` | $2.00 in / $6.00 out | Flagship con reasoning — usato per analisi KBA |
+| `grok-4.20-0309-reasoning` | $2.00 in / $6.00 out | Flagship con reasoning |
 | `grok-4.20-multi-agent-0309` | $2.00 in / $6.00 out | Multi-agent (vedi sezione dedicata) |
 
 Esempio:
 ```powershell
-uv run python -m tools.consulto --provider grok "Domanda semplice"
-uv run python -m tools.consulto --model grok-4-1-fast-reasoning "Problema che richiede ragionamento"
-uv run python -m tools.consulto --model grok-4.20-0309-reasoning "Analisi di altissima qualità"
-uv run python -m tools.consulto --model grok-4.20-multi-agent-0309 "Ricerca approfondita multi-agent"
+uv run python -m tools.llm --provider grok "Domanda semplice"
+uv run python -m tools.llm --model grok-4-1-fast-reasoning "Problema che richiede ragionamento"
+uv run python -m tools.llm --model grok-4.20-0309-reasoning "Analisi di altissima qualità"
+uv run python -m tools.llm --model grok-4.20-multi-agent-0309 "Ricerca approfondita multi-agent"
 ```
 
 ### Gemini (Google) — Provider alternativo
@@ -301,8 +301,8 @@ uv run python -m tools.consulto --model grok-4.20-multi-agent-0309 "Ricerca appr
 
 Esempio:
 ```powershell
-uv run python -m tools.consulto --provider gemini "Domanda normale"
-uv run python -m tools.consulto --provider gemini --model gemini-2.5-flash "Risultati più sofisticati"
+uv run python -m tools.llm --provider gemini "Domanda normale"
+uv run python -m tools.llm --provider gemini --model gemini-2.5-flash "Risultati più sofisticati"
 ```
 
 ### Confronto rapido
@@ -324,43 +324,43 @@ uv run python -m tools.consulto --provider gemini --model gemini-2.5-flash "Risu
 
 ```powershell
 # Grok: usa il modello flagship
-uv run python -m tools.consulto --model grok-4.20-0309-non-reasoning "Analisi complessa"
+uv run python -m tools.llm --model grok-4.20-0309-non-reasoning "Analisi complessa"
 
 # Gemini: usa il modello standard
-uv run python -m tools.consulto --provider gemini --model gemini-2.5-flash "Query complessa"
+uv run python -m tools.llm --provider gemini --model gemini-2.5-flash "Query complessa"
 ```
 
 ### System prompt personalizzato
 
 ```powershell
 # Imposta il tone e lo stile
-uv run python -m tools.consulto --system "Rispondi come un esperto di machine learning, in italiano, con esempi concreti" "Cos'è il gradient descent?"
+uv run python -m tools.llm --system "Rispondi come un esperto di machine learning, in italiano, con esempi concreti" "Cos'è il gradient descent?"
 
 # Limita la lunghezza della risposta
-uv run python -m tools.consulto --system "Rispondi in massimo 100 parole" "Spiega il principio di Occam"
+uv run python -m tools.llm --system "Rispondi in massimo 100 parole" "Spiega il principio di Occam"
 
 # Specifica un ruolo
-uv run python -m tools.consulto --system "Sei un consulente di architettura software. Rispondi in modo tecnico e strutturato." "Come organizzaresti un microservizio?"
+uv run python -m tools.llm --system "Sei un consulente di architettura software. Rispondi in modo tecnico e strutturato." "Come organizzaresti un microservizio?"
 ```
 
 ### Lettura da file
 
 ```powershell
 # Leggi il prompt da un file di testo
-uv run python -m tools.consulto --stdin < mio_prompt.txt
+uv run python -m tools.llm --stdin < mio_prompt.txt
 
 # Su Windows, con Get-Content (PowerShell)
-Get-Content mio_prompt.txt | uv run python -m tools.consulto --stdin
+Get-Content mio_prompt.txt | uv run python -m tools.llm --stdin
 
 # Su Windows, con type + pipe
-type mio_prompt.txt | uv run python -m tools.consulto --stdin
+type mio_prompt.txt | uv run python -m tools.llm --stdin
 ```
 
 ### Combinare stdin, provider, modello e system prompt
 
 ```powershell
 # Lettura da file, Gemini, modello custom, system prompt
-cat documento.txt | uv run python -m tools.consulto --stdin --provider gemini --model gemini-2.5-flash --system "Analizza come un esperto di sicurezza informatica"
+cat documento.txt | uv run python -m tools.llm --stdin --provider gemini --model gemini-2.5-flash --system "Analizza come un esperto di sicurezza informatica"
 ```
 
 ---
@@ -382,10 +382,10 @@ Controlla quanti agenti vengono coordinati in parallelo:
 
 ```powershell
 # Multi-agent con 4 agenti (default)
-uv run python -m tools.consulto --provider grok --model grok-4.20-multi-agent-0309 "Prompt complesso"
+uv run python -m tools.llm --provider grok --model grok-4.20-multi-agent-0309 "Prompt complesso"
 
 # Multi-agent con 16 agenti (ricerca approfondita)
-uv run python -m tools.consulto --provider grok --model grok-4.20-multi-agent-0309 --agent-count 16 "Ricerca estesa"
+uv run python -m tools.llm --provider grok --model grok-4.20-multi-agent-0309 --agent-count 16 "Ricerca estesa"
 ```
 
 #### Nota sui costi
@@ -411,7 +411,7 @@ La riga stats ora mostra token inviati e ricevuti con frecce ↑↓:
 
 ### 3. Fix subcommand `models`
 
-Il subcommand `uv run python -m tools.consulto models` ora funziona correttamente. In precedenza la stringa "models" veniva inviata come prompt al provider invece di essere riconosciuta come subcommand.
+Il subcommand `uv run python -m tools.llm models` ora funziona correttamente. In precedenza la stringa "models" veniva inviata come prompt al provider invece di essere riconosciuta come subcommand.
 
 ---
 
@@ -419,14 +419,14 @@ Il subcommand `uv run python -m tools.consulto models` ora funziona correttament
 
 ### 1. `--system` risolto come path
 
-Il flag `--system` ora accetta sia una stringa di testo che un path a file. Se il valore e' un path esistente sul filesystem, `consulto` ne legge il contenuto e lo usa come system prompt. Se non e' un path (o la lettura fallisce), la stringa viene usata invariata.
+Il flag `--system` ora accetta sia una stringa di testo che un path a file. Se il valore e' un path esistente sul filesystem, `llm` ne legge il contenuto e lo usa come system prompt. Se non e' un path (o la lettura fallisce), la stringa viene usata invariata.
 
 ```powershell
 # System prompt da file
-uv run python -m tools.consulto --system ".claude/agents/dike.md" "Analizza questo testo"
+uv run python -m tools.llm --system ".claude/agents/poros.md" "Analizza questo testo"
 
 # System prompt come stringa (comportamento invariato)
-uv run python -m tools.consulto --system "Rispondi in italiano" "test"
+uv run python -m tools.llm --system "Rispondi in italiano" "test"
 ```
 
 Questo e' utile per riutilizzare i profili agente del Team Olimpo (in `.claude/agents/`) come system prompt senza doverli copiare inline.
@@ -437,14 +437,14 @@ Permette di iniettare variabili personalizzate nei template batch. Ogni `--var` 
 
 ```powershell
 # Inietta la variabile 'site' nel template
-uv run python -m tools.consulto \
-  --prompt Team/Prompts/kba/analisi-rischio-kba.md \
+uv run python -m tools.llm \
+  --prompt Team/Prompts/general/analisi.md \
   --input "lib/documents/*.md" \
-  --var site=Lonigo \
+  --var site=Stabilimento \
   --var anno=2026
 ```
 
-Nel template basta usare `{{site}}` o `{{anno}}` — i placeholder vengono sostituiti dopo quelli built-in (`{{kba_text}}`, `{{filename}}`, `{{date}}`).
+Nel template basta usare `{{site}}` o `{{anno}}` — i placeholder vengono sostituiti dopo quelli built-in (`{{document_text}}`, `{{filename}}`, `{{date}}`).
 
 ### 3. `--dry-run` — Anteprima senza chiamata API
 
@@ -452,17 +452,17 @@ Mostra il payload (system prompt + prompt utente renderizzato) che verrebbe invi
 
 ```powershell
 # Verifica il rendering di un batch (mostra solo il primo file)
-uv run python -m tools.consulto \
+uv run python -m tools.llm \
   --dry-run \
-  --prompt Team/Prompts/kba/analisi-rischio-kba.md \
+  --prompt Team/Prompts/general/analisi.md \
   --input "lib/documents/*.md" \
-  --var site=Lonigo
+  --var site=Stabilimento
 
 # Anteprima chiamata singola
-uv run python -m tools.consulto --dry-run "Dimmi ciao"
+uv run python -m tools.llm --dry-run "Dimmi ciao"
 
 # Anteprima con system prompt da file
-uv run python -m tools.consulto --dry-run --system ".claude/agents/dike.md" "test"
+uv run python -m tools.llm --dry-run --system ".claude/agents/poros.md" "test"
 ```
 
 Output di esempio:
@@ -486,11 +486,11 @@ Interroga le API dei provider per ottenere in tempo reale la lista dei modelli d
 
 ```powershell
 # Elenca tutti i modelli di tutti i provider
-uv run python -m tools.consulto models
+uv run python -m tools.llm models
 
 # Elenca solo i modelli di un provider specifico
-uv run python -m tools.consulto models --provider grok
-uv run python -m tools.consulto models --provider gemini
+uv run python -m tools.llm models --provider grok
+uv run python -m tools.llm models --provider gemini
 ```
 
 #### Output
@@ -518,15 +518,15 @@ GEMINI (Google)
 
 ```powershell
 # Vedi tutti i modelli e i loro prezzi
-uv run python -m tools.consulto models
+uv run python -m tools.llm models
 
 # Scopri quali modelli Grok sono disponibili
-uv run python -m tools.consulto models --provider grok
+uv run python -m tools.llm models --provider grok
 
 # Usa il modello Grok flagship dopo aver confermato che esiste
-uv run python -m tools.consulto models --provider grok
+uv run python -m tools.llm models --provider grok
 # (output mostra grok-4.20-0309-non-reasoning disponibile)
-uv run python -m tools.consulto --model grok-4.20-0309-non-reasoning "Analisi complessa"
+uv run python -m tools.llm --model grok-4.20-0309-non-reasoning "Analisi complessa"
 ```
 
 ---
@@ -538,7 +538,7 @@ Legge un template Markdown (con placeholder), lo applica a uno o più file di in
 #### Sintassi
 
 ```powershell
-uv run python -m tools.consulto --prompt <template.md> --input <file_o_glob> [--output <cartella>] [--provider ...] [--model ...]
+uv run python -m tools.llm --prompt <template.md> --input <file_o_glob> [--output <cartella>] [--provider ...] [--model ...]
 ```
 
 #### Componenti
@@ -546,7 +546,7 @@ uv run python -m tools.consulto --prompt <template.md> --input <file_o_glob> [--
 **Template (`--prompt`)**:
 - File Markdown con una sezione heading `## Prompt` obbligatoria
 - Supporta i seguenti placeholder:
-  - `{{kba_text}}` — contenuto del file di input
+  - `{{document_text}}` — contenuto del file di input
   - `{{filename}}` — nome file senza estensione
   - `{{date}}` — data odierna in formato ISO (YYYY-MM-DD)
 - Tutto il testo dopo `## Prompt` fino alla prossima heading di livello 1 o 2 è considerato il template
@@ -565,23 +565,23 @@ uv run python -m tools.consulto --prompt <template.md> --input <file_o_glob> [--
 
 #### Formato template
 
-Esempio di file template `Team/Prompts/kba/analisi-rischio.md`:
+Esempio di file template `Team/Prompts/general/analisi.md`:
 
 ```markdown
 ---
-title: Analisi di rischio KBA
-description: Analizza un documento KBA per identificare rischi
+title: Analisi documento
+description: Analizza un documento per identificare rischi e criticità
 ---
 
 ## Prompt
 
-Sei un analista di rischio specializzato. Analizza il seguente documento e identifica:
+Sei un analista specializzato. Analizza il seguente documento e identifica:
 - Rischi operativi e di sicurezza
 - Punti di criticità
 - Raccomandazioni di mitigazione
 
 Documento:
-{{kba_text}}
+{{document_text}}
 
 Data analisi: {{date}}
 File: {{filename}}
@@ -611,28 +611,28 @@ Durante l'elaborazione, il comando stampa su **stderr** il progresso nel formato
 **Esempio 1: Batch con salvataggio su file**
 
 ```powershell
-# Analizza tutti i documenti KBA, salva i risultati in Team/Handoff/
-uv run python -m tools.consulto \
-  --prompt Team/Prompts/kba/analisi-rischio.md \
+# Analizza tutti i documenti, salva i risultati in Team/Handoff/
+uv run python -m tools.llm \
+  --prompt Team/Prompts/general/analisi.md \
   --input "lib/documents/*.md" \
   --output Team/Handoff/risultati-analisi
 ```
 
 Output:
 ```
-[1/5] nk-2400-0150.md ... ok (2.3s) -> nk-2400-0150-grok.txt
-[2/5] nk-2400-0151.md ... ok (2.1s) -> nk-2400-0151-grok.txt
-[3/5] nk-2400-0152.md ... ok (2.4s) -> nk-2400-0152-grok.txt
-[4/5] nk-2400-0153.md ... ok (2.2s) -> nk-2400-0153-grok.txt
-[5/5] nk-2400-0154.md ... ok (2.0s) -> nk-2400-0154-grok.txt
+[1/5] doc1.md ... ok (2.3s) -> doc1-grok.txt
+[2/5] doc2.md ... ok (2.1s) -> doc2-grok.txt
+[3/5] doc3.md ... ok (2.4s) -> doc3-grok.txt
+[4/5] doc4.md ... ok (2.2s) -> doc4-grok.txt
+[5/5] doc5.md ... ok (2.0s) -> doc5-grok.txt
 ```
 
 **Esempio 2: Batch con output a stdout**
 
 ```powershell
 # Analizza due file specifici, stampa i risultati concatenati su stdout
-uv run python -m tools.consulto \
-  --prompt Team/Prompts/kba/analisi.md \
+uv run python -m tools.llm \
+  --prompt Team/Prompts/general/analisi.md \
   --input lib/documents/doc1.md lib/documents/doc2.md
 ```
 
@@ -650,12 +650,25 @@ Output (su stdout):
 
 [Risposta Grok per doc2]
 ```
+```
+============================================================
+# doc1.md
+============================================================
+
+[Risposta Grok per doc1]
+
+============================================================
+# doc2.md
+============================================================
+
+[Risposta Grok per doc2]
+```
 
 **Esempio 3: Batch con Gemini e modello specifico**
 
 ```powershell
-uv run python -m tools.consulto \
-  --prompt Team/Prompts/kba/analisi-rischio-kba.md \
+uv run python -m tools.llm \
+  --prompt Team/Prompts/general/analisi.md \
   --input "lib/documents/**/*.md" \
   --provider gemini \
   --model gemini-2.5-flash \
@@ -665,7 +678,7 @@ uv run python -m tools.consulto \
 **Esempio 4: Batch con system prompt aggiuntivo**
 
 ```powershell
-uv run python -m tools.consulto \
+uv run python -m tools.llm \
   --prompt Team/Prompts/team/test-profilo.md \
   --input ".claude/agents/proteo.md" \
   --output "Library/deliverables/" \
@@ -689,8 +702,8 @@ Una guida passo-passo interattiva per chi non ricorda i comandi. Permette di sce
 #### Attivazione
 
 La modalità interattiva si attiva automaticamente quando:
-- Non specifichi alcun argomento: `uv run python -m tools.consulto`
-- Usi il flag `--interactive` o `-i`: `uv run python -m tools.consulto -i`
+- Non specifichi alcun argomento: `uv run python -m tools.llm`
+- Usi il flag `--interactive` o `-i`: `uv run python -m tools.llm -i`
 
 #### Flusso
 
@@ -704,7 +717,7 @@ La modalità interattiva si attiva automaticamente quando:
    - Chiede un file o glob pattern (es. `lib/documents/*.md`)
    - Se specifichi un file singolo: elabora solo quel file
    - Se specifichi un glob: esegue batch interattivo
-   - Se lasci vuoto (invio): chiede il testo da inserire nel placeholder `{{kba_text}}`
+   - Se lasci vuoto (invio): chiede il testo da inserire nel placeholder `{{document_text}}`
 
 3. **Scelta provider e modello**:
    - Chiede quale provider usare (grok, gemini, ecc.)
@@ -716,7 +729,7 @@ La modalità interattiva si attiva automaticamente quando:
 
 5. **Salvataggio opzionale**:
    - Chiede se salvare la risposta su file
-   - Default: `consulto-output-<provider>.txt`
+   - Default: `llm-output-<provider>.txt`
    - Permette di personalizzare il nome del file
 
 #### Esempio interattivo
@@ -725,16 +738,16 @@ La modalità interattiva si attiva automaticamente quando:
 === CONSULTO — Team Olimpo ===
 
 Prompt disponibili:
-  [1] kba/analisi-rischio — Analizza un documento KBA per identificare rischi
-  [2] kba/classificazione — Classifica per area tematica
+  [1] general/analisi — Analizza un documento per identificare rischi e criticità
+  [2] general/classificazione — Classifica per area tematica
   [3] traduzione — Traduci da English a Italiano
   [4] Testo libero
 
 Scelta [default: 4]: 1
 
 File di input (glob, path, o invio per testo libero):
-  Esempi: lib/documents/*.md  oppure  lib/documents/nk-2400-0150.md
-> lib/documents/nk-2400-0150.md
+  Esempi: lib/documents/*.md  oppure  lib/documents/doc1.md
+> lib/documents/doc1.md
 
 Provider [grok/gemini, default: grok]:
 Modello [invio per default: grok-4-1-fast-non-reasoning]:
@@ -743,7 +756,7 @@ Modello [invio per default: grok-4-1-fast-non-reasoning]:
 
 --------------------------------------------
 --- Risposta ---
-Analisi di rischio per il documento nk-2400-0150:
+Analisi per il documento doc1:
 
 **Rischi operativi**:
 - Insufficienza di controlli su autorizzazioni
@@ -758,8 +771,8 @@ Analisi di rischio per il documento nk-2400-0150:
 (Provider: grok | Modello: grok-4-1-fast-non-reasoning | Tempo: 2.3s)
 
 Salvare in file? [s/N]: s
-Percorso file [consulto-output-grok.txt]: Team/Handoff/analisi-nk-2400-0150.txt
-Salvato in: C:\Users\dev\Desktop\TeamOlimpo\Team\Handoff\analisi-nk-2400-0150.txt
+Percorso file [llm-output-grok.txt]: Team/Handoff/analisi-doc1.txt
+Salvato in: C:\Users\dev\Desktop\TeamOlimpo\Team\Handoff\analisi-doc1.txt
 ```
 
 #### Note sulla modalità interattiva
@@ -774,14 +787,14 @@ Salvato in: C:\Users\dev\Desktop\TeamOlimpo\Team\Handoff\analisi-nk-2400-0150.tx
 
 ## Output Markdown e integrazione con Obsidian
 
-Sebbene `consulto` sia concepito per output grezzo su stdout (facilmente pipeable), se vuoi salvare una consulta nel vault Obsidian, il flusso è:
+Sebbene `llm` sia concepito per output grezzo su stdout (facilmente pipeable), se vuoi salvare una consulta nel vault Obsidian, il flusso è:
 
 ```powershell
 # Salva la risposta in un file Markdown
-uv run python -m tools.consulto "Spiega il concetto di entropia" > risposta.md
+uv run python -m tools.llm "Spiega il concetto di entropia" > risposta.md
 
 # Oppure con output verbose su stderr e risposta su stdout
-uv run python -m tools.consulto --verbose "Domanda" 2>verbose.log 1>risposta.txt
+uv run python -m tools.llm --verbose "Domanda" 2>verbose.log 1>risposta.txt
 ```
 
 Il file generato conterrà solo il testo grezzo della risposta, senza frontmatter. Se necessario, aggiungi manualmente:
@@ -811,7 +824,7 @@ Spiega il concetto di entropia
 Per vedere dettagli sulla chiamata API (token, tempo di risposta, modello effettivo):
 
 ```powershell
-uv run python -m tools.consulto --verbose "Domanda"
+uv run python -m tools.llm --verbose "Domanda"
 ```
 
 Output su **stderr**:
@@ -891,7 +904,7 @@ uv add python-dotenv
 
 ### Caratteri speciali non visualizzati correttamente (Windows)
 
-Il tool `consulto` forza automaticamente UTF-8 su stdout e stderr, quindi questo non dovrebbe accadere. Se vedi caratteri corrotti:
+Il tool `llm` forza automaticamente UTF-8 su stdout e stderr, quindi questo non dovrebbe accadere. Se vedi caratteri corrotti:
 
 1. Verifica che il terminale PowerShell supporti UTF-8:
    ```powershell
@@ -900,7 +913,7 @@ Il tool `consulto` forza automaticamente UTF-8 su stdout e stderr, quindi questo
 
 2. Oppure usa bash (se disponibile):
    ```bash
-   uv run python -m tools.consulto "Domanda con accenti è éù"
+   uv run python -m tools.llm "Domanda con accenti è éù"
    ```
 
 ### Uscita con codice di errore 1
@@ -913,8 +926,8 @@ Il tool esce con codice 1 se:
 Esegui con `--verbose` per più dettagli:
 
 ```powershell
-uv run python -m tools.consulto --verbose "Domanda" ; Write-Host "Exit code: $LASTEXITCODE"  # PowerShell
-uv run python -m tools.consulto --verbose "Domanda" ; echo $?  # bash
+uv run python -m tools.llm --verbose "Domanda" ; Write-Host "Exit code: $LASTEXITCODE"  # PowerShell
+uv run python -m tools.llm --verbose "Domanda" ; echo $?  # bash
 ```
 
 ---
