@@ -22,6 +22,11 @@ HANDOFF_NAME_RE = re.compile(
 
 
 def validate_scratchpad(sp: Scratchpad) -> Scratchpad:
+    """Validate a scratchpad structure and collect warnings for common issues.
+
+    Checks active_tasks, members_status, decisions, and last_updated fields.
+    Returns the scratchpad with warnings appended.
+    """
     if not sp.parsed:
         return sp
 
@@ -148,6 +153,10 @@ def validate_scratchpad(sp: Scratchpad) -> Scratchpad:
 
 
 def validate_handoff_name(path: Path) -> list[str]:
+    """Validate a handoff file name against the project naming convention.
+
+    Returns a list of error messages, empty if the name is valid.
+    """
     name = path.name
     if not HANDOFF_NAME_RE.match(name):
         return [f"nome file non segue convenzione: {name}"]
@@ -155,6 +164,11 @@ def validate_handoff_name(path: Path) -> list[str]:
 
 
 def validate_handoff_fields(
+    """Validate handoff frontmatter fields for required values and known enums.
+
+    Returns a tuple of (errors, warnings).
+    """
+    
     fm: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     errors: list[dict[str, Any]] = []
@@ -238,6 +252,11 @@ def validate_handoff_fields(
 
 
 def validate_handoff_file(path: Path) -> HandoffValidation:
+    """Run all validation checks on a single handoff file.
+
+    Validates the file name and frontmatter fields, then returns a
+    HandoffValidation object with errors and warnings.
+    """
     hv = HandoffValidation(path=path)
 
     fm, read_warnings = read_frontmatter(path)

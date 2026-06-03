@@ -1,6 +1,6 @@
 # Contributing to TeamOlimpo
 
-## 👋 Welcome
+## Welcome
 
 Thanks for checking out TeamOlimpo.
 
@@ -18,7 +18,7 @@ If those resonate, read on. If they sound like overhead, no hard feelings — th
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -53,7 +53,7 @@ You do not need to memorize them. Just know they exist.
 
 ---
 
-## 📋 The Rules (Non-Negotiable)
+## The Rules (Non-Negotiable)
 
 These apply to every contribution. Pull requests that violate them will not be merged.
 
@@ -91,7 +91,7 @@ The project runs on OpenCode's MCP runtime. Contributions with non-MCP patterns 
 
 ---
 
-## 💡 First Contribution Ideas
+## First Contribution Ideas
 
 Not sure where to start:
 
@@ -121,7 +121,7 @@ Not sure where to start:
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 **Do I really need OpenCode?**
 
