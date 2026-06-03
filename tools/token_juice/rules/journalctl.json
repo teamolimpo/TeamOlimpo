@@ -1,0 +1,10 @@
+{
+  "id": "journalctl",
+  "family": "journalctl",
+  "match": { "argv0": ["journalctl"] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "-- Logs begin at", "-- Reboot --"] },
+  "summarize": { "head": 15, "tail": 10 },
+  "counters": [{"name": "entries", "pattern": "^.{20,30}\\s+\\S+\\s+\\S+\\["}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

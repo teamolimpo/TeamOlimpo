@@ -1,0 +1,10 @@
+{
+  "id": "gh",
+  "family": "github-cli",
+  "match": { "argv0": ["gh"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "results", "pattern": "^\\S+#\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

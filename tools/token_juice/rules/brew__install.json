@@ -1,0 +1,10 @@
+{
+  "id": "brew-install",
+  "family": "brew-install",
+  "match": { "argv0": ["brew"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^==> ", "^Running `brew update`", "^Already downloaded"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "formulae", "pattern": "🍺"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

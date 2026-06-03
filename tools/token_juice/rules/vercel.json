@@ -1,0 +1,10 @@
+{
+  "id": "vercel",
+  "family": "vercel",
+  "match": { "argv0": ["vercel", "vc"] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Vercel CLI"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "deployments", "pattern": "https://[^\\s]+"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

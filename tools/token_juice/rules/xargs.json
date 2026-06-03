@@ -1,0 +1,8 @@
+{
+  "id": "xargs",
+  "family": "xargs",
+  "match": { "argv0": ["xargs"] },
+  "transforms": { "trim_empty_edges": true, "dedupe_adjacent": true },
+  "summarize": { "head": 15, "tail": 10 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

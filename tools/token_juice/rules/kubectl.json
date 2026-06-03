@@ -1,0 +1,10 @@
+{
+  "id": "kubectl",
+  "family": "kubectl",
+  "match": { "argv0": ["kubectl"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "pods", "pattern": "^(\\S+)\\s+\\d+/\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

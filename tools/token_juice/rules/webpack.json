@@ -1,0 +1,10 @@
+{
+  "id": "webpack",
+  "family": "build-webpack",
+  "match": { "argv0": ["webpack", "node_modules/.bin/webpack"] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "webpack \\d+\\.", "compiled successfully", "compiled with"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "errors", "pattern": "ERROR"}, {"name": "warnings", "pattern": "WARNING"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

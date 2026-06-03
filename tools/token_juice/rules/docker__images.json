@@ -1,0 +1,10 @@
+{
+  "id": "docker-images",
+  "family": "docker-images",
+  "match": { "argv0": ["docker"], "argv_includes": [["images"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^REPOSITORY"] },
+  "summarize": { "head": 20, "tail": 0 },
+  "counters": [{"name": "images", "pattern": "^[^\\s]+\\s+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

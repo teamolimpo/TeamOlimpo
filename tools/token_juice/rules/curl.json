@@ -1,0 +1,10 @@
+{
+  "id": "curl",
+  "family": "curl",
+  "match": { "argv0": ["curl"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "[\\d\\.]+%"] },
+  "summarize": { "head": 20, "tail": 0 },
+  "counters": [{"name": "redirects", "pattern": "^< HTTP"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "docker-run",
+  "family": "docker-run",
+  "match": { "argv0": ["docker"], "argv_includes": [["run"]] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

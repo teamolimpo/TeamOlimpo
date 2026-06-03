@@ -1,0 +1,10 @@
+{
+  "id": "ansible",
+  "family": "ansible",
+  "match": { "argv0": ["ansible", "ansible-playbook"] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "PLAY \\[", "TASK \\[", "ok: \\[", "changed: \\["] },
+  "summarize": { "head": 8, "tail": 5 },
+  "counters": [{"name": "plays", "pattern": "PLAY \\["}, {"name": "tasks", "pattern": "TASK \\["}, {"name": "failed", "pattern": "failed:"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "git/blame",
+  "family": "git-blame",
+  "match": { "argv0": ["git"], "argv_includes": [["blame"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^[a-f0-9]{40}\\s"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "authors", "pattern": "\\([^)]+\\)"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "git/stash",
+  "family": "git-stash",
+  "match": { "argv0": ["git"], "argv_includes": [["stash"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "stashes", "pattern": "^stash@\\{"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

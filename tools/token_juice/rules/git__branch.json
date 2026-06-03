@@ -1,0 +1,9 @@
+{
+  "id": "git/branch",
+  "family": "git-branch",
+  "match": { "argv0": ["git"], "argv_includes": [["branch"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "summarize": { "head": 30, "tail": 0 },
+  "counters": [{"name": "branches", "pattern": "^\\s*(?:\\*|\\s)\\s+"}],
+  "failure": { "preserve_on_failure": true, "head": 30, "tail": 0 }
+}

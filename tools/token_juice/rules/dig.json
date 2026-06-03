@@ -1,0 +1,10 @@
+{
+  "id": "dig",
+  "family": "dig",
+  "match": { "argv0": ["dig"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^; <<>>", "^;; ", "^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "answers", "pattern": "^[^;]"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

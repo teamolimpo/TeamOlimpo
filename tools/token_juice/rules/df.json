@@ -1,0 +1,9 @@
+{
+  "id": "df",
+  "family": "df",
+  "match": { "argv0": ["df"] },
+  "transforms": { "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^Filesystem\\s+"] },
+  "summarize": { "head": 15, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 0 }
+}

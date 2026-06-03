@@ -1,0 +1,10 @@
+{
+  "id": "cargo-test",
+  "family": "test-cargo",
+  "match": { "argv0": ["cargo"], "argv_includes": [["test"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Compiling ", "^Finished ", "^running \\d+ test"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "ok"}, {"name": "fail", "pattern": "FAILED"}, {"name": "ignored", "pattern": "ignored"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

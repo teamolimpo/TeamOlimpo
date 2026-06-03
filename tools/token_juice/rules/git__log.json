@@ -1,0 +1,10 @@
+{
+  "id": "git/log",
+  "family": "git-log",
+  "match": { "argv0": ["git"], "argv_includes": [["log"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^commit [a-f0-9]{40}$", "^Author:", "^Date:"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "commits", "pattern": "^commit [a-f0-9]{7,}"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

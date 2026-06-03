@@ -1,0 +1,8 @@
+{
+  "id": "git/remote",
+  "family": "git-remote",
+  "match": { "argv0": ["git"], "argv_includes": [["remote"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "summarize": { "head": 20, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

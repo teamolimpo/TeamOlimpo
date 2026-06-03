@@ -1,0 +1,136 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "olimpo-tools"
+version = "0.1.0"
+description = "Script e automazioni per il Team Olimpo PKM"
+requires-python = ">=3.12"
+
+dependencies = [
+    # HTTP e API
+    "requests>=2.32",
+    "httpx>=0.27",
+    # Validazione e modelli dati
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    # Configurazione e ambiente
+    "python-dotenv>=1.0",
+    # Parsing dati strutturati
+    "pyyaml>=6.0",          # frontmatter YAML dei profili Team
+    "python-frontmatter>=1.1",  # parsing diretto di file MD con frontmatter
+    "tomli>=2.0",           # lettura TOML su Python <3.11 (compatibilita')
+    # Template
+    "jinja2>=3.1",
+    # CLI parsing
+    "typer>=0.15",              # CLI con type hints (sostituisce argparse)
+    # Output formattato da terminale
+    "rich>=13.7",
+    # File e sistema
+    "watchdog>=4.0",        # monitoraggio filesystem (es. inbox)
+    "pathspec>=0.12",       # pattern matching per path
+    # PDF parsing e conversione Markdown
+    "pymupdf>=1.25",        # binding Python per MuPDF (motore di rendering PDF)
+    "pymupdf4llm>=0.0.17",  # layer Markdown sopra PyMuPDF
+    # Manipolazione documenti
+    "openpyxl>=3.1",        # lettura/scrittura Excel
+    "loguru>=0.7",          # logging strutturato
+    # Retry e robustezza HTTP
+    "tenacity>=8.3",        # retry con backoff esponenziale
+    # Scheduling
+    "schedule>=1.2",        # scheduler semplice per task periodici
+    # AI di terze parti (tools/llm)
+    "openai>=1.0",          # client xAI/Grok (compatibile OpenAI)
+    "google-genai>=1.0",    # client Google Gemini (nuovo SDK, non google-generativeai)
+    "xai-sdk>=0.1",         # SDK xAI per modelli multi-agent (grok-4.20-multi-agent-*)
+    "google-genai>=1.75.0",
+    "pandas>=3.0.2",
+    "pytrends>=4.9.2",
+    # Email processing
+    "python-dateutil",
+    "python-slugify",
+    "beautifulsoup4",
+    "chardet",
+    "email-reply-parser",
+    "thefuzz",
+    "python-levenshtein",
+    "mcp>=1.27.1",
+    # Embedding search
+    "sentence-transformers>=3.0",
+    "sqlite-vec>=0.1.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4",
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "mypy>=1.10",
+    "ipython>=8.24",
+    "types-requests>=2.32",
+    "types-pyyaml>=6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*"]
+
+# ---------------------------------------------------------------------------
+# Ruff — linter e formatter
+# ---------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "ANN", # flake8-annotations (type hints)
+    "PTH", # flake8-use-pathlib (no os.path, usa pathlib)
+    "LOG", # flake8-logging
+    "G",   # flake8-logging-format
+]
+ignore = [
+    "ANN101", # self non annotato (deprecato in ruff recenti)
+    "ANN102", # cls non annotato
+]
+per-file-ignores = { "tests/*" = ["ANN201", "ANN001", "ANN401"] }
+
+[tool.ruff.lint.isort]
+known-first-party = ["tools"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ---------------------------------------------------------------------------
+# Mypy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
+warn_unused_ignores = true
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.20.2",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+    "types-python-dateutil>=2.9.0.20260518",
+    "types-pyyaml>=6.0.12.20260408",
+    "types-requests>=2.33.0.20260408",
+]

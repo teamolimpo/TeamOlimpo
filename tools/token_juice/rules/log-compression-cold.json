@@ -1,0 +1,28 @@
+{
+  "id": "log-compression-cold",
+  "family": "event_log",
+  "match": {
+    "argv0": ["compress_events", "compress_observations"],
+    "output_pattern": "period|summary|group|merged|cold"
+  },
+  "transforms": {
+    "strip_timestamps": false,
+    "dedupe_adjacent": false,
+    "trim_empty_edges": true,
+    "collapse_paths": false
+  },
+  "filters": {
+    "skip_patterns": [],
+    "keep_patterns": null
+  },
+  "summarize": {
+    "head": 0,
+    "tail": 0
+  },
+  "counters": [],
+  "failure": {
+    "preserve_on_failure": true,
+    "head": 5,
+    "tail": 5
+  }
+}

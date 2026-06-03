@@ -1,0 +1,10 @@
+{
+  "id": "go-mod",
+  "family": "go-mod",
+  "match": { "argv0": ["go"], "argv_includes": [["mod"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "downloaded", "pattern": "^go: downloaded"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

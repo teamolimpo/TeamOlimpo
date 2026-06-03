@@ -1,0 +1,10 @@
+{
+  "id": "gcloud",
+  "family": "gcloud",
+  "match": { "argv0": ["gcloud"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "resources", "pattern": "^[^\\s]+\\s+\\S+"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

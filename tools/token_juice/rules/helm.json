@@ -1,0 +1,10 @@
+{
+  "id": "helm",
+  "family": "helm",
+  "match": { "argv0": ["helm"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "releases", "pattern": "^[a-zA-Z][a-zA-Z0-9_-]+\\s+\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

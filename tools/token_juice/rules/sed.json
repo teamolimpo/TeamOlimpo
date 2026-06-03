@@ -1,0 +1,8 @@
+{
+  "id": "sed",
+  "family": "sed",
+  "match": { "argv0": ["sed"] },
+  "transforms": { "trim_empty_edges": true, "dedupe_adjacent": true },
+  "summarize": { "head": 20, "tail": 10 },
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

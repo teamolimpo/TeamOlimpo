@@ -1,0 +1,9 @@
+{
+  "id": "yarn-run",
+  "family": "yarn-run",
+  "match": { "argv0": ["yarn"], "argv_includes": [["run"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^yarn run v"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "pip-install",
+  "family": "pip-install",
+  "match": { "argv0": ["pip", "pip3"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Collecting ", "^  Downloading ", "^Installing collected", "^Successfully installed", "^WARNING: "] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "installed", "pattern": "Successfully installed"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

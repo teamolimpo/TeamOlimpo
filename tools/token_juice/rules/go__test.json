@@ -1,0 +1,10 @@
+{
+  "id": "go-test",
+  "family": "go-test",
+  "match": { "argv0": ["go"], "argv_includes": [["test"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^ok\\s+", "^\\?\\s+", "^FAIL\\s+"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "PASS"}, {"name": "fail", "pattern": "FAIL"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

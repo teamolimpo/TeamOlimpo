@@ -1,0 +1,10 @@
+{
+  "id": "git/diff",
+  "family": "git-diff",
+  "match": { "argv0": ["git"], "argv_includes": [["diff"]] },
+  "transforms": { "strip_ansi": true, "dedupe_adjacent": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^@@ .+ @@$", "^--- a/", "^\\+\\+\\+ b/"] },
+  "summarize": { "head": 20, "tail": 10 },
+  "counters": [{"name": "files_changed", "pattern": "^diff --git"}, {"name": "hunks", "pattern": "^@@"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

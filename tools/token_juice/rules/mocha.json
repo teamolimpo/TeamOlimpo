@@ -1,0 +1,10 @@
+{
+  "id": "mocha",
+  "family": "test-mocha",
+  "match": { "argv0": ["mocha", "node_modules/.bin/mocha"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "✓"}, {"name": "fail", "pattern": "✗|\\d+ failing"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

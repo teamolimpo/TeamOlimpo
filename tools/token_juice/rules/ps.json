@@ -1,0 +1,10 @@
+{
+  "id": "ps",
+  "family": "ps",
+  "match": { "argv0": ["ps"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^PID\\s+", "^\\s*$"] },
+  "summarize": { "head": 20, "tail": 5 },
+  "counters": [{"name": "processes", "pattern": "^\\s*\\d+\\s+"}],
+  "failure": { "preserve_on_failure": true, "head": 25, "tail": 5 }
+}

@@ -1,0 +1,8 @@
+{
+  "id": "uname",
+  "family": "uname",
+  "match": { "argv0": ["uname"] },
+  "transforms": { "trim_empty_edges": true, "dedupe_adjacent": true },
+  "summarize": { "head": 5, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 5, "tail": 0 }
+}

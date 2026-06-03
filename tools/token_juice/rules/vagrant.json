@@ -1,0 +1,10 @@
+{
+  "id": "vagrant",
+  "family": "vagrant",
+  "match": { "argv0": ["vagrant"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Bringing machine"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "machines", "pattern": "==> [^:]+:"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

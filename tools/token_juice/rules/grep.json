@@ -1,0 +1,10 @@
+{
+  "id": "grep",
+  "family": "grep",
+  "match": { "argv0": ["grep", "egrep", "fgrep", "rg", "ripgrep"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^Binary file"] },
+  "summarize": { "head": 20, "tail": 5 },
+  "counters": [{"name": "matches", "pattern": "^[^:]+:"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

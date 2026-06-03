@@ -1,0 +1,9 @@
+{
+  "id": "node",
+  "family": "node",
+  "match": { "argv0": ["node"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 10 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

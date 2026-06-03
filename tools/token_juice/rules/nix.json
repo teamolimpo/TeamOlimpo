@@ -1,0 +1,9 @@
+{
+  "id": "nix",
+  "family": "nix",
+  "match": { "argv0": ["nix"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "copying path", "downloading", "unpacking"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

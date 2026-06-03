@@ -1,0 +1,8 @@
+{
+  "id": "lsblk",
+  "family": "lsblk",
+  "match": { "argv0": ["lsblk"] },
+  "transforms": { "trim_empty_edges": true },
+  "summarize": { "head": 20, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

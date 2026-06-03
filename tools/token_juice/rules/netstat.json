@@ -1,0 +1,10 @@
+{
+  "id": "netstat",
+  "family": "netstat",
+  "match": { "argv0": ["netstat"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^Active", "^Proto", "^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "connections", "pattern": "^(tcp|udp)\\s+\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

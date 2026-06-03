@@ -1,0 +1,81 @@
+# Build artifacts Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Ambienti e segreti
+.env
+.env.*
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database e log (rigenerabili, binari o temporanei)
+lib/data/pdf_index.db
+lib/data/*.log
+
+# Memoria privata agenti (non condividere)
+.claude/agent-memory/
+
+# Impostazioni locali Claude (specifiche per macchina)
+.claude/settings.local.json
+
+# Inbox — input temporanei, fuori git
+Inbox/
+
+# Legacy — vecchiume, fuori git
+Legacy/
+
+# vaults — già assorbito in Library
+vaults/
+
+# Library — symlink verso repo privato, non tracciare
+/Library
+/Library/
+
+# Team/Fucina — working file temporanei, non versionare
+Team/Fucina/
+
+# Team/Handoff — migrato in Library/Handoff/ (privato)
+Team/Handoff/
+
+# Team/Hermes — migrato in Library/System/Hermes/ (privato)
+Team/Hermes/
+
+# Team/Quarantine — migrato in Library/Quarantine/ (privato)
+Team/Quarantine/
+
+# Log strumenti
+tools/migrate-email-vault.log
+
+# Database e log KBA
+lib/data/*.db
+lib/data/*.log
+
+# Lockfile uv
+uv.lock

@@ -1,0 +1,10 @@
+{
+  "id": "nmap",
+  "family": "nmap",
+  "match": { "argv0": ["nmap"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^Starting Nmap", "^Nmap done:", "^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "ports", "pattern": "^\\d+/tcp"}, {"name": "hosts", "pattern": "Nmap done: \\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

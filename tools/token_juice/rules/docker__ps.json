@@ -1,0 +1,10 @@
+{
+  "id": "docker-ps",
+  "family": "docker-ps",
+  "match": { "argv0": ["docker"], "argv_includes": [["ps"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^CONTAINER ID"] },
+  "summarize": { "head": 15, "tail": 0 },
+  "counters": [{"name": "containers", "pattern": "^[a-f0-9]{12}"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

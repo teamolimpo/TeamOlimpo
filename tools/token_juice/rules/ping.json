@@ -1,0 +1,9 @@
+{
+  "id": "ping",
+  "family": "ping",
+  "match": { "argv0": ["ping"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^PING "] },
+  "summarize": { "head": 0, "tail": 4 },
+  "failure": { "preserve_on_failure": true, "head": 0, "tail": 4 }
+}

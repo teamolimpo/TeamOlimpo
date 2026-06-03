@@ -1,0 +1,10 @@
+{
+  "id": "aws-s3",
+  "family": "aws-s3",
+  "match": { "argv0": ["aws"], "argv_includes": [["s3"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Total Objects:", "^Total Size:"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "objects", "pattern": "^\\d{4}-\\d{2}-\\d{2}"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

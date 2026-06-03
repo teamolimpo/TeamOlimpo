@@ -1,0 +1,10 @@
+{
+  "id": "apt-install",
+  "family": "apt-install",
+  "match": { "argv0": ["apt", "apt-get"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Reading package lists", "^Building dependency tree", "^The following", "0 upgraded, 0 newly installed"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "installed", "pattern": "^Unpacking "}, {"name": "upgraded", "pattern": "^Preparing to unpack "}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

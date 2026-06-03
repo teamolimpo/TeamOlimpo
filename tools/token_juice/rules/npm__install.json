@@ -1,0 +1,10 @@
+{
+  "id": "npm-install",
+  "family": "npm-install",
+  "match": { "argv0": ["npm"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^npm ", "^added \\d+", "^removed \\d+", "^changed \\d+", "^audited \\d+", "^found \\d+"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "added", "pattern": "added \\d+"}, {"name": "audited", "pattern": "audited \\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

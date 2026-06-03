@@ -1,0 +1,9 @@
+{
+  "id": "nslookup",
+  "family": "nslookup",
+  "match": { "argv0": ["nslookup"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^> "] },
+  "summarize": { "head": 10, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 0 }
+}

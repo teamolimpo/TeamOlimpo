@@ -1,0 +1,10 @@
+{
+  "id": "deno",
+  "family": "deno",
+  "match": { "argv0": ["deno"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "errors", "pattern": "error:"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

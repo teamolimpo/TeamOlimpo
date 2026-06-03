@@ -1,0 +1,10 @@
+{
+  "id": "systemctl",
+  "family": "systemctl",
+  "match": { "argv0": ["systemctl"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Loaded:", "^Active:", "^Docs:"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "services", "pattern": "^\\S+\\.service"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

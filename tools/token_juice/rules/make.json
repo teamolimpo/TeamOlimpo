@@ -1,0 +1,10 @@
+{
+  "id": "make",
+  "family": "make",
+  "match": { "argv0": ["make", "gmake"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^make\\[\\d+\\]:", "^make: Nothing to be done"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "targets", "pattern": "Entering directory|Leaving directory"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

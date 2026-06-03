@@ -1,0 +1,9 @@
+{
+  "id": "pip-freeze",
+  "family": "pip-freeze",
+  "match": { "argv0": ["pip", "pip3"], "argv_includes": [["freeze"]] },
+  "transforms": { "trim_empty_edges": true },
+  "summarize": { "head": 30, "tail": 0 },
+  "counters": [{"name": "packages", "pattern": "^[a-zA-Z]"}],
+  "failure": { "preserve_on_failure": true, "head": 30, "tail": 0 }
+}

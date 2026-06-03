@@ -1,0 +1,30 @@
+# tools/config.yaml — Configurazione centralizzata dei tool Team Olimpo
+#
+# Path relativi → risolti rispetto a PROJECT_ROOT (radice del repo).
+# Path assoluti → usati così come sono.
+#
+# Ogni tool carica questo file e cerca la propria sezione.
+
+email_processor:
+  # Directory sorgente email .eml (path assoluto di sistema, mount HGFS)
+  email_dir: /mnt/hgfs/Emails/inbox
+  # Directory vault destinazione (relativa a PROJECT_ROOT)
+  vault_root: lib/emails/
+
+knowledge_base:
+  # Directory da includere nella ricerca (path relativi a PROJECT_ROOT)
+  search_paths:
+    - Library/Wiki/
+    - lib/documents/
+    - Library/Handoff/
+    - lib/emails/
+    - Library/deliverables/
+
+  # Timeout massimo per ogni ricerca (secondi)
+  timeout: 10
+
+  # Valori di default per la ricerca
+  defaults:
+    max_results: 15
+    context_lines: 3
+    scope: "wiki+docs"

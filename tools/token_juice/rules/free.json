@@ -1,0 +1,9 @@
+{
+  "id": "free",
+  "family": "free",
+  "match": { "argv0": ["free"] },
+  "transforms": { "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Mem:", "^-/+ buffers", "^Swap:"] },
+  "summarize": { "head": 3, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 3, "tail": 0 }
+}

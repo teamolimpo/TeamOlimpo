@@ -1,0 +1,10 @@
+{
+  "id": "maven",
+  "family": "maven",
+  "match": { "argv0": ["mvn", "mvnw"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^\\[INFO\\]", "^\\[WARNING\\]"] },
+  "summarize": { "head": 8, "tail": 5 },
+  "counters": [{"name": "errors", "pattern": "BUILD FAILURE"}, {"name": "success", "pattern": "BUILD SUCCESS"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

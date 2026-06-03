@@ -1,0 +1,8 @@
+{
+  "id": "id",
+  "family": "id",
+  "match": { "argv0": ["id", "whoami"] },
+  "transforms": { "trim_empty_edges": true },
+  "summarize": { "head": 5, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 5, "tail": 0 }
+}

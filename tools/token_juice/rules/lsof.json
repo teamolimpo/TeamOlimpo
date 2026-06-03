@@ -1,0 +1,10 @@
+{
+  "id": "lsof",
+  "family": "lsof",
+  "match": { "argv0": ["lsof"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^COMMAND\\s+"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "fds", "pattern": "^\\S+\\s+\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "jest",
+  "family": "test-jest",
+  "match": { "argv0": ["jest", "node_modules/.bin/jest"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "> .*test", "Tests:" ] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "✓|PASS"}, {"name": "fail", "pattern": "✗|FAIL"}, {"name": "suites", "pattern": "Test Suites:"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "poetry",
+  "family": "poetry",
+  "match": { "argv0": ["poetry"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Creating virtualenv", "^Using virtualenv", "^Updating dependencies", "^Installing dependencies"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "packages", "pattern": "Installing "}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

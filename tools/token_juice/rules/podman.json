@@ -1,0 +1,9 @@
+{
+  "id": "podman",
+  "family": "podman",
+  "match": { "argv0": ["podman"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

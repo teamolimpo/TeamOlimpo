@@ -1,0 +1,9 @@
+{
+  "id": "pip-list",
+  "family": "pip-list",
+  "match": { "argv0": ["pip", "pip3"], "argv_includes": [["list"]] },
+  "transforms": { "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^Package\\s+Version"] },
+  "summarize": { "head": 30, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 30, "tail": 0 }
+}

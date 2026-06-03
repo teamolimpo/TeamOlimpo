@@ -1,0 +1,599 @@
+"""Layer 1 — Discovery Tool: analizza note email e trova pattern di classificazione.
+
+Questo modulo implementa il sistema di discovery dei pattern per le email
+già importate nel vault. Scansiona le note Markdown in ``Inbox/emails/``,
+estrae subject e mittente dal frontmatter, normalizza i subject per il
+clustering, e raggruppa email simili in pattern.
+
+Tipico utilizzo:
+    >>> discovery = PatternDiscovery(vault_root)
+    >>> patterns = discovery.scan(days=7)
+    >>> for p in patterns:
+    ...     print(f"{p.subject_pattern}: {p.count}")
+"""
+
+from __future__ import annotations
+
+import re
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import yaml
+from loguru import logger
+
+# Regex per identificare token device/hostname (applicata su subject originale
+# prima del lowercasing, per catturare nomi macchina in uppercase misto).
+# Match: qualsiasi token con underscore/hyphen/punto di lunghezza >= 4,
+# oppure token misti lettere+numero di lunghezza >= 5 (cattura nomi come
+# MM_Z1_ZSERVZ1, IT_MM-W19-DV-CYB01, AX0P-FSW01, ecc.).
+_RE_DEVICE_TOKEN_BROAD = re.compile(
+    r"\b[A-Za-z0-9]{4,}(?:[-_.][A-Za-z0-9]+)+\b"   # token con separatori interni
+    r"|\b(?=\w*[A-Z])(?=\w*\d)\w{5,}\b"            # misto uppercase+digit >=5
+    r"|\b[A-Z][A-Z0-9]{3,}\b",                      # uppercase stringa >=4
+)
+
+# ---------------------------------------------------------------------------
+# Pattern entity
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class Pattern:
+    """Rappresenta un cluster di email con subject simile.
+
+    Attributes:
+        id: Identificativo numerico (1-based, ordinato per conteggio decrescente).
+        subject_pattern: Pattern normalizzato (es. ``"problem: * in errore"``).
+        sample_subjects: Fino a 3 subject reali di esempio dal cluster.
+        count: Numero di email nel cluster.
+        senders: Lista di mittenti unici nel cluster.
+        date_range: Tupla (min_date, max_date) in formato ``YYYY-MM-DD``.
+        suggested_action: Azione suggerita (``"discard"``/``"aggregate"``/``"keep"``/
+            ``None`` se non ancora deciso).
+    """
+
+    id: int
+    subject_pattern: str
+    sample_subjects: list[str]
+    count: int
+    senders: list[str]
+    date_range: tuple[str, str]
+    suggested_action: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# Pattern Discovery Engine
+# ---------------------------------------------------------------------------
+
+
+class PatternDiscovery:
+    """Analizza un set di note email e trova pattern di classificazione.
+
+    Scansiona le note Markdown in ``Inbox/emails/``, estrae i metadati
+    dal frontmatter, normalizza i subject e raggruppa per pattern.
+
+    Args:
+        vault_root: Percorso root del vault email (contenente ``Inbox/emails/``).
+    """
+
+    # Regex per rimuovere prefissi di thread/forward + [EXTERNAL] marker
+    # Separa in due passaggi per gestire "RE:" da solo o "RE:" preceduto da "[EXTERNAL]"
+    _RE_EXTERNAL = re.compile(
+        r'^\[(?:external|ext|ext\.?)\]\s*',  # [EXTERNAL] all'inizio
+        re.IGNORECASE,
+    )
+    _RE_THREAD_PREFIX = re.compile(
+        r'^(?:re|r|fw|fwd|rif|oggi|tr|vs):\s*',  # thread/forward prefix
+        re.IGNORECASE,
+    )
+
+    # Numeri, hex hash, percentuali
+    _RE_NUMBERS = re.compile(r'\b\d[\d,.:]*\d\b|\b\d\b')
+    _RE_HEX_HASH = re.compile(r'\b[0-9a-f]{8,}\b', re.IGNORECASE)
+    _RE_PERCENT = re.compile(r'\d+%')
+    _RE_EMAIL = re.compile(r'[\w.+-]+@[\w-]+\.[\w.]+')
+    _RE_DATE_LIKE = re.compile(
+        r'\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b'
+        r'|\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b'
+        r'|\b\d{1,2}:\d{2}(?::\d{2})?\b',
+    )
+    _RE_MULTI_STAR = re.compile(r'\*[\s*]*\*')
+    _RE_WS = re.compile(r'\s+')
+
+    def __init__(self, vault_root: Path) -> None:
+        self.vault_root = vault_root
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def scan(self, days: int | None = None) -> list[Pattern]:
+        """Scansiona le note email e restituisce i pattern trovati.
+
+        Args:
+            days: Quanti giorni indietro analizzare (``None`` = tutto il vault).
+
+        Returns:
+            Lista di :class:`Pattern` ordinata per conteggio decrescente.
+        """
+        entries = self._collect_entries(days)
+        if not entries:
+            logger.info("Nessuna email trovata nello scan period.")
+            return []
+
+        grouped = self._cluster(entries)
+        patterns = self._build_patterns(grouped)
+        return patterns
+
+    # ------------------------------------------------------------------
+    # Raccolta entries
+    # ------------------------------------------------------------------
+
+    def _collect_entries(self, days: int | None) -> list[dict]:
+        """Scansiona il vault e raccoglie metadati da tutte le note email.
+
+        Args:
+            days: Filtro temporale (``None`` = nessun filtro).
+
+        Returns:
+            Lista di dict con chiavi ``subject``, ``sender``, ``date``, ``path``.
+        """
+        emails_dir = self.vault_root / "Inbox" / "emails"
+        if not emails_dir.exists():
+            logger.warning(f"Directory email non trovata: {emails_dir}")
+            return []
+
+        # Determina data limite se specificata
+        cutoff: datetime | None = None
+        if days is not None:
+            cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+            logger.debug(f"Filtro scan: ultimi {days} giorni (cutoff={cutoff.date()})")
+
+        entries: list[dict] = []
+        for md_file in sorted(emails_dir.rglob("*.md")):
+            # Filtro temporale rapido via path directory YYYY/MM/DD
+            if cutoff is not None:
+                try:
+                    rel = md_file.relative_to(emails_dir)
+                    parts = rel.parts
+                    if len(parts) >= 3:
+                        file_date = datetime(
+                            int(parts[0]), int(parts[1]), int(parts[2]),
+                            tzinfo=timezone.utc,
+                        )
+                        if file_date < cutoff:
+                            continue
+                except (ValueError, IndexError):
+                    pass  # path non standard → procedi con parsing
+
+            # Leggi frontmatter
+            fm_data = self._read_frontmatter(md_file)
+            if fm_data is None:
+                continue
+
+            subject = str(fm_data.get("subject", "")).strip()
+            sender = str(fm_data.get("from", "")).strip()
+            date = str(fm_data.get("date", "")).strip()
+
+            if not subject:
+                continue
+
+            entries.append({
+                "subject": subject,
+                "sender": sender,
+                "date": date or "unknown",
+                "path": md_file,
+            })
+
+        logger.debug(f"Raccolte {len(entries)} entries dalla scansione")
+        return entries
+
+    @staticmethod
+    def _read_frontmatter(md_file: Path) -> dict | None:
+        """Legge il frontmatter YAML da un file Markdown.
+
+        Args:
+            md_file: Percorso del file ``.md``.
+
+        Returns:
+            Dict con i campi frontmatter o ``None`` se non parsabile.
+        """
+        try:
+            content = md_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return None
+
+        fm_match = re.match(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
+        if not fm_match:
+            return None
+
+        try:
+            fm_data = yaml.safe_load(fm_match.group(1))
+        except yaml.YAMLError:
+            return None
+
+        if not isinstance(fm_data, dict):
+            return None
+
+        return fm_data
+
+    # ------------------------------------------------------------------
+    # Normalizzazione & Clustering
+    # ------------------------------------------------------------------
+
+    def _normalize_subject(self, subject: str) -> str:
+        """Normalizza il subject di un'email per il raggruppamento.
+
+        - Rimuove ``[EXTERNAL]`` e prefissi RE/FW
+        - Rimpiazza device/hostname/macchine con ``*`` (match su originale
+          prima del lower per preservare pattern maiuscoli)
+        - Rimpiazza numeri, hash, date, orari, percentuali con ``*``
+        - Collassa ``* *`` multipli in ``*``
+        - Lowercase finale
+
+        Args:
+            subject: Subject grezzo.
+
+        Returns:
+            Stringa normalizzata (ascii minuscolo, placeholder ``*``).
+        """
+        s = subject.strip()
+
+        # Rimuovi [EXTERNAL] marker (su originale, prima del lower)
+        s = self._RE_EXTERNAL.sub("", s).strip()
+
+        # Rimuovi prefissi thread (RE:, FW:, R:) su originale
+        s = self._RE_THREAD_PREFIX.sub("", s).strip()
+
+        # Rimpiazza device/hostname token (su originale prima del lower)
+        # Match: qualsiasi token con underscore/hyphen/punto di lunghezza >= 4,
+        # oppure token misti lettere+numero di lunghezza >= 5
+        # (cattura nomi dispositivo come MM_Z1_ZSERVZ1, IT_MM-W19-DV-CYB01, ecc.)
+        s = _RE_DEVICE_TOKEN_BROAD.sub("*", s)
+
+        # Rimpiazza hex hash (su originale)
+        s = self._RE_HEX_HASH.sub("*", s)
+
+        # Rimpiazza date-like
+        s = self._RE_DATE_LIKE.sub("*", s)
+
+        # Rimpiazza percentuali
+        s = self._RE_PERCENT.sub("*", s)
+
+        # Rimpiazza email
+        s = self._RE_EMAIL.sub("*", s)
+
+        # Lowercase
+        s = s.lower().strip()
+
+        # Rimpiazza numeri (dopo lower)
+        s = self._RE_NUMBERS.sub("*", s)
+
+        # Collassa stelle multiple (es. "* *" → "*")
+        s = self._RE_MULTI_STAR.sub("*", s)
+
+        # Collassa spazi multipli
+        s = self._RE_WS.sub(" ", s).strip()
+
+        # Se dopo la normalizzazione è rimasto solo "*", arricchisci
+        if s in ("*", "", "**", "***"):
+            # Fallback al subject originale ma molto troncato
+            s = subject.lower().strip()[:40]
+
+        return s
+
+    def _cluster(self, entries: list[dict]) -> dict[str, list[dict]]:
+        """Raggruppa entries per subject normalizzato.
+
+        Args:
+            entries: Lista di dict estratti dalle note.
+
+        Returns:
+            Dizionario ``{pattern_normalizzato: [entries]}``.
+        """
+        groups: dict[str, list[dict]] = defaultdict(list)
+        for entry in entries:
+            normalized = self._normalize_subject(entry["subject"])
+            groups[normalized].append(entry)
+
+        logger.debug(
+            f"Clustering: {len(entries)} entries → {len(groups)} gruppi"
+        )
+        return groups
+
+    # ------------------------------------------------------------------
+        # Costruzione Pattern
+    # ------------------------------------------------------------------
+
+    def _build_patterns(self, groups: dict[str, list[dict]]) -> list[Pattern]:
+        """Converte i gruppi cluster in lista ordinata di :class:`Pattern`.
+
+        Args:
+            groups: Dizionario gruppo normalizzato → entries.
+
+        Returns:
+            Lista ordinata per conteggio decrescente.
+        """
+        # Ordina per conteggio decrescente
+        sorted_groups = sorted(
+            groups.items(), key=lambda x: len(x[1]), reverse=True
+        )
+
+        patterns: list[Pattern] = []
+        for idx, (pattern_key, group) in enumerate(sorted_groups, start=1):
+            # Raccogli date
+            dates = [
+                e["date"] for e in group
+                if e["date"] not in ("unknown", "", "0000-00-00")
+            ]
+            min_date = min(dates) if dates else "—"
+            max_date = max(dates) if dates else "—"
+
+            # Mittenti unici
+            senders = sorted(set(e["sender"] for e in group if e["sender"]))
+
+            # Subject reali di esempio (fino a 3)
+            seen: set[str] = set()
+            samples: list[str] = []
+            for e in group:
+                subj = e["subject"]
+                if subj not in seen:
+                    seen.add(subj)
+                    samples.append(subj)
+                    if len(samples) >= 3:
+                        break
+
+            # Azione suggerita basata su euristiche semplici
+            suggested: str | None = None
+            pattern_lower = pattern_key.lower()
+            sender_domains = [s.split("@")[-1].rstrip(">").strip().lower()
+                              for s in senders if "@" in s]
+
+            # Euristica: Zabbix sender → aggregate
+            if any("zabbix" in s for s in sender_domains):
+                suggested = "aggregate"
+            # Euristica: backup sender → aggregate
+            elif any("backup" in s for s in sender_domains):
+                suggested = "aggregate"
+            # Euristica: parole chiave discard
+            elif any(kw in pattern_lower for kw in [
+                "patrol read", "daily digest", "flashnews",
+                "proofpoint", "mcafee av", "backup report",
+                "news you might have missed", "service restored",
+                "logged in using", "logged off", "session for",
+                "nice to know", "espp",
+            ]):
+                suggested = "discard"
+            # Euristica: parole chiave keep
+            elif any(kw in pattern_lower for kw in [
+                "fis", "gsc", "safety", "company update",
+                "730", "timesheet", "expense", "sales order",
+                "acronis", "cts open calls",
+            ]):
+                suggested = "keep"
+
+            patterns.append(Pattern(
+                id=idx,
+                subject_pattern=pattern_key,
+                sample_subjects=samples,
+                count=len(group),
+                senders=senders,
+                date_range=(min_date, max_date),
+                suggested_action=suggested,
+            ))
+
+        return patterns
+
+
+# ---------------------------------------------------------------------------
+# YAML Generator
+# ---------------------------------------------------------------------------
+
+
+class YAMLGenerator:
+    """Genera il file ``filter_rules.yaml`` dalle decisioni dell'utente.
+
+    Le regole sono ordinate per azione (discard → aggregate → keep) e
+    all'interno per priorità decrescente (dalla più specifica alla meno).
+    """
+
+    # Mappa azione → priorità base (sarà decrementata per ogni regola successiva)
+    _ACTION_PRIORITY: dict[str, int] = {
+        "discard": 100,
+        "aggregate": 100,
+        "keep": 100,
+    }
+
+    @staticmethod
+    def generate(
+        patterns: list[Pattern],
+        output_path: Path,
+    ) -> str:
+        """Genera il contenuto YAML per il file delle regole.
+
+        Args:
+            patterns: Lista di pattern con ``suggested_action`` eventualmente
+                valorizzata. I pattern senza azione vengono omessi.
+            output_path: Percorso dove scrivere il file (usato solo per
+                log, il contenuto è restituito come stringa).
+
+        Returns:
+            Stringa YAML completa del file regole.
+        """
+        rules: list[dict] = []
+
+        # Separa per azione, ordine: discard → aggregate → keep
+        action_order = ["discard", "aggregate", "keep"]
+
+        for action in action_order:
+            action_patterns = [
+                p for p in patterns if p.suggested_action == action
+            ]
+            if not action_patterns:
+                continue
+
+            priority = YAMLGenerator._ACTION_PRIORITY.get(action, 100)
+            for p in action_patterns:
+                rule = YAMLGenerator._pattern_to_rule(p, action, priority)
+                if rule:
+                    rules.append(rule)
+                    priority -= 10  # decrementa per ogni regola successiva
+
+        # Costruisci YAML
+        yaml_data: dict = {
+            "version": 1,
+            "rules": rules,
+        }
+
+        yaml_str = yaml.dump(
+            yaml_data,
+            default_flow_style=False,
+            allow_unicode=True,
+            sort_keys=False,
+            width=120,
+        )
+
+        logger.info(
+            f"Generato YAML: {len(rules)} regole "
+            f"(discard={sum(1 for r in rules if r['action'] == 'discard')}, "
+            f"aggregate={sum(1 for r in rules if r['action'] == 'aggregate')}, "
+            f"keep={sum(1 for r in rules if r['action'] == 'keep')}) "
+            f"→ {output_path}"
+        )
+
+        return yaml_str
+
+    @staticmethod
+    def _clean_keyword(word: str) -> str | None:
+        """Pulisce una parola chiave, restituisce ``None`` se troppo generica.
+
+        Rimuove parole troppo brevi, comuni, o variabili (exteral, email, etc.).
+
+        Args:
+            word: Parola da valutare.
+
+        Returns:
+            Parola pulita o ``None``.
+        """
+        word = word.strip().lower()
+        # Troppo breve
+        if len(word) < 3:
+            return None
+        # Stopwords
+        stopwords = {
+            "the", "and", "for", "not", "has", "been", "with",
+            "from", "this", "that", "are", "was", "were", "you",
+            "your", "our", "all", "can", "new", "use", "used",
+            "using", "via", "per", "del", "della", "degli", "delle",
+            "dei", "che", "con", "sul", "sulla", "sugli", "sulle",
+            "external", "ext", "fw", "re", "oggetto", "oggi",
+            "message", "email", "mail", "notification",
+        }
+        if word in stopwords:
+            return None
+        # Solo lettere (niente numeri o simboli)
+        if not re.match(r'^[a-z][a-z0-9]*$', word):
+            return None
+        return word
+
+    @staticmethod
+    def _pattern_to_rule(
+        pattern: Pattern,
+        action: str,
+        priority: int,
+    ) -> dict | None:
+        """Converte un pattern in una regola YAML.
+
+        Args:
+            pattern: Pattern da convertire.
+            action: Azione assegnata.
+            priority: Priorità della regola.
+
+        Returns:
+            Dict rappresentante una regola YAML, o ``None`` se non
+            abbastanza informativo.
+        """
+        # Costruisci rule_id dal pattern
+        rule_id = re.sub(r"[^a-z0-9]+", "-", pattern.subject_pattern.lower())
+        rule_id = rule_id.strip("-")[:50]
+        if not rule_id:
+            rule_id = f"pattern-{pattern.id}"
+
+        # Nome leggibile
+        name = pattern.subject_pattern[:80] if pattern.subject_pattern else \
+            f"Pattern {pattern.id}"
+
+        # Condizioni di match: usa il subject pattern
+        match: dict = {}
+        subject_conditions: dict[str, list[str]] = {}
+
+        # Estrai parole chiave dai sample subjects (originale, non normalizzato)
+        # per avere keywords significative
+        keywords: list[str] = []
+        for sample in pattern.sample_subjects:
+            # Prendi parole significative
+            words = re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", sample)
+            keywords.extend(w for w in words if w not in (
+                "The", "And", "For", "Not", "Has", "Been", "With",
+                "From", "This", "That", "Are", "Was", "Were", "You",
+                "Your", "Our", "All", "Can", "New",
+                "EXTERNAL", "External", "external",
+            ))
+        keywords = [w for w in keywords if len(w) >= 3]
+
+        if keywords:
+            from collections import Counter
+            # Prendi le keyword più specifiche (lunghezza >= 5 preferite, poi le altre)
+            long_keywords = [kw for kw in keywords if len(kw) >= 5]
+            short_keywords = [kw for kw in keywords if 3 <= len(kw) <= 4]
+
+            top_keywords: list[str] = []
+            if long_keywords:
+                top_keywords.extend(
+                    kw for kw, _ in Counter(long_keywords).most_common(3)
+                )
+            if len(top_keywords) < 3 and short_keywords:
+                top_keywords.extend(
+                    kw for kw, _ in Counter(short_keywords).most_common(3 - len(top_keywords))
+                )
+
+            if top_keywords:
+                subject_conditions["contains"] = top_keywords[:3]
+
+        if subject_conditions:
+            match["subject"] = subject_conditions
+        else:
+            return None  # pattern troppo generico, skip
+
+        rule: dict = {
+            "id": rule_id,
+            "name": name,
+            "action": action,
+            "priority": priority,
+            "match": match,
+        }
+
+        if action == "aggregate":
+            # Definisci destinazione aggregato in base al pattern
+            pattern_lower = name.lower()
+            if "zabbix" in pattern_lower or \
+               ("problem" in pattern_lower and "alert" in pattern_lower):
+                rule["aggregate_to"] = "_review/daily/zabbix-{date}.md"
+            elif "backup" in pattern_lower:
+                rule["aggregate_to"] = "_review/daily/backup-{date}.md"
+            elif any(kw in pattern_lower
+                     for kw in ["predictive", "disk", "raid", "hardware"]):
+                rule["aggregate_to"] = "_review/daily/hw-warnings-{date}.md"
+            elif "cyberark" in pattern_lower or \
+                 "security" in pattern_lower:
+                rule["aggregate_to"] = "_review/daily/security-{date}.md"
+            elif "kba" in pattern_lower:
+                rule["aggregate_to"] = "_review/daily/kba-{date}.md"
+            else:
+                rule["aggregate_to"] = "_review/daily/aggregated-{date}.md"
+
+        rule["reason"] = f"Pattern scoperto via discovery: {pattern.count} email simili"
+
+        return rule

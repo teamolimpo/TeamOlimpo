@@ -1,0 +1,10 @@
+{
+  "id": "aws",
+  "family": "aws",
+  "match": { "argv0": ["aws"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "resources", "pattern": "^[^\\s]+\\s+[a-z]{2}"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

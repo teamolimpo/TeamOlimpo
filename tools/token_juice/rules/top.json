@@ -1,0 +1,10 @@
+{
+  "id": "top",
+  "family": "top",
+  "match": { "argv0": ["top"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^top -", "^Tasks:", "^%Cpu", "^Mem:", "^Swap:", "^PID\\s+"] },
+  "summarize": { "head": 15, "tail": 0 },
+  "counters": [{"name": "processes", "pattern": "^\\s*\\d+\\s+\\S+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

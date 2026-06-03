@@ -1,0 +1,10 @@
+{
+  "id": "terraform",
+  "family": "terraform",
+  "match": { "argv0": ["terraform"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "resources", "pattern": "\\b(?:added|changed|destroyed)\\b"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

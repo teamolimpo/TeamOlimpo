@@ -1,0 +1,10 @@
+{
+  "id": "docker-pull",
+  "family": "docker-pull",
+  "match": { "argv0": ["docker"], "argv_includes": [["pull"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Digest:", "Status:", "^[a-f0-9]+: Pulling"] },
+  "summarize": { "head": 3, "tail": 3 },
+  "counters": [{"name": "layers", "pattern": "Pull complete"}],
+  "failure": { "preserve_on_failure": true, "head": 5, "tail": 5 }
+}

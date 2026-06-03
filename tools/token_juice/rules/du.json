@@ -1,0 +1,8 @@
+{
+  "id": "du",
+  "family": "du",
+  "match": { "argv0": ["du"] },
+  "transforms": { "trim_empty_edges": true },
+  "summarize": { "head": 20, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

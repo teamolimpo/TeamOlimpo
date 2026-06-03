@@ -1,0 +1,9 @@
+{
+  "id": "minikube",
+  "family": "minikube",
+  "match": { "argv0": ["minikube"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^minikube v", "! This is a local binary"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

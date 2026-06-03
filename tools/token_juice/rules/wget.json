@@ -1,0 +1,9 @@
+{
+  "id": "wget",
+  "family": "wget",
+  "match": { "argv0": ["wget"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "--\\d{4}-\\d{2}-\\d{2}", "Saving to:", "Resolving "] },
+  "summarize": { "head": 5, "tail": 3 },
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

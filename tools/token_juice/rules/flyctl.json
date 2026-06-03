@@ -1,0 +1,10 @@
+{
+  "id": "flyctl",
+  "family": "flyctl",
+  "match": { "argv0": ["flyctl", "fly"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "machines", "pattern": "^[a-z0-9]+\\s+[a-z]{2,}"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

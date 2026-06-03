@@ -1,0 +1,9 @@
+{
+  "id": "systemctl-status",
+  "family": "systemctl-status",
+  "match": { "argv0": ["systemctl"], "argv_includes": [["status"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Process:", "Main PID:", "Tasks:", "Memory:", "CGroup:"] },
+  "summarize": { "head": 8, "tail": 4 },
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

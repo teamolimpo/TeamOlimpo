@@ -1,0 +1,10 @@
+{
+  "id": "ss",
+  "family": "ss",
+  "match": { "argv0": ["ss"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^State\\s+", "^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "sockets", "pattern": "^ESTAB|^LISTEN|^TIME_WAIT"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

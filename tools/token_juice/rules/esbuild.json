@@ -1,0 +1,10 @@
+{
+  "id": "esbuild",
+  "family": "build-esbuild",
+  "match": { "argv0": ["esbuild", "node_modules/.bin/esbuild"], "output_pattern": "esbuild" },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "build finished", "Done in"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "errors", "pattern": "[Ee]rror"}, {"name": "warnings", "pattern": "[Ww]arning"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

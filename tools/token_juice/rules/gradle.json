@@ -1,0 +1,10 @@
+{
+  "id": "gradle",
+  "family": "gradle",
+  "match": { "argv0": ["gradle", "gradlew"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^> Task ", "^BUILD SUCCESSFUL", "^BUILD FAILED"] },
+  "summarize": { "head": 8, "tail": 5 },
+  "counters": [{"name": "tasks", "pattern": "^> Task "}, {"name": "errors", "pattern": "FAILED"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

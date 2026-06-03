@@ -1,0 +1,10 @@
+{
+  "id": "playwright",
+  "family": "test-playwright",
+  "match": { "argv0": ["playwright", "npx"], "argv_includes": [["test"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Running \\d+ test"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "✓|PASS"}, {"name": "fail", "pattern": "✗|FAIL"}, {"name": "tests", "pattern": "\\d+ passed"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

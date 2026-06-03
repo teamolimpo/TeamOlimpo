@@ -1,0 +1,10 @@
+{
+  "id": "git/status",
+  "family": "git-status",
+  "match": { "argv0": ["git"], "argv_includes": [["status"]] },
+  "transforms": { "strip_ansi": true, "dedupe_adjacent": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\(use \"git .+\"\\)", "^\\(use .+ \\)"] },
+  "summarize": { "head": 10, "tail": 4 },
+  "counters": [{"name": "modified", "pattern": "^\\s*(?:modified:|M:)"}, {"name": "staged", "pattern": "^\\s*(?:new file:|renamed:|deleted:|A:|M:|D:)"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 12 }
+}

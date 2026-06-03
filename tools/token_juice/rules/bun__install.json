@@ -1,0 +1,10 @@
+{
+  "id": "bun-install",
+  "family": "bun-install",
+  "match": { "argv0": ["bun"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^bun install v"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "packages", "pattern": "\\d+ packages"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

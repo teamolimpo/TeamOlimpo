@@ -1,0 +1,9 @@
+{
+  "id": "ssh",
+  "family": "ssh",
+  "match": { "argv0": ["ssh"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Warning: Permanently added", "The authenticity of host"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

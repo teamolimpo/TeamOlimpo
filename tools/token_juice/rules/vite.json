@@ -1,0 +1,10 @@
+{
+  "id": "vite",
+  "family": "build-vite",
+  "match": { "argv0": ["vite", "node_modules/.bin/vite"] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "ready in", "vite v"] },
+  "summarize": { "head": 8, "tail": 4 },
+  "counters": [{"name": "errors", "pattern": "[Ee]rror"}, {"name": "warnings", "pattern": "[Ww]arning"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 6 }
+}

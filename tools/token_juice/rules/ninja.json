@@ -1,0 +1,10 @@
+{
+  "id": "ninja",
+  "family": "ninja",
+  "match": { "argv0": ["ninja"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\[\\d+/\\d+\\]", "^ninja: Entering directory"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "targets", "pattern": "built"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

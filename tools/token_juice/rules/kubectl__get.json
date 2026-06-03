@@ -1,0 +1,10 @@
+{
+  "id": "kubectl-get",
+  "family": "kubectl-get",
+  "match": { "argv0": ["kubectl"], "argv_includes": [["get"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^NAME\\s+", "^\\s*$"] },
+  "summarize": { "head": 20, "tail": 0 },
+  "counters": [{"name": "resources", "pattern": "^\\S+\\s+"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 0 }
+}

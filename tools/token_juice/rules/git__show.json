@@ -1,0 +1,10 @@
+{
+  "id": "git/show",
+  "family": "git-show",
+  "match": { "argv0": ["git"], "argv_includes": [["show"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^commit [a-f0-9]{40}$", "^Author:", "^Date:"] },
+  "summarize": { "head": 20, "tail": 10 },
+  "counters": [{"name": "files", "pattern": "^diff --git"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

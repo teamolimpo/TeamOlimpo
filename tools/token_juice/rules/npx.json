@@ -1,0 +1,9 @@
+{
+  "id": "npx",
+  "family": "npx",
+  "match": { "argv0": ["npx"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^npm "] },
+  "summarize": { "head": 10, "tail": 5 },
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

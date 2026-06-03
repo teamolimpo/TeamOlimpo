@@ -1,0 +1,10 @@
+{
+  "id": "tcpdump",
+  "family": "tcpdump",
+  "match": { "argv0": ["tcpdump"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^tcpdump:", "listening on"] },
+  "summarize": { "head": 15, "tail": 10 },
+  "counters": [{"name": "packets", "pattern": "^\\d{2}:\\d{2}:\\d{2}"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

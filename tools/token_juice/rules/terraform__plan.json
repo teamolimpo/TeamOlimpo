@@ -1,0 +1,10 @@
+{
+  "id": "terraform-plan",
+  "family": "terraform-plan",
+  "match": { "argv0": ["terraform"], "argv_includes": [["plan"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "No changes.", "Your infrastructure", "Plan:"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "to_add", "pattern": "\\+\\s+resource"}, {"name": "to_change", "pattern": "~\\s+resource"}, {"name": "to_destroy", "pattern": "-\\s+resource"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 10 }
+}

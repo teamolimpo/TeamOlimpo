@@ -1,0 +1,10 @@
+{
+  "id": "tsc",
+  "family": "build-tsc",
+  "match": { "argv0": ["tsc", "typescript"], "output_pattern": "TS\\d+" },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "errors", "pattern": "error TS\\d+"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 5 }
+}

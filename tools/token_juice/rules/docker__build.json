@@ -1,0 +1,10 @@
+{
+  "id": "docker-build",
+  "family": "docker-build",
+  "match": { "argv0": ["docker"], "argv_includes": [["build"]] },
+  "transforms": { "strip_ansi": true, "strip_timestamps": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "Step \\d+/\\d+ :", " ---> [a-f0-9]+", "Successfully built", "Successfully tagged"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "steps", "pattern": "Step \\d+/"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "dnf-install",
+  "family": "dnf-install",
+  "match": { "argv0": ["dnf", "yum"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Last metadata", "^Dependencies resolved", "^Package\\s+Arch"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "installed", "pattern": "Installed:"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}

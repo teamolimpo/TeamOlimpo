@@ -1,0 +1,10 @@
+{
+  "id": "cargo-build",
+  "family": "cargo-build",
+  "match": { "argv0": ["cargo"], "argv_includes": [["build"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Compiling ", "^Finished ", "Fresh " ] },
+  "summarize": { "head": 8, "tail": 5 },
+  "counters": [{"name": "errors", "pattern": "error\\[E\\d+\\]"}, {"name": "warnings", "pattern": "warning:"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

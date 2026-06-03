@@ -1,0 +1,8 @@
+{
+  "id": "uptime",
+  "family": "uptime",
+  "match": { "argv0": ["uptime"] },
+  "transforms": { "trim_empty_edges": true },
+  "summarize": { "head": 1, "tail": 0 },
+  "failure": { "preserve_on_failure": true, "head": 1, "tail": 0 }
+}

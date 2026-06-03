@@ -1,0 +1,10 @@
+{
+  "id": "docker-compose",
+  "family": "docker-compose",
+  "match": { "argv0": ["docker-compose", "docker"], "argv_includes": [["compose"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Container ", "^Network "] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "containers", "pattern": "[Ss]tarted|[Cc]reated|[Dd]one"}],
+  "failure": { "preserve_on_failure": true, "head": 12, "tail": 8 }
+}

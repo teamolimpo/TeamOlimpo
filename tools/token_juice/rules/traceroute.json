@@ -1,0 +1,10 @@
+{
+  "id": "traceroute",
+  "family": "traceroute",
+  "match": { "argv0": ["traceroute", "tracert"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^traceroute to", "^\\s*$"] },
+  "summarize": { "head": 15, "tail": 5 },
+  "counters": [{"name": "hops", "pattern": "^\\s*\\d+\\s"}],
+  "failure": { "preserve_on_failure": true, "head": 20, "tail": 5 }
+}

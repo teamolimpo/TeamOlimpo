@@ -1,0 +1,10 @@
+{
+  "id": "pytest",
+  "family": "test-pytest",
+  "match": { "argv0": ["pytest", "python"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^=+.*=+$", "^(collected|platform |plugins:)"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "PASSED"}, {"name": "fail", "pattern": "FAILED"}, {"name": "errors", "pattern": "ERRORS"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

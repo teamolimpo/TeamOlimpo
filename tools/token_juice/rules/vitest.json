@@ -1,0 +1,10 @@
+{
+  "id": "vitest",
+  "family": "test-vitest",
+  "match": { "argv0": ["vitest", "node_modules/.bin/vitest"] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "stdout \\|", "stderr \\|"] },
+  "summarize": { "head": 10, "tail": 5 },
+  "counters": [{"name": "pass", "pattern": "✓"}, {"name": "fail", "pattern": "✗|FAIL"}, {"name": "skip", "pattern": "→|SKIP"}],
+  "failure": { "preserve_on_failure": true, "head": 15, "tail": 10 }
+}

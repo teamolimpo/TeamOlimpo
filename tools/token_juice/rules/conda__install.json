@@ -1,0 +1,10 @@
+{
+  "id": "conda-install",
+  "family": "conda-install",
+  "match": { "argv0": ["conda"], "argv_includes": [["install"]] },
+  "transforms": { "strip_ansi": true, "trim_empty_edges": true, "dedupe_adjacent": true },
+  "filters": { "skip_patterns": ["^\\s*$", "^Channels:", "^Platform:", "^Collecting package", "^Downloading and Extracting"] },
+  "summarize": { "head": 5, "tail": 3 },
+  "counters": [{"name": "packages", "pattern": "The following NEW packages"}],
+  "failure": { "preserve_on_failure": true, "head": 10, "tail": 5 }
+}
