@@ -15,7 +15,7 @@ Regole di scrittura e manutenzione per i prompt del Team Olimpo.
 | Scope | Path | Contenuto |
 |-------|------|-----------|
 | PUBLIC 🔓 | `Team/Prompts/` | Pattern, template vuoti, convenzioni, esempi generici |
-| PRIVATE 🔒 | `lib/prompts/` | Prompt operativi reali con path interni e placeholders |
+| PRIVATE 🔒 | `Library/prompts/` | Prompt operativi reali con path interni e placeholders |
 
 ---
 
@@ -63,7 +63,7 @@ updated: YYYY-MM-DD
 
 Nei prompt `scope: public` è VIETATO:
 
-- Path a `lib/`, `tools/`, `.claude/agents/`
+- Path a `Library/`, `tools/`, `.claude/agents/`
 - Referimenti a strumenti interni (`llm`, `kba_merger`)
 - Nomi reali di persone o clienti
 - Placeholder che rivelano strutture dati interne
@@ -86,9 +86,9 @@ Dopo ogni major/minor, rieseguire test su 3 input noti.
 
 ## 7. Ciclo di Vita
 
-1. **Nuovo prompt**: creare in `lib/prompts/{dominio}/` con scope appropriate
+1. **Nuovo prompt**: creare in `Library/prompts/{dominio}/` con scope appropriate
 2. **Modifica**: bump versione, aggiornare `updated`
-3. **Deprecazione**: spostare in `lib/prompts/_archivio/` o `Team/Prompts/_archivio/`
+3. **Deprecazione**: spostare in `Library/prompts/_archivio/` o `Team/Prompts/_archivio/`
 4. **Eliminazione**: non cancellare mai — archiviare
 
 ---
@@ -96,5 +96,5 @@ Dopo ogni major/minor, rieseguire test su 3 input noti.
 ## 8. Indici
 
 - `Team/Prompts/_indice.md` — elenca SOLO prompt `scope: public`
-- `lib/prompts/_indice.md` — elenca TUTTI i prompt con flag scope
+- `Library/prompts/_indice.md` — elenca TUTTI i prompt con flag scope
 - Gli indici vanno aggiornati OGNI volta che si aggiunge/modifica/depreca un prompt

@@ -31,4 +31,4 @@ Python developer and tool builder for Team Olimpo. Receives development briefs, 
 - `tools/config.yaml` (centralized tool config)
 - `pyproject.toml` (project dependencies and tool configuration)
 - `Team/SOPs/handoff-guide.md`
-- `lib/System/efesto/` (working directory with build logs, session state, and local config)
+- `Library/System/efesto/` (working directory with build logs, session state, and local config)

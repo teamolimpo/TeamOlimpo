@@ -63,7 +63,7 @@ uv run python -m tools.log_compressor monthly
 uv run python -m tools.log_compressor status
 ```
 
-Il cron logga in `lib/System/Poros/log_compression.log`.
+Il cron logga in `Library/System/Poros/log_compression.log`.
 
 ## Meccanismo
 

@@ -1,7 +1,7 @@
 """
 Auto-Summarizer V1+V2 per il Progetto Chimera — Fase 2.3.
 
-Genera pagine wiki per i documenti convertiti in ``lib/documents/``
+Genera pagine wiki per i documenti convertiti in ``Library/documents/``
 usando TextRank (V2) con fallback al primo paragrafo (V1) per documenti
 troppo corti.
 
@@ -9,7 +9,7 @@ Usage::
 
     from tools.pdf_converter.auto_summarizer import generate_wiki_page
 
-    result = generate_wiki_page("lib/documents/mio-doc.md", force=True)
+    result = generate_wiki_page("Library/documents/mio-doc.md", force=True)
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from tools.pdf_converter.config import paths as default_paths
 # ---------------------------------------------------------------------------
 
 PROJECT_ROOT: Path = _PROJECT_ROOT
-DOCUMENTS_DIR: Path = default_paths.output  # lib/documents/
+DOCUMENTS_DIR: Path = default_paths.output  # Library/documents/
 WIKI_RESEARCH_BASE: Path = PROJECT_ROOT / "lib" / "Wiki" / "research"
 WIKI_INDEX_PATH: Path = PROJECT_ROOT / "lib" / "Wiki" / "index.md"
 WIKI_LOG_PATH: Path = PROJECT_ROOT / "lib" / "Wiki" / "log.md"

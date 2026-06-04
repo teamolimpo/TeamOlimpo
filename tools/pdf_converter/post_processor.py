@@ -171,15 +171,15 @@ def _fix_image_paths(text: str, md_path: Path, images_dir: Path | None) -> str:
     text = text.replace(abs_images_str, rel_images)
 
     # Sostituisce i path CWD-relativi generati da pymupdf4llm.
-    # Esempio: "lib/assets/images/<slug>/" oppure "Library\assets\images\<slug>\"
+    # Esempio: "Library/assets/images/<slug>/" oppure "Library\assets\images\<slug>\"
     # La CWD del processo e' la root del progetto, quindi il path CWD-relativo
     # e' la porzione di abs_images_str che segue il prefisso assoluto.
-    # Lo ricaviamo cercando il marker "lib/" nel path assoluto posix.
+    # Lo ricaviamo cercando il marker "Library/" nel path assoluto posix.
     try:
-        marker = "lib/"
+        marker = "Library/"
         marker_idx = abs_images_str.find(marker)
         if marker_idx != -1:
-            cwd_rel_posix = abs_images_str[marker_idx:]  # es. lib/assets/images/slug/
+            cwd_rel_posix = abs_images_str[marker_idx:]  # es. Library/assets/images/slug/
             cwd_rel_win = cwd_rel_posix.replace("/", "\\")  # es. Library\assets\images\slug\
             text = text.replace(cwd_rel_win, rel_images)
             text = text.replace(cwd_rel_posix, rel_images)

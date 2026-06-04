@@ -1,7 +1,7 @@
 """Condivisione path di progetto per tutti i tool Team Olimpo.
 
 Fornisce tre funzioni per risolvere i path in modo consistente,
-gestendo correttamente lo ``symlink lib/ → /home/stra/Library``.
+gestendo correttamente lo ``symlink Library/ → /home/stra/Library``.
 
 * :func:`project_root` — radice del repository (via ``Path(__file__)`` resolution)
 * :func:`resolve_relative` — join con ``project_root`` **senza** risolvere symlink
@@ -67,6 +67,6 @@ def resolve_absolute(*parts: str) -> Path:
         *parts: Path segments to join after ``project_root``.
 
     Returns:
-        A ``Path`` with all symlinks resolved (e.g. ``/home/stra/lib/...``).
+        A ``Path`` with all symlinks resolved (e.g. ``/home/stra/Library/...``).
     """
     return project_root().joinpath(*parts).resolve()

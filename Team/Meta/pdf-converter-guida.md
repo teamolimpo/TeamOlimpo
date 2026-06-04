@@ -17,9 +17,9 @@ tags: [meta, strumenti, pdf, conversione, guida]
 ### Cosa produce
 
 Data in input un PDF, il converter produce:
-- Un file **Markdown** in `lib/documents/<slug>.md` con frontmatter YAML e contenuto del documento
-- Una cartella **immagini** in `lib/assets/images/<slug>/` con tutte le immagini estratte dal PDF
-- Un **record** nel database SQLite `lib/data/pdf_index.db` con metadati e stato della conversione
+- Un file **Markdown** in `Library/documents/<slug>.md` con frontmatter YAML e contenuto del documento
+- Una cartella **immagini** in `Library/assets/images/<slug>/` con tutte le immagini estratte dal PDF
+- Un **record** nel database SQLite `Library/data/pdf_index.db` con metadati e stato della conversione
 
 Il Markdown prodotto è compatibile con Obsidian: le immagini usano path relativi al file `.md`, il frontmatter rispetta lo schema del vault.
 
@@ -78,9 +78,9 @@ uv run python -m tools.pdf_converter init
 
 **Cosa crea**:
 - `Inbox/` — cartella dove depositare i PDF da convertire
-- `lib/documents/` — output Markdown
-- `lib/assets/images/` — output immagini
-- `lib/data/pdf_index.db` — database SQLite
+- `Library/documents/` — output Markdown
+- `Library/assets/images/` — output immagini
+- `Library/data/pdf_index.db` — database SQLite
 
 L'operazione è idempotente: eseguirla di nuovo non sovrascrive nulla.
 
@@ -109,7 +109,7 @@ uv run python -m tools.pdf_converter convert "Inbox/documento.pdf" --force
 **Output**:
 ```
 Conversione: documento.pdf
-Completato: lib/documents/documento.md (3 immagini, 1.24s)
+Completato: Library/documents/documento.md (3 immagini, 1.24s)
 ```
 
 ---
@@ -242,7 +242,7 @@ PDF input
    ↓
 [4] index_document()       → inserisce o aggiorna il record nel database SQLite
    ↓
-Markdown output in lib/documents/<slug>.md
+Markdown output in Library/documents/<slug>.md
 ```
 
 ---
@@ -272,14 +272,14 @@ num_images: 3
 
 Il post-processor converte automaticamente tutti i path immagini in path **relativi al file `.md`**:
 - Da path assoluto: `C:\Users\dev\...\assets\images\slug\img.png`
-- Da path CWD-relativo: `lib/assets/images/slug/img.png`
+- Da path CWD-relativo: `Library/assets/images/slug/img.png`
 - A path relativo: `../assets/images/slug/img.png` ✓
 
 ---
 
 ## Database SQLite
 
-Il file `lib/data/pdf_index.db` contiene la tabella `documents` con:
+Il file `Library/data/pdf_index.db` contiene la tabella `documents` con:
 
 | Campo | Tipo | Descrizione |
 |-------|------|-------------|
@@ -304,7 +304,7 @@ La tabella ha un indice FTS5 (`documents_fts`) per la ricerca full-text, sincron
 
 ## Log
 
-Il converter scrive un log rotante in `lib/data/pdf_converter.log`:
+Il converter scrive un log rotante in `Library/data/pdf_converter.log`:
 - Rotazione: ogni 5 MB
 - Retention: 30 giorni
 - Livello: DEBUG (tutto viene registrato nel file)
@@ -333,7 +333,7 @@ Verificare che il path nel `.md` sia relativo e corretto:
 ![](C:/Users/dev/.../immagine.png)
 
 # Rotto — path CWD-relativo
-![](lib/assets/images/slug/immagine.png)
+![](Library/assets/images/slug/immagine.png)
 ```
 
 Se il file è già stato convertito e il path è sbagliato, riconvertire con `--force`.

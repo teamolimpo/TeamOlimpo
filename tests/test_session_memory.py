@@ -321,7 +321,7 @@ class TestStoreObservations:
             content="Test decision",
             agent="Poros",
             entities=["entity1"],
-            handoff_path="lib/test.md",
+            handoff_path="Library/test.md",
             task_ref="T-001",
             tokens_discovery=100,
             tokens_read=10,

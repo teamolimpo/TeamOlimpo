@@ -1,4 +1,4 @@
-"""One-time script: register all lib/ files in deliverables DB,
+"""One-time script: register all Library/ files in deliverables DB,
 then replace file paths with hashes inside all text files.
 
 Usage: uv run python -m tools.scripts.register_all_deliverables

@@ -8,7 +8,7 @@ updated: 2026-05-24
 # Indice Prompts — Team Olimpo (PUBLIC)
 
 > Indice dei prompt **pubblici** in `Team/Prompts/`.  
-> Per i prompt operativi completi, vedi `lib/prompts/_indice.md` (PRIVATE).
+> Per i prompt operativi completi, vedi `Library/prompts/_indice.md` (PRIVATE).
 
 ---
 
@@ -31,7 +31,7 @@ Team/Prompts/
 | **Versione** | 1.0 |
 | **Autore** | Team Olimpo |
 | **Scope** | PUBLIC |
-| **Descrizione** | Scheletro di prompt con frontmatter, placeholder e struttura output. Copia in `lib/prompts/{dominio}/` per la versione operativa. |
+| **Descrizione** | Scheletro di prompt con frontmatter, placeholder e struttura output. Copia in `Library/prompts/{dominio}/` per la versione operativa. |
 
 ---
 
@@ -71,6 +71,6 @@ Team/Prompts/
 Vedi `CONVENTIONS.md` per le regole complete.
 
 - Ogni prompt PUBLIC deve avere `scope: public` nel frontmatter
-- Vietati path interni (`lib/`, `tools/`, `.claude/agents/`)
+- Vietati path interni (`Library/`, `tools/`, `.claude/agents/`)
 - Bump versione se si cambia struttura
 - Prompt deprecati → `Team/Prompts/_archivio/`

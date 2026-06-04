@@ -181,7 +181,7 @@ def expand_inputs(raw_inputs: list[str]) -> list[Path]:
         if base_parts:
             base = Path(*base_parts)
         else:
-            base = Path(".")
+            base = Path()
 
         glob_pattern = "/".join(glob_parts)
 
@@ -208,7 +208,7 @@ def expand_inputs(raw_inputs: list[str]) -> list[Path]:
 
 
 def run_merge(
-    provider: "ProviderProtocol",
+    provider: ProviderProtocol,
     provider_name: str,
     template: str,
     input_files: list[Path],
@@ -294,7 +294,7 @@ def run_merge(
 
 
 def run_batch(
-    provider: "ProviderProtocol",
+    provider: ProviderProtocol,
     provider_name: str,
     template: str,
     input_files: list[Path],

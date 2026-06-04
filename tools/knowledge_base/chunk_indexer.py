@@ -13,7 +13,7 @@ CLI with three subcommands::
 
 Database location
 -----------------
-``lib/data/chunks.db`` (resolved via ``tools.common.paths``).
+``Library/data/chunks.db`` (resolved via ``tools.common.paths``).
 
 Schema
 ------
@@ -35,6 +35,7 @@ from typing import Any
 
 import typer
 from loguru import logger
+from tqdm import tqdm
 
 from tools.common.paths import resolve_absolute, resolve_relative
 from tools.knowledge_base.entity_extractor import (
@@ -60,13 +61,12 @@ DB_PATH = resolve_absolute("Library", "System", "Poros", "synapsis.db")
 DICTIONARY_PATH = Path(__file__).resolve().parent / "entity_dictionary.yaml"
 
 # Relative paths to scan for .md files
+# (all relative to project_root, which resolves Library/ → /home/stra/Library/)
 SEARCH_REL_PATHS: list[str] = [
     "Library/Wiki/",
-    "lib/documents/",
+    "Library/documents/",
     "Library/Handoff/",
-    "lib/emails/",
-    "lib/projects/",
-    "Inbox/",
+    "Library/projects/",
 ]
 
 SCHEMA_SQL = """
@@ -177,10 +177,11 @@ def _collect_md_files() -> list[Path]:
         if not base.is_dir():
             logger.warning(f"Search path not found, skipping: {base}")
             continue
-        for p in sorted(base.rglob("*.md")):
-            if p.is_file():
-                files.append(p)
-    logger.info(f"Collected {len(files)} .md files for indexing")
+        logger.info(f"Scanning {rel}...")
+        md_list = sorted(base.rglob("*.md"))
+        files.extend(md_list)
+        logger.info(f"  {len(md_list)} files in {rel}")
+    logger.info(f"Total: {len(files)} .md files")
     return files
 
 
@@ -281,17 +282,16 @@ def _file_hash(file_path: Path) -> str:
 @app.command()
 def rebuild(
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose logging."),
-    conn: sqlite3.Connection | None = None,
 ) -> None:
     """Scan ALL .md files, chunk, and (re)build the index from scratch.
 
     Drops and recreates all tables for a clean state.
-    If *conn* is provided, it is used directly and NOT closed.
     """
     _setup_logging(verbose)
     logger.info("Rebuilding full index — clearing existing data...")
 
-    own_conn = conn is None  # Do we manage the connection lifecycle?
+    conn: sqlite3.Connection | None = None
+    own_conn = True
     conn = _get_conn(conn)
 
     conn.executescript("""
@@ -311,7 +311,8 @@ def rebuild(
     total_errors = 0
     start_ts = time.time()
 
-    for fp in files:
+    pbar = tqdm(files, desc="Indexing", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
+    for fp in pbar:
         try:
             rel = str(fp.relative_to(resolve_relative(".")))
         except ValueError:
@@ -322,8 +323,8 @@ def rebuild(
             continue
         n = _index_file(conn, fp, rel, fh)
         total_chunks += n
-        if verbose and n > 0:
-            logger.debug(f"  {rel} → {n} chunks")
+        pbar.set_postfix(chunks=total_chunks, refresh=False)
+    pbar.close()
 
     elapsed = time.time() - start_ts
     logger.info(
@@ -361,15 +362,14 @@ def update(
         "-n",
         help="Show what would change without doing it.",
     ),
-    conn: sqlite3.Connection | None = None,
 ) -> None:
     """Incremental update: re-chunk only files whose SHA256 changed.
 
     Uses ``file_state.file_hash`` for change detection.
-    If *conn* is provided, it is used directly and NOT closed.
     """
     _setup_logging(verbose)
-    own_conn = conn is None
+    conn: sqlite3.Connection | None = None
+    own_conn = True
     conn = _get_conn(conn)
     cur = conn.cursor()
 
@@ -414,13 +414,14 @@ def update(
 
     # Process changed files
     start_ts = time.time()
-    for fp, rel, fh in changed:
+    pbar = tqdm(changed, desc="Updating", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
+    for fp, rel, fh in pbar:
         # Delete old chunks
         cur.execute("DELETE FROM chunks WHERE file_path = ?", (rel,))
         n = _index_file(conn, fp, rel, fh)
         added += n
-        if verbose:
-            logger.debug(f"  {rel} → {n} chunks")
+        pbar.set_postfix(chunks=added, refresh=False)
+    pbar.close()
 
     # Clean orphans
     for r in removed:
@@ -465,14 +466,12 @@ def clean(
         "-n",
         help="Show what would be removed without doing it.",
     ),
-    conn: sqlite3.Connection | None = None,
 ) -> None:
     """Remove orphan chunks (files no longer on disk).
-
-    If *conn* is provided, it is used directly and NOT closed.
     """
     _setup_logging(verbose)
-    own_conn = conn is None
+    conn: sqlite3.Connection | None = None
+    own_conn = True
     conn = _get_conn(conn)
     cur = conn.cursor()
 
@@ -506,9 +505,11 @@ def clean(
         return
 
     # Delete orphans
-    for o in orphans:
+    pbar = tqdm(orphans, desc="Cleaning orphans", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}")
+    for o in pbar:
         cur.execute("DELETE FROM chunks WHERE file_path = ?", (o,))
         cur.execute("DELETE FROM file_state WHERE file_path = ?", (o,))
+    pbar.close()
 
     conn.commit()
     _maybe_close()

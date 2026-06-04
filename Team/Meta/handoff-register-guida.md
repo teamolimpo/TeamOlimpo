@@ -63,7 +63,7 @@ uv add pyyaml loguru rich
 **Output**:
 - File completati spostati in `Team/Handoff/Archivio/`
 - `Team/Handoff/Registro.md` rigenerato con indice aggiornato
-- Log dettagliato in `lib/data/handoff_register.log`
+- Log dettagliato in `Library/data/handoff_register.log`
 
 ---
 
@@ -455,7 +455,7 @@ Output su stderr con timestamp, livello (DEBUG/WARNING/ERROR), modulo e messaggi
 
 ```bash
 # Mostra le ultime 50 righe
-tail -n 50 "lib/data/handoff_register.log"
+tail -n 50 "Library/data/handoff_register.log"
 
 # Su Windows (PowerShell)
 Get-Content "Library\data\handoff_register.log" -Tail 50

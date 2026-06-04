@@ -14,9 +14,9 @@ New agent flow: Poros → Proteo (domain analysis) → Poros → Atena (persona)
 ## PUBLIC / PRIVATE
 
 - **PUBLIC** (`TeamOlimpo/` → GitHub): templates, skills, configs, tool code, SOPs
-- **PRIVATE** (`lib/` → local git, no remote): handoff diaries, system state, wiki, emails, deliverables
+- **PRIVATE** (`Library/` → local git, no remote): handoff diaries, system state, wiki, emails, deliverables
 
-`lib/` is gitignored, symlinked to separate local repo.
+`Library/` is gitignored, symlinked to separate local repo.
 
 ## Key Paths
 
@@ -28,7 +28,7 @@ New agent flow: Poros → Proteo (domain analysis) → Poros → Atena (persona)
 | `Team/Fucina/` | Working files (gitignored) |
 | `tools/` | Python tools (synapsis, email_processor, executor, etc.) |
 | `opencode.json` | Main OpenCode config |
-| `lib/System/Poros/` | Poros state, scratchpad |
+| `Library/System/Poros/` | Poros state, scratchpad |
 | `Library/Handoff/YYYY/MM/` | Worker handoff files |
 | `Library/Wiki/` | Knowledge wiki |
 | `Library/deliverables/` | Final outputs |

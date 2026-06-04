@@ -165,7 +165,7 @@ def _read_multiline(intro: str = "") -> str:
 
 def run_interactive(
     providers_map: dict[str, type],
-    get_api_key_fn: "callable[[str], str]",
+    get_api_key_fn: callable[[str], str],
     default_provider: str,
     prompts_dir: Path,
     web_search: bool = False,
@@ -235,7 +235,7 @@ def run_interactive(
         # --- Input file opzionale ---
         print()
         print("File di input (glob, path, o invio per testo libero):")
-        print("  Esempi: lib/documents/*.md  oppure  lib/documents/nk-2400-0150.md")
+        print("  Esempi: Library/documents/*.md  oppure  Library/documents/nk-2400-0150.md")
         raw_input_path = _input("> ").strip()
 
         if raw_input_path:
@@ -404,9 +404,9 @@ def run_interactive(
 
 def _resolve_provider(
     providers_map: dict[str, type],
-    get_api_key_fn: "callable[[str], str]",
+    get_api_key_fn: callable[[str], str],
     default_provider: str,
-) -> tuple[str, "ProviderProtocol | None"]:
+) -> tuple[str, ProviderProtocol | None]:
     """
     Chiede all'utente il provider e inizializza l'istanza.
 
@@ -433,7 +433,7 @@ def _resolve_provider(
 
 
 def _run_chat_loop(
-    provider: "ProviderProtocol",
+    provider: ProviderProtocol,
     provider_name: str,
     model: str | None,
     system: str | None,
@@ -545,7 +545,7 @@ def _run_chat_loop(
     return 0
 
 
-def _ask_model(provider: "ProviderProtocol") -> str:
+def _ask_model(provider: ProviderProtocol) -> str:
     """
     Chiede all'utente il modello da usare (invio = usa il default).
 

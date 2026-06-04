@@ -31,7 +31,7 @@ class OpenRouterProvider:
     Modello di default: openai/gpt-4o-mini (economico e veloce).
     """
 
-    default_model: str = "deepseek/deepseek-v4-flash"
+    default_model: str = "mistralai/mistral-nemo"
     _BASE_URL: str = "https://openrouter.ai/api/v1"
 
     def __init__(self, api_key: str) -> None:

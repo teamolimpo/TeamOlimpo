@@ -31,9 +31,9 @@ from tools.common.paths import resolve_relative
 
 SCOPE_PATHS: dict[str, list[str]] = {
     "wiki": ["Library/Wiki/"],
-    "docs": ["lib/documents/"],
-    "wiki+docs": ["Library/Wiki/", "lib/documents/"],
-    "all": ["lib/", "Team/Handoff/"],
+    "docs": ["Library/documents/"],
+    "wiki+docs": ["Library/Wiki/", "Library/documents/"],
+    "all": ["Library/", "Team/Handoff/"],
     "handoff": ["Team/Handoff/"],
 }
 
@@ -156,7 +156,7 @@ def resolve_search_paths(
     """Resolve search paths for the given *scope*.
 
     Returns a list of ``Path`` objects relative to *project_root*.
-    Uses the symlink path (``lib/``) directly — does NOT resolve
+    Uses the symlink path (``Library/``) directly — does NOT resolve
     symlinks, so ``relative_to()`` calls downstream work correctly.
 
     Raises ``ValueError`` if *scope* is invalid.

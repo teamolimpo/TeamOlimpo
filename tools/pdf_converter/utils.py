@@ -127,7 +127,7 @@ def relative_path(path: Path, base: Path) -> str:
 
     Usa `os.path.relpath()` che gestisce correttamente la navigazione verso
     l'alto con `..`, anche quando le due directory non sono in relazione
-    parent-child (es. lib/documents/ → lib/assets/images/slug/).
+    parent-child (es. Library/documents/ → Library/assets/images/slug/).
 
     Args:
         path: Path da relativizzare

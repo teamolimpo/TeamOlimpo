@@ -40,5 +40,5 @@ updated: 2026-05-24
 
 ---
 
-> **Nota:** Copia questo template in `lib/prompts/{dominio}/` per la versione operativa.
+> **Nota:** Copia questo template in `Library/prompts/{dominio}/` per la versione operativa.
 > I placeholder in doppia mustache `{{var}}` sono sostituiti al momento dell'invocazione.

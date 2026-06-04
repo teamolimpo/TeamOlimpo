@@ -355,7 +355,7 @@ class GrokProvider:
         model: str | None = None,
         system: str | None = None,
         web_search: bool = False,
-    ) -> "GrokChatSession":
+    ) -> GrokChatSession:
         """
         Crea una sessione di chat stateful tramite la Responses API.
 

@@ -7,7 +7,7 @@ permission:
   edit:
     "tools/**": "allow"
     "tools/config.yaml": "allow"
-    "lib/System/efesto/**": "allow"
+    "Library/System/efesto/**": "allow"
     "Team/Fucina/**": "allow"
     "pyproject.toml": "allow"
     "uv.lock": "allow"

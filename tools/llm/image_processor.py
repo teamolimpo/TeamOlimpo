@@ -1,4 +1,5 @@
-"""Image processing: base64 decode, file save, hash computation, collision handling.
+"""Image processing: base64 decode, file save, hash computation, collision handling
+(merged from tools/image_gen/image_processor.py).
 
 Handles the I/O pipeline for generated images: decodes base64, saves to disk
 with proper directory creation, computes CRC32 hash, and resolves hash

@@ -96,7 +96,7 @@ class StateStore:
 
         Args:
             path: Explicit path to state.yaml. If ``None``, auto-detect
-                  from ``lib/System/Poros/state.yaml`` relative to project root.
+                  from ``Library/System/Poros/state.yaml`` relative to project root.
         """
         if path is not None:
             self._path = path.resolve()

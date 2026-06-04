@@ -9,15 +9,15 @@ email_processor:
   # Directory sorgente email .eml (path assoluto di sistema, mount HGFS)
   email_dir: /mnt/hgfs/Emails/inbox
   # Directory vault destinazione (relativa a PROJECT_ROOT)
-  vault_root: lib/emails/
+  vault_root: Library/emails/
 
 knowledge_base:
   # Directory da includere nella ricerca (path relativi a PROJECT_ROOT)
   search_paths:
     - Library/Wiki/
-    - lib/documents/
+    - Library/documents/
     - Library/Handoff/
-    - lib/emails/
+    - Library/emails/
     - Library/deliverables/
 
   # Timeout massimo per ogni ricerca (secondi)

@@ -10,6 +10,7 @@ Gestisce:
 - Comando 'models': lista modelli disponibili
 - Modalita' batch: --prompt + --input
 - Modalita' interattiva: nessun argomento oppure -i
+- Generazione immagini: --image + --size + --ratio
 
 Utilizzo:
   python -m tools.llm "testo del prompt"
@@ -20,23 +21,33 @@ Utilizzo:
   python -m tools.llm models --provider grok
   python -m tools.llm --prompt Team/Prompts/valutazione-impatto.md --input docs/*.md
   python -m tools.llm -i
+  python -m tools.llm "un grifone" --model openai/gpt-5-image-mini --image --size 1K --ratio 1:1
 """
 
 from __future__ import annotations
 
 import io
+import json
 import sys
+import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Any
 
 import typer
 from loguru import logger
 
 from tools.llm.config import (
+    DEFAULT_IMAGE_MODEL,
+    DEFAULT_IMAGE_RATIO,
+    DEFAULT_IMAGE_SIZE,
     DEFAULT_PROVIDER,
     KNOWN_PRICES,
     PROMPTS_DIR,
     TOOL_VERSION,
+    VALID_IMAGE_RATIOS,
+    VALID_IMAGE_SIZES,
+    estimate_image_cost,
+    estimate_resolution,
     get_api_key,
 )
 from tools.llm.providers import PROVIDERS
@@ -44,7 +55,7 @@ from tools.llm.providers import PROVIDERS
 # App principale: gestisce il prompt singolo, batch, interattivo
 app = typer.Typer(
     name="llm",
-    help="Invia prompt a Grok o Gemini. Senza argomenti avvia la modalita' interattiva.",
+    help="Invia prompt a LLM o genera immagini. Senza argomenti avvia la modalita' interattiva.",
     no_args_is_help=False,
 )
 
@@ -108,6 +119,17 @@ def _print_dry_run(system: str | None, user_prompt: str, n_files: int = 1) -> No
 
 
 # ---------------------------------------------------------------------------
+# Helper output JSON per immagini
+# ---------------------------------------------------------------------------
+
+
+def _output_json(data: dict) -> None:
+    """Print JSON to stdout for machine consumption."""
+    sys.stdout.write(json.dumps(data, ensure_ascii=False) + "\n")
+    sys.stdout.flush()
+
+
+# ---------------------------------------------------------------------------
 # Formato prezzi modelli
 # ---------------------------------------------------------------------------
 
@@ -165,7 +187,7 @@ def _format_stats(response: Any) -> str:
                 return "?"
             return f"{n / 1000:.1f}k" if n >= 1000 else str(n)
 
-        parts.append(f"↑{_fmt(inp)} ↓{_fmt(out)} tok")
+        parts.append(f"\u2191{_fmt(inp)} \u2193{_fmt(out)} tok")
 
     # Costo stimato
     model_id = response.model_used or ""
@@ -176,7 +198,227 @@ def _format_stats(response: Any) -> str:
 
     if not parts:
         return ""
-    return "(" + " · ".join(parts) + ")"
+    return "(" + " \u00b7 ".join(parts) + ")"
+
+
+# ---------------------------------------------------------------------------
+# Helper generazione immagini
+# ---------------------------------------------------------------------------
+
+
+def _run_image_generation(
+    prompt: str,
+    model: str,
+    size: str,
+    ratio: str,
+    output_image: str,
+    api_key: str,
+    dry_run: bool,
+    negative_prompt: str | None,
+    seed: int | None,
+    input_image: str | None,
+    image_config_json: str | None,
+) -> None:
+    """Run image generation flow: validate, call API, save, output JSON.
+
+    Args:
+        prompt: Text prompt for generation.
+        model: OpenRouter model ID.
+        size: Image size (1K, 2K, 4K).
+        ratio: Aspect ratio.
+        output_image: Output directory template.
+        api_key: OpenRouter API key.
+        dry_run: If True, simulate without calling API.
+        negative_prompt: Negative prompt for supported models.
+        seed: Random seed for reproducibility.
+        input_image: Path for image-to-image.
+        image_config_json: Extra JSON for advanced config.
+    """
+    # Lazy imports to avoid circular deps on module load
+    from tools.llm.image_client import OpenRouterImageClient
+    from tools.llm.image_processor import ImageProcessor, slugify
+
+    # Validate size
+    if size not in VALID_IMAGE_SIZES:
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": "bad_request",
+                "error_message": (
+                    f"Invalid size '{size}'. Valid values: {', '.join(sorted(VALID_IMAGE_SIZES))}."
+                ),
+                "model": model,
+                "retryable": False,
+            }
+        )
+        raise typer.Exit(code=2)
+
+    # Validate ratio
+    if ratio not in VALID_IMAGE_RATIOS:
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": "bad_request",
+                "error_message": (
+                    f"Invalid ratio '{ratio}'. Valid values: "
+                    f"{', '.join(sorted(VALID_IMAGE_RATIOS))}."
+                ),
+                "model": model,
+                "retryable": False,
+            }
+        )
+        raise typer.Exit(code=2)
+
+    # Validate input image
+    if input_image and not Path(input_image).is_file():
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": "bad_request",
+                "error_message": f"Input image not found: {input_image}",
+                "model": model,
+                "retryable": False,
+            }
+        )
+        raise typer.Exit(code=2)
+
+    logger.debug(f"Image generation: Model={model}, Size={size}, Ratio={ratio}")
+
+    # --- Dry-run mode ---
+    if dry_run:
+        logger.info("DRY RUN — simulating image generation")
+        output_dir = ImageProcessor.resolve_output_dir(output_image)
+        slug = slugify(prompt)
+        mock_hash = "deadbeef"
+        mock_path = output_dir / f"{slug}-{mock_hash}.png"
+        est_cost = estimate_image_cost(model, size)
+        est_res = estimate_resolution(size, ratio)
+
+        _output_json(
+            {
+                "status": "success",
+                "path": str(mock_path),
+                "cost": est_cost,
+                "model": model,
+                "hash": mock_hash,
+                "size_bytes": 0,
+                "resolution": f"{est_res[0]}x{est_res[1]}",
+                "generation_time_s": 0.0,
+                "dry_run": True,
+            }
+        )
+        return
+
+    # Resolve output directory
+    output_dir = ImageProcessor.resolve_output_dir(output_image)
+    logger.debug(f"Output directory resolved: {output_dir}")
+
+    # API call
+    start_time = time.monotonic()
+
+    try:
+        with OpenRouterImageClient(api_key=api_key) as client:
+            result = client.generate(
+                prompt=prompt,
+                model=model,
+                size=size,
+                ratio=ratio,
+                input_image_path=input_image,
+                negative_prompt=negative_prompt,
+                seed=seed,
+                image_config_json=image_config_json,
+            )
+    except Exception as exc:
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": "generic",
+                "error_message": f"Unexpected error: {exc}",
+                "model": model,
+                "retryable": False,
+            }
+        )
+        raise typer.Exit(code=1) from exc
+
+    elapsed = time.monotonic() - start_time
+
+    # Handle API error
+    if not result.success:
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": result.error_type or "generic",
+                "error_message": result.error_message,
+                "model": model,
+                "retryable": result.retryable,
+                "generation_time_s": round(result.generation_time_s, 2),
+            }
+        )
+        raise typer.Exit(code=1 if not result.retryable else 0)
+
+    # No image data
+    if not result.image_base64:
+        _output_json(
+            {
+                "status": "fail",
+                "error_type": "generic",
+                "error_message": "No image data returned from API",
+                "model": model,
+                "retryable": False,
+                "generation_time_s": round(elapsed, 2),
+            }
+        )
+        raise typer.Exit(code=1)
+
+    resolution = f"{estimate_resolution(size, ratio)[0]}x{estimate_resolution(size, ratio)[1]}"
+
+    # Process and save image
+    try:
+        validator = ImageProcessor(base_dir=output_dir)
+        save_result = validator.save_image(
+            base64_data=result.image_base64,
+            prompt=prompt,
+            mime_type=result.mime_type or "image/png",
+            resolution=resolution,
+        )
+    except Exception as exc:
+        # Fallback: try fallback directory
+        logger.warning(f"Failed to save to primary dir, trying fallback: {exc}")
+        try:
+            fallback_dir = ImageProcessor.resolve_output_dir(None)
+            validator = ImageProcessor(base_dir=fallback_dir)
+            save_result = validator.save_image(
+                base64_data=result.image_base64,
+                prompt=prompt,
+                mime_type=result.mime_type or "image/png",
+                resolution=resolution,
+            )
+            logger.info(f"Saved to fallback directory: {fallback_dir}")
+        except Exception as fallback_exc:
+            _output_json(
+                {
+                    "status": "fail",
+                    "error_type": "generic",
+                    "error_message": f"Failed to save image: {fallback_exc}",
+                    "model": model,
+                    "retryable": False,
+                }
+            )
+            raise typer.Exit(code=1) from fallback_exc
+
+    # Success output
+    _output_json(
+        {
+            "status": "success",
+            "path": save_result["path"],
+            "cost": round(result.cost, 6),
+            "model": model,
+            "hash": save_result["hash"],
+            "size_bytes": save_result["size_bytes"],
+            "resolution": save_result["resolution"],
+            "generation_time_s": round(elapsed, 2),
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +428,7 @@ def _format_stats(response: Any) -> str:
 
 @app_models.command()
 def cmd_models(
-    provider: Optional[str] = typer.Option(
+    provider: str | None = typer.Option(
         None, "--provider", "-p", help="Filtra per provider (grok, gemini, openrouter)."
     ),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Output debug su stderr."),
@@ -253,20 +495,20 @@ def cmd_models(
 
 @app.command()
 def main(
-    prompt_text: Optional[str] = typer.Argument(None, help="Testo del prompt (opzionale)."),
+    prompt_text: str | None = typer.Argument(None, help="Testo del prompt (opzionale)."),
     provider: str = typer.Option(
         DEFAULT_PROVIDER, "--provider", "-p", help="Provider LLM (grok, gemini, openrouter)."
     ),
-    model: Optional[str] = typer.Option(None, "--model", "-m", help="Override modello."),
-    system: Optional[str] = typer.Option(None, "--system", help="System prompt o path a file."),
+    model: str | None = typer.Option(None, "--model", "-m", help="Override modello."),
+    system: str | None = typer.Option(None, "--system", help="System prompt o path a file."),
     stdin: bool = typer.Option(False, "--stdin", help="Legge prompt da stdin."),
     interactive: bool = typer.Option(False, "--interactive", "-i", help="Modalita' interattiva."),
-    prompt_file: Optional[Path] = typer.Option(None, "--prompt", help="Template Markdown batch."),
-    input: Optional[List[Path]] = typer.Option(None, "--input", help="File/glob per batch."),
-    output: Optional[Path] = typer.Option(None, "--output", help="Cartella output batch."),
+    prompt_file: Path | None = typer.Option(None, "--prompt", help="Template Markdown batch."),
+    input: list[Path] | None = typer.Option(None, "--input", help="File/glob per batch."),
+    output: Path | None = typer.Option(None, "--output", help="Cartella output batch."),
     merge: bool = typer.Option(False, "--merge", help="Merge file in singolo call."),
     skip_existing: bool = typer.Option(False, "--skip-existing", help="Salta output esistenti."),
-    var: Optional[List[str]] = typer.Option(
+    var: list[str] | None = typer.Option(
         None, "--var", metavar="KEY=VALUE", help="Variabile template (ripetibile)."
     ),
     agent_count: int = typer.Option(
@@ -280,8 +522,52 @@ def main(
     dry_run: bool = typer.Option(False, "--dry-run", help="Mostra payload senza chiamare API."),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Output debug su stderr."),
     version: bool = typer.Option(False, "--version", help="Mostra versione ed esce."),
+    # Image generation flags
+    image: bool = typer.Option(
+        False,
+        "--image",
+        help="Genera immagine invece di testo (usa OpenRouter con modello immagine).",
+    ),
+    size: str = typer.Option(
+        DEFAULT_IMAGE_SIZE,
+        "--size",
+        "-s",
+        help=f"Risoluzione immagine: {', '.join(sorted(VALID_IMAGE_SIZES))} (solo con --image).",
+    ),
+    ratio: str = typer.Option(
+        DEFAULT_IMAGE_RATIO,
+        "--ratio",
+        "-r",
+        help=f"Aspect ratio: {', '.join(sorted(VALID_IMAGE_RATIOS))} (solo con --image).",
+    ),
+    output_image: str = typer.Option(
+        "Library/deliverables/images/YYYY/MM/",
+        "--output-image",
+        help="Directory output immagini (supporta YYYY, MM, DD).",
+    ),
+    negative_prompt: str | None = typer.Option(
+        None,
+        "--negative-prompt",
+        "-n",
+        help="Prompt negativo (modelli che lo supportano, solo con --image).",
+    ),
+    seed: int | None = typer.Option(
+        None,
+        "--seed",
+        help="Seed per riproducibilita' (solo con --image).",
+    ),
+    input_image: str | None = typer.Option(
+        None,
+        "--input-image",
+        help="Path per image-to-image (solo con --image).",
+    ),
+    image_config_json: str | None = typer.Option(
+        None,
+        "--image-config-json",
+        help="JSON extra per configurazioni avanzate immagine (solo con --image).",
+    ),
 ) -> None:
-    """Invia prompt a Grok o Gemini. Senza argomenti avvia la modalita' interattiva."""
+    """Invia prompt a LLM o genera immagini. Senza argomenti avvia la modalita' interattiva."""
     # Forza UTF-8 su stdout e stderr per gestire caratteri non-ASCII
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -295,6 +581,62 @@ def main(
     if version:
         print(f"llm {TOOL_VERSION}")
         raise typer.Exit(code=0)
+
+    _setup_logging(verbose=verbose)
+
+    # --- Modalita' immagine ---
+    if image:
+        # Determina prompt
+        if stdin:
+            logger.debug("Lettura prompt da stdin per immagine")
+            prompt = sys.stdin.read()
+            if not prompt.strip():
+                _output_json(
+                    {
+                        "status": "fail",
+                        "error_type": "bad_request",
+                        "error_message": "Stdin vuoto — nessun prompt ricevuto.",
+                        "model": model or DEFAULT_IMAGE_MODEL,
+                        "retryable": False,
+                    }
+                )
+                raise typer.Exit(code=1)
+        elif prompt_text:
+            prompt = prompt_text
+        else:
+            _output_json(
+                {
+                    "status": "fail",
+                    "error_type": "bad_request",
+                    "error_message": (
+                        "Prompt richiesto per la generazione immagini. "
+                        'Usa: python -m tools.llm "testo" --image'
+                    ),
+                    "model": model or DEFAULT_IMAGE_MODEL,
+                    "retryable": False,
+                }
+            )
+            raise typer.Exit(code=1)
+
+        effective_model = model or DEFAULT_IMAGE_MODEL
+
+        # Resolve API key — image generation always uses OpenRouter
+        api_key = get_api_key("openrouter")
+
+        _run_image_generation(
+            prompt=prompt,
+            model=effective_model,
+            size=size,
+            ratio=ratio,
+            output_image=output_image,
+            api_key=api_key,
+            dry_run=dry_run,
+            negative_prompt=negative_prompt,
+            seed=seed,
+            input_image=input_image,
+            image_config_json=image_config_json,
+        )
+        return
 
     # --- Risoluzione --system come path ---
     if system:
@@ -312,8 +654,6 @@ def main(
             _k, _, _v = _entry.partition("=")
             if _k:
                 extra_vars[_k] = _v
-
-    _setup_logging(verbose=verbose)
 
     # --- Modalita' interattiva ---
     no_input = not prompt_text and not stdin and not prompt_file

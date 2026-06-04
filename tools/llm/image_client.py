@@ -1,4 +1,4 @@
-"""OpenRouter HTTP client for image generation.
+"""OpenRouter HTTP client for image generation (merged from tools/image_gen/client.py).
 
 Handles chat completions API calls with retry logic, timeout, and
 structured response parsing. Supports Gemini-style (modalities) and
@@ -7,18 +7,20 @@ FLUX-style (per-MP pricing) models.
 
 from __future__ import annotations
 
+import base64
 import json
 import time
+from pathlib import Path
 from typing import Any
 
 import httpx
 from loguru import logger
 
-from tools.image_gen.config import (
-    MAX_RETRIES,
+from tools.llm.config import (
+    IMAGE_MAX_RETRIES,
+    IMAGE_REQUEST_TIMEOUT,
     OPENROUTER_API_URL,
-    REQUEST_TIMEOUT,
-    estimate_cost,
+    estimate_image_cost,
 )
 
 # ---------------------------------------------------------------------------
@@ -64,6 +66,7 @@ class ImageResult:
         error_message: str,
         retryable: bool = False,
         model: str = "",
+        generation_time_s: float = 0.0,
     ) -> ImageResult:
         return cls(
             success=False,
@@ -71,6 +74,7 @@ class ImageResult:
             error_message=error_message,
             retryable=retryable,
             model=model,
+            generation_time_s=generation_time_s,
         )
 
 
@@ -103,7 +107,7 @@ class OpenRouterImageClient:
     def client(self) -> httpx.Client:
         if self._client is None:
             self._client = httpx.Client(
-                timeout=httpx.Timeout(REQUEST_TIMEOUT),
+                timeout=httpx.Timeout(IMAGE_REQUEST_TIMEOUT),
                 headers=self._build_headers(),
             )
         return self._client
@@ -156,10 +160,10 @@ class OpenRouterImageClient:
         last_error: ImageResult | None = None
         start_time = time.monotonic()
 
-        for attempt in range(MAX_RETRIES + 1):
+        for attempt in range(IMAGE_MAX_RETRIES + 1):
             if attempt > 0:
                 wait = 2**attempt
-                logger.info(f"Retry attempt {attempt}/{MAX_RETRIES} in {wait}s...")
+                logger.info(f"Retry attempt {attempt}/{IMAGE_MAX_RETRIES} in {wait}s...")
                 time.sleep(wait)
 
             try:
@@ -167,12 +171,13 @@ class OpenRouterImageClient:
                 elapsed = time.monotonic() - start_time
                 result = self._parse_response(response, model, elapsed)
 
-                if not result.success and result.retryable and attempt < MAX_RETRIES:
+                if not result.success and result.retryable and attempt < IMAGE_MAX_RETRIES:
                     last_error = result
                     continue
 
                 if result.success and result.input_tokens > 0:
-                    result.cost = estimate_cost(model, size, prompt_tokens=result.input_tokens)
+                    tok = result.input_tokens
+                    result.cost = estimate_image_cost(model, size, prompt_tokens=tok)
 
                 return result
 
@@ -180,12 +185,12 @@ class OpenRouterImageClient:
                 elapsed = time.monotonic() - start_time
                 last_error = ImageResult.from_error(
                     "bad_request",
-                    f"Request timed out after {REQUEST_TIMEOUT}s",
+                    f"Request timed out after {IMAGE_REQUEST_TIMEOUT}s",
                     retryable=True,
                     model=model,
                 )
                 last_error.generation_time_s = elapsed
-                if attempt < MAX_RETRIES:
+                if attempt < IMAGE_MAX_RETRIES:
                     continue
                 return last_error
 
@@ -209,7 +214,7 @@ class OpenRouterImageClient:
                     model=model,
                 )
                 last_error.generation_time_s = elapsed
-                if attempt < MAX_RETRIES:
+                if attempt < IMAGE_MAX_RETRIES:
                     continue
                 return last_error
 
@@ -275,9 +280,6 @@ class OpenRouterImageClient:
 
     def _build_multimodal_content(self, prompt: str, image_path: str) -> list[dict[str, Any]]:
         """Build multimodal content array with text and image parts."""
-        import base64
-        from pathlib import Path
-
         path = Path(image_path)
         if not path.is_file():
             raise FileNotFoundError(f"Input image not found: {image_path}")
@@ -327,6 +329,7 @@ class OpenRouterImageClient:
                 "Rate limit exceeded. Try again later.",
                 retryable=True,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         if response.status_code == 402:
@@ -335,6 +338,7 @@ class OpenRouterImageClient:
                 "Insufficient credits. Please add funds to your OpenRouter account.",
                 retryable=False,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         if response.status_code == 401:
@@ -343,6 +347,7 @@ class OpenRouterImageClient:
                 "Invalid API key or unauthorized.",
                 retryable=False,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         if response.status_code == 400:
@@ -352,6 +357,7 @@ class OpenRouterImageClient:
                 err_msg,
                 retryable=False,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         if response.status_code != 200:
@@ -362,6 +368,7 @@ class OpenRouterImageClient:
                 f"HTTP {response.status_code}: {err_msg}",
                 retryable=response.status_code >= 500,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         try:
@@ -372,6 +379,7 @@ class OpenRouterImageClient:
                 f"Invalid JSON response: {e}",
                 retryable=False,
                 model=model,
+                generation_time_s=elapsed,
             )
 
         result = ImageResult(success=True, model=model, generation_time_s=elapsed)
@@ -389,14 +397,16 @@ class OpenRouterImageClient:
                     return ImageResult.from_error(
                         "generic",
                         err_msg,
-                        retryable=False,
+                        retryable=True,
                         model=model,
+                        generation_time_s=elapsed,
                     )
                 return ImageResult.from_error(
                     "generic",
                     "No image data found in response",
-                    retryable=False,
+                    retryable=True,
                     model=model,
+                    generation_time_s=elapsed,
                 )
         else:
             result.image_base64 = image_data
@@ -459,7 +469,6 @@ class OpenRouterImageClient:
             images = message.get("images", [])
             if images and isinstance(images, list):
                 img = images[0]
-                # Check image_url format for type, fallback to format field
                 image_url = img.get("image_url", {})
                 if isinstance(image_url, dict):
                     url = image_url.get("url", "")

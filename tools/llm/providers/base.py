@@ -35,7 +35,7 @@ class ChatSessionProtocol(Protocol):
     La history viene mantenuta internamente dall'implementazione.
     """
 
-    def send(self, prompt: str) -> "ChatResponse":
+    def send(self, prompt: str) -> ChatResponse:
         """
         Invia un messaggio mantenendo la history della sessione.
 
@@ -85,7 +85,7 @@ class ProviderProtocol(Protocol):
         model: str | None = None,
         system: str | None = None,
         agent_count: int = 4,
-    ) -> "ChatResponse":
+    ) -> ChatResponse:
         """
         Invia un prompt al modello e restituisce la risposta.
 
@@ -113,7 +113,7 @@ class ProviderProtocol(Protocol):
         self,
         model: str | None = None,
         system: str | None = None,
-    ) -> "ChatSessionProtocol":
+    ) -> ChatSessionProtocol:
         """
         Crea una sessione di chat multi-turn (opzionale).
 

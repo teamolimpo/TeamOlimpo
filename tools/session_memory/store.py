@@ -3,7 +3,7 @@
 Provides ``SessionStore`` with full CRUD for sessions, observations, entities,
 summaries, and FTS5 search.
 
-Storage location: ``lib/System/Poros/session.db`` (relative to project root,
+Storage location: ``Library/System/Poros/session.db`` (relative to project root,
 overridable via the ``SESSION_DB_PATH`` environment variable).
 """
 
@@ -28,7 +28,7 @@ from tools.session_memory.models import (
 # Default storage path
 # ---------------------------------------------------------------------------
 
-_DEFAULT_DB_REL = Path("lib/System/Poros/session.db")
+_DEFAULT_DB_REL = Path("Library/System/Poros/session.db")
 
 
 def _resolve_db_path() -> Path:
@@ -37,7 +37,7 @@ def _resolve_db_path() -> Path:
     Priority:
     1. ``SESSION_DB_PATH`` environment variable
        (absolute path or relative to project root)
-    2. Default: ``lib/System/Poros/session.db`` relative to project root
+    2. Default: ``Library/System/Poros/session.db`` relative to project root
 
     Returns:
         Absolute path to the SQLite database file.

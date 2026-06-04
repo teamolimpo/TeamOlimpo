@@ -6,17 +6,17 @@ aliases: [email vault, vault email, addressbook]
 
 # Mapping Vault Email — Architettura e Regole
 
-> **ℹ️ Nota**: il vault email ora è integrato nel vault principale (`lib/emails/`). Non ha niente a che fare con `Inbox/` (che è per documenti/PDF grezzi).
+> **ℹ️ Nota**: il vault email ora è integrato nel vault principale (`Library/emails/`). Non ha niente a che fare con `Inbox/` (che è per documenti/PDF grezzi).
 
 ---
 
 ## 1. Architettura
 
-Il vault email vive in `lib/emails/` (configurato via `EMAIL_VAULT_ROOT` in env var o `tools/config.yaml`).
+Il vault email vive in `Library/emails/` (configurato via `EMAIL_VAULT_ROOT` in env var o `tools/config.yaml`).
 
 ```
 PROJECT_ROOT/
-├── lib/emails/                  ← EMAIL INTEGRATE nel vault principale
+├── Library/emails/                  ← EMAIL INTEGRATE nel vault principale
 │   ├── Inbox/emails/               ← Note email .md (cronologico YYYY/MM/)
 │   ├── Inbox/attachments/          ← Allegati email
 │   ├── Addressbook/                    ← Rubrica contatti
@@ -27,11 +27,11 @@ PROJECT_ROOT/
 │   └── .obsidian/                  ← Config Obsidian
 │
 ├── Library/tools/email_processor/          ← Tool Python per import/elaborazione
-├── lib/                        ← VAULT PRINCIPALE Team Olimpo (NON toccato dalle email)
+├── Library/                        ← VAULT PRINCIPALE Team Olimpo (NON toccato dalle email)
 └── Inbox/                     ← Documenti/PDF in ingresso (NON email)
 ```
 
-**Principio**: il vault email è integrato in `lib/emails/`. Le operazioni di import, elaborazione e catalogazione contatti avvengono tutte dentro `lib/emails/`.
+**Principio**: il vault email è integrato in `Library/emails/`. Le operazioni di import, elaborazione e catalogazione contatti avvengono tutte dentro `Library/emails/`.
 
 ---
 
@@ -195,10 +195,10 @@ email_processor:
 
 ## 7. Relazione con il vault principale Team Olimpo
 
-| Area | Vault email | Vault principale (lib/) |
+| Area | Vault email | Vault principale (Library/) |
 |---|---|---|
 | Scopo | Email, contatti, addressbook | Documenti tecnici, wiki, meta |
-| Path | `emails/` | `lib/` |
+| Path | `emails/` | `Library/` |
 | Contatti | `Addressbook/` | N/A |
 | Email | `Inbox/emails/` | N/A |
 | Tool | `Library/tools/email_processor/` | Tutti gli altri tool |

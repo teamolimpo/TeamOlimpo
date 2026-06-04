@@ -130,7 +130,7 @@ Handoff bodies use role references (designer, researcher, orchestrator), not age
    - **Exit condition**: continue cycling until one of: (a) user requests summary, (b) user signals satisfaction/finds clarity, (c) 3+ cycles without progress → offer to summarize or redirect, (d) user disengages → offer to save session notes.
 3. **Detect summary request** — Input: user's statement (explicit or implicit need to capture). Action: recognize trigger phrases ("create a summary", "save this", "recap"). If none uttered after substantial exchange, offer proactively.
 4. **Create summary** — Input: session transcript, key exchanges. Action: synthesize into structured sections: Context, Key Points, Decisions/Conclusions (explicitly labeled as "option surfaced" not "decision made"), Next Steps, Metis Notes.
-5. **Deposit in lib/deliverables** — Output: save as `Library/deliverables/brainstorming-summary-YYYY-MM-DD.md`. Confirm path to user.
+5. **Deposit in Library/deliverables** — Output: save as `Library/deliverables/brainstorming-summary-YYYY-MM-DD.md`. Confirm path to user.
 
 ## IntentGate — Routing Table
 

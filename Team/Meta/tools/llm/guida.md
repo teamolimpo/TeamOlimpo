@@ -218,7 +218,7 @@ Token out: 393
 | Flag | Argomento | Descrizione |
 |------|-----------|-------------|
 | `--prompt` | `FILE.md` | File Markdown contenente il template (sezione `## Prompt` obbligatoria) |
-| `--input` | `GLOB\|PATH...` | Uno o più file o glob pattern da processare (es. `lib/documents/*.md`) |
+| `--input` | `GLOB\|PATH...` | Uno o più file o glob pattern da processare (es. `Library/documents/*.md`) |
 | `--output` | `CARTELLA` | Cartella dove salvare i risultati. Default: stdout con separatori |
 
 ### Flag della modalità interattiva
@@ -439,7 +439,7 @@ Permette di iniettare variabili personalizzate nei template batch. Ogni `--var` 
 # Inietta la variabile 'site' nel template
 uv run python -m tools.llm \
   --prompt Team/Prompts/general/analisi.md \
-  --input "lib/documents/*.md" \
+  --input "Library/documents/*.md" \
   --var site=Stabilimento \
   --var anno=2026
 ```
@@ -455,7 +455,7 @@ Mostra il payload (system prompt + prompt utente renderizzato) che verrebbe invi
 uv run python -m tools.llm \
   --dry-run \
   --prompt Team/Prompts/general/analisi.md \
-  --input "lib/documents/*.md" \
+  --input "Library/documents/*.md" \
   --var site=Stabilimento
 
 # Anteprima chiamata singola
@@ -554,8 +554,8 @@ uv run python -m tools.llm --prompt <template.md> --input <file_o_glob> [--outpu
 **Input (`--input`)**:
 - Uno o più argomenti, ognuno può essere:
   - Un path assoluto: `C:\path\to\file.md`
-  - Un path relativo: `lib/documents/doc.md`
-  - Un glob pattern: `lib/documents/*.md`, `lib/**/*.md`
+  - Un path relativo: `Library/documents/doc.md`
+  - Un glob pattern: `Library/documents/*.md`, `Library/**/*.md`
 - I duplicati vengono rimossi automaticamente
 - Se nessun file viene trovato, il comando esce con errore
 
@@ -614,7 +614,7 @@ Durante l'elaborazione, il comando stampa su **stderr** il progresso nel formato
 # Analizza tutti i documenti, salva i risultati in Team/Handoff/
 uv run python -m tools.llm \
   --prompt Team/Prompts/general/analisi.md \
-  --input "lib/documents/*.md" \
+  --input "Library/documents/*.md" \
   --output Team/Handoff/risultati-analisi
 ```
 
@@ -633,7 +633,7 @@ Output:
 # Analizza due file specifici, stampa i risultati concatenati su stdout
 uv run python -m tools.llm \
   --prompt Team/Prompts/general/analisi.md \
-  --input lib/documents/doc1.md lib/documents/doc2.md
+  --input Library/documents/doc1.md Library/documents/doc2.md
 ```
 
 Output (su stdout):
@@ -669,7 +669,7 @@ Output (su stdout):
 ```powershell
 uv run python -m tools.llm \
   --prompt Team/Prompts/general/analisi.md \
-  --input "lib/documents/**/*.md" \
+  --input "Library/documents/**/*.md" \
   --provider gemini \
   --model gemini-2.5-flash \
   --output Team/Handoff/analisi
@@ -714,7 +714,7 @@ La modalità interattiva si attiva automaticamente quando:
    - Default: "Testo libero"
 
 2. **Input opzionale** (solo se hai scelto un prompt da template):
-   - Chiede un file o glob pattern (es. `lib/documents/*.md`)
+   - Chiede un file o glob pattern (es. `Library/documents/*.md`)
    - Se specifichi un file singolo: elabora solo quel file
    - Se specifichi un glob: esegue batch interattivo
    - Se lasci vuoto (invio): chiede il testo da inserire nel placeholder `{{document_text}}`
@@ -746,8 +746,8 @@ Prompt disponibili:
 Scelta [default: 4]: 1
 
 File di input (glob, path, o invio per testo libero):
-  Esempi: lib/documents/*.md  oppure  lib/documents/doc1.md
-> lib/documents/doc1.md
+  Esempi: Library/documents/*.md  oppure  Library/documents/doc1.md
+> Library/documents/doc1.md
 
 Provider [grok/gemini, default: grok]:
 Modello [invio per default: grok-4-1-fast-non-reasoning]:

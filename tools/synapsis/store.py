@@ -4,7 +4,7 @@ Provides ``SynapsisStore`` with full CRUD for sessions, observations,
 tasks, task events, entities, summaries, counters, domains, memory layers,
 and FTS5 search — combining SessionStore + StateStore into a single class.
 
-Storage location: ``lib/System/Poros/synapsis.db`` (relative to project root,
+Storage location: ``Library/System/Poros/synapsis.db`` (relative to project root,
 overridable via the ``SYNAPSIS_DB_PATH`` environment variable).
 """
 

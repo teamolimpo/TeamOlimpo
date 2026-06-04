@@ -123,7 +123,7 @@ permission:
 |------|---------------|----------|
 | Code / scripts | `bash: allow` | `tools/**` |
 | Web research | `websearch + webfetch: allow` | — |
-| Content writing | — | `lib/documents/**`, `Library/deliverables/**` |
+| Content writing | — | `Library/documents/**`, `Library/deliverables/**` |
 | Orchestrator | `task: allow` | full access (no path restriction) |
 
 **Rules:**

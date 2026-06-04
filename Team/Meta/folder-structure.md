@@ -27,10 +27,10 @@ aliases: [folder-structure, struttura-cartelle]
 
 ### 1.1 Sintomi
 
-- **`knowledge_search` restituisce path assoluti** — i risultati includono `/home/stra/lib/...` invece di `lib/...`
+- **`knowledge_search` restituisce path assoluti** — i risultati includono `/home/stra/Library/...` invece di `Library/...`
 - **Repo clonati fuori workspace** — a volte finiscono in `/tmp/` invece che in una cartella dedicata
-- **Confusione su dove mettere i file** — handoff, scratchpad, analisi, repo: tutto finito in `lib/Fucina/`
-- **Link rotti** — documenti e tool referenziano `lib/Fucina/...` che è dentro un symlink
+- **Confusione su dove mettere i file** — handoff, scratchpad, analisi, repo: tutto finito in `Library/Fucina/`
+- **Link rotti** — documenti e tool referenziano `Library/Fucina/...` che è dentro un symlink
 
 ### 1.2 Root cause
 
@@ -39,11 +39,11 @@ Il repository ha due aree fondamentali:
 | Area | Path reale | Descrizione |
 |------|-----------|-------------|
 | **Workspace** | `/home/stra/TeamOlimpo/` | Repository git principale |
-| **Library** | `/home/stra/lib/` (symlink → `TeamOlimpo/Library`) | Dati privati, git separato, backup automatico |
+| **Library** | `/home/stra/Library/` (symlink → `TeamOlimpo/Library`) | Dati privati, git separato, backup automatico |
 
-`lib/Fucina/` è nato durante il repo split (maggio 2026) per ospitare file operativi (handoff, scratchpad, repo, analisi). Ma "Fucina" è un concetto operativo — non ha senso in una libreria/biblioteca. È un ossimoro.
+`Library/Fucina/` è nato durante il repo split (maggio 2026) per ospitare file operativi (handoff, scratchpad, repo, analisi). Ma "Fucina" è un concetto operativo — non ha senso in una libreria/biblioteca. È un ossimoro.
 
-Inoltre, il symlink causa problemi tecnici: quando i tool risolvono `lib/` col `.resolve()`, ottengono `/home/stra/lib/...` che non è sotto il project root, rompendo `relative_to()` e producendo path assoluti.
+Inoltre, il symlink causa problemi tecnici: quando i tool risolvono `Library/` col `.resolve()`, ottengono `/home/stra/Library/...` che non è sotto il project root, rompendo `relative_to()` e producendo path assoluti.
 
 ---
 
@@ -83,7 +83,7 @@ TeamOlimpo/                          ← git principale
 │
 ├── Inbox/                           ← PDF in ingresso
 │
-└── lib/ → /home/stra/lib/   ← SYMLINK — dati privati (git separato)
+└── Library/ → /home/stra/Library/   ← SYMLINK — dati privati (git separato)
     ├── Wiki/                        ← Knowledge wiki
     ├── documents/                   ← Documenti convertiti
     ├── deliverables/                ← Output finali per utente
@@ -92,14 +92,14 @@ TeamOlimpo/                          ← git principale
     └── emails/                      ← Vault email
 ```
 
-### Perché Handoff sta in `Team/` e non in `lib/`
+### Perché Handoff sta in `Team/` e non in `Library/`
 
 - Gli handoff sono **output intermedi** di lavorazioni, non documenti finali
 - Hanno **valore storico** → tracciati da git (eccezione dentro `Team/`)
 - Sono **consultati dal team** durante le sessioni di lavoro, non consultati come archivio
 - Una volta referenziati nel wiki perdono il path come dipendenza (si usa il frontmatter)
 
-### Perché Fucina sta in `Team/` e non in `lib/`
+### Perché Fucina sta in `Team/` e non in `Library/`
 
 - "Fucina" = forge, officina → concetto operativo
 - Contiene **solo file temporanei** che vengono consumati e buttati
@@ -147,7 +147,7 @@ Team/Fucina/
 ```
 Team/Poros/
 ├── Scratchpad.md         ← Spazio di lavoro operativo
-└── taskmanager state (obsolete)            ← Stato persistente (migrato da lib/Fucina/Poros/)
+└── taskmanager state (obsolete)            ← Stato persistente (migrato da Library/Fucina/Poros/)
 ```
 ```
 
@@ -159,18 +159,18 @@ Team/Poros/
 
 | Da | A | Tipo |
 |----|---|------|
-| `lib/Fucina/Handoff/` | `Team/Handoff/` | 📦 Spostamento fisico |
-| `lib/Fucina/Poros/` | `Team/Poros/` | 📦 Spostamento fisico |
-| `lib/Fucina/repos/` | `Team/Fucina/repos/` | 📦 Spostamento fisico |
-| `lib/Fucina/*.md` | `Team/Fucina/analyses/` | 📦 Spostamento fisico |
-| `lib/Fucina/` | *(eliminata)* | 🗑️ Eliminazione |
+| `Library/Fucina/Handoff/` | `Team/Handoff/` | 📦 Spostamento fisico |
+| `Library/Fucina/Poros/` | `Team/Poros/` | 📦 Spostamento fisico |
+| `Library/Fucina/repos/` | `Team/Fucina/repos/` | 📦 Spostamento fisico |
+| `Library/Fucina/*.md` | `Team/Fucina/analyses/` | 📦 Spostamento fisico |
+| `Library/Fucina/` | *(eliminata)* | 🗑️ Eliminazione |
 
 ### 5.2 Config changes
 
 | File | Modifica |
 |------|----------|
-| `tools/config.yaml` → `handoff_root` | `lib/Fucina/Handoff` → `Team/Handoff` |
-| `tools/config.yaml` → `search_paths` | `lib/Fucina/Handoff/` → `Team/Handoff/` |
+| `tools/config.yaml` → `handoff_root` | `Library/Fucina/Handoff` → `Team/Handoff` |
+| `tools/config.yaml` → `search_paths` | `Library/Fucina/Handoff/` → `Team/Handoff/` |
 | `.gitignore` | Aggiungere `Team/Fucina/` |
 | `AGENTS.md` | Aggiornare sezione `## Folder Structure` + path Poros output |
 
@@ -180,13 +180,13 @@ Team/Poros/
 |------|-------------------|
 | `tools/handoff/server.py` | Commento/docstring (riga 124) |
 | `tools/handoff/cli.py` | Commenti interni |
-| `tools/handoff-register-guida.md` | Molteplici riferimenti `lib/Fucina/Handoff` → `Team/Handoff` |
-| `tools/preflight_check/cli.py` | Se referenzia `lib/Fucina/` |
+| `tools/handoff-register-guida.md` | Molteplici riferimenti `Library/Fucina/Handoff` → `Team/Handoff` |
+| `tools/preflight_check/cli.py` | Se referenzia `Library/Fucina/` |
 
 
 ### 5.4 Documentation changes
 
-Oltre a `AGENTS.md`, i seguenti file in `Team/` contengono riferimenti a `lib/Fucina/` e vanno aggiornati:
+Oltre a `AGENTS.md`, i seguenti file in `Team/` contengono riferimenti a `Library/Fucina/` e vanno aggiornati:
 
 | File | Priorità |
 |------|----------|
@@ -218,7 +218,7 @@ Tutti i path nei documenti, tool, e output devono essere **relativi al project r
 
 ### Regola 2: Non creare Fucina in Library
 
-`lib/Fucina/` non deve esistere. Se serve spazio per file operativi, usare `Team/Fucina/`.
+`Library/Fucina/` non deve esistere. Se serve spazio per file operativi, usare `Team/Fucina/`.
 
 ### Regola 3: Repo clonati in Team/Fucina/repos/
 
@@ -230,7 +230,7 @@ Tutto in `Team/` è tracciato da git per default. Solo `Team/Fucina/` è esplici
 
 ### Regola 5: Library solo dati puri
 
-`lib/` contiene esclusivamente:
+`Library/` contiene esclusivamente:
 - `Wiki/` — conoscenza
 - `documents/` — documenti convertiti  
 - `deliverables/` — output finali
@@ -244,18 +244,18 @@ Niente working file, niente repo, niente scratchpad.
 
 ## 7. Storico Decisioni
 
-### ADR-001: Eliminazione di lib/Fucina/
+### ADR-001: Eliminazione di Library/Fucina/
 
 **Data**: 2026-05-22
-**Decisione**: Spostare tutto il contenuto di `lib/Fucina/` in `Team/Handoff/` e `Team/Fucina/`. Eliminare `lib/Fucina/`.
+**Decisione**: Spostare tutto il contenuto di `Library/Fucina/` in `Team/Handoff/` e `Team/Fucina/`. Eliminare `Library/Fucina/`.
 **Motivazione**: Fucina è concetto operativo, non da biblioteca. Il symlink causa path assoluti nei tool.
 **Conseguenze**: 
 - `Team/Handoff/` diventa tracciato da git
 - `Team/Fucina/` nasce come area gitignorata per working file
 - `tools/config.yaml` aggiornato con nuovo `handoff_root`
-- Tutti i riferimenti a `lib/Fucina/` nei documenti vanno aggiornati
+- Tutti i riferimenti a `Library/Fucina/` nei documenti vanno aggiornati
 
 ### Riferimenti storici
 
-- Precedente repo split (2026-05): `Team/Handoff/` → `lib/Fucina/Handoff/` (ora invertito)
+- Precedente repo split (2026-05): `Team/Handoff/` → `Library/Fucina/Handoff/` (ora invertito)
 - Vedi `Team/Quarantine/prompt-fix-broken-refs.md` per lo storico della migrazione precedente

@@ -36,7 +36,7 @@ class GeminiChatSession:
         self.model = model
         logger.debug(f"GeminiChatSession creata — modello={model}")
 
-    def send(self, prompt: str) -> "ChatResponse":
+    def send(self, prompt: str) -> ChatResponse:
         """
         Invia un messaggio mantenendo la history della sessione.
 

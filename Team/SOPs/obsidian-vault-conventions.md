@@ -6,90 +6,11 @@ tags: [sops, obsidian, conventions]
 
 # Library — Obsidian Vault
 
-`lib/` is an **Obsidian vault**. Every `.md` file written here must follow the conventions in this document to ensure that links, images, and metadata work correctly when the vault is opened in Obsidian.
+`Library/` is an **Obsidian vault**. Every `.md` file written here must follow the conventions in this document to ensure that links, images, and metadata work correctly when the vault is opened in Obsidian.
 
-This document is the operational reference for all team members that produce output in the Library.
+  The path must be **relative to the `.md` file location**. Documents in `Library/documents/` use `../assets/images/<slug>/` to reference extracted images.
 
----
-
-## Vault structure
-
-```
-lib/
-├── .obsidian/          # Obsidian configuration (do not edit manually)
-├── assets/
-│   └── images/         # Images extracted from PDFs, organized by slug
-│       └── <slug>/     # One folder per document
-├── data/               # SQLite databases and logs (NOT Markdown — ignored by Obsidian)
-├── documents/          # Markdown files converted from PDFs
-├── Meta/               # Tool guides, templates, and system docs
-└── SOPs/               # Operational procedures referenced by agents
-```
-
-> **Note**: the `data/` folder contains non-Markdown files (SQLite, YAML, logs). Obsidian sees it but does not index it as notes. Do not create `.md` files in `data/` unless explicitly required.
-
----
-
-## Internal link rules
-
-Obsidian uses **wikilinks** as its native format. Always use this syntax for internal vault links:
-
-```
-[[filename]]                  → link to a note
-[[filename|text]]             → link with alternative text
-[[filename#Section]]          → link to a specific section
-[[filename#Section|text]]     → link to section with text
-[[filename#^block-id]]        → link to a specific block
-[[#Section]]                  → link to heading in the current note
-```
-
-**Block IDs** are added at the end of a paragraph with the syntax ` ^name-id` (one space before `^`). May contain only Latin letters, numbers, and hyphens.
-
-**Link resolution**: Obsidian searches the entire vault using the shortest unique path. If only one `report.md` exists, `[[report]]` finds it anywhere. If duplicates exist, specify the minimum path needed to disambiguate (e.g. `[[folder/report]]`).
-
-**Avoid** standard Markdown for internal links:
-```
-❌ [text](../documents/report.md)   → works but not native Obsidian
-✓  [[report|text]]                  → correct form
-```
-
-Standard Markdown links `[text](url)` should be used **only for external URLs**.
-
----
-
-## Image rules
-
-Images in the vault follow a precise convention. Two valid syntaxes:
-
-### Wikilink syntax (preferred for vault images)
-
-```
-![[image.png]]           → embed image
-![[image.png|300]]       → fixed width 300px (proportional height)
-![[image.png|300x200]]   → width x height in pixels
-![[doc.pdf]]             → embed entire PDF
-![[doc.pdf#page=3]]      → embed specific PDF page
-![[other-note]]          → embed content of another note
-![[other-note#Section]]  → embed a specific section
-```
-
-Obsidian searches the entire vault for the image file. Works if the filename is unique in the vault. If duplicates exist, specify the path: `![[assets/images/slug/img.png]]`.
-
-### Standard Markdown syntax (required for explicit paths)
-
-```
-![alt text](../assets/images/<slug>/image.png)
-```
-
-The path must be **relative to the `.md` file location**. Documents in `lib/documents/` use `../assets/images/<slug>/` to reference extracted images.
-
-> **Operational rule**: the `pdf_converter` tool automatically produces the correct relative path. If writing a `.md` file manually with images, use the relative path `../assets/images/<slug>/name.png` — never absolute paths, never paths relative to the project root.
-
-### Image folder per document
-
-Each document has its own dedicated image folder:
-```
-lib/assets/images/<document-slug>/
+Library/assets/images/<document-slug>/
 ```
 
 Example: for `documents/nk-2400-0150.md` images are in `assets/images/nk-2400-0150/`.
@@ -182,22 +103,9 @@ Files with other extensions (e.g. `.xlsx`, `.db`, `.log`, `.yaml`) are treated a
 ## What NOT to do in the vault
 
 - **No absolute paths** in images (e.g. `C:\Users\dev\...`) — breaks on any other machine
-- **No CWD-relative paths** (e.g. `lib/assets/...`) — breaks in Obsidian because the viewer resolves them relative to the file location, not the project root
-- **No non-Markdown files in `documents/`** — that folder is reserved for converted `.md` files
-- **Do not edit `.obsidian/` manually** — use Obsidian to change settings
+- **No CWD-relative paths** (e.g. `Library/assets/...`) — breaks in Obsidian because the viewer resolves them relative to the file location, not the project root
 
----
-
-## Quick reference — 10 rules
-
-1. **Frontmatter always at top** — `---` delimiters on line 1. No blank line before, no BOM.
-2. **Plural form** for special fields — `tags`, `aliases`, `cssclasses` (not singular forms).
-3. **Wikilinks for internal links** — `[[note]]`, `[[note|alias]]`, `[[note#section]]`.
-4. **Wikilinks for embeds** — `![[img.png]]`, `![[img.png|300]]`, `![[note#section]]`.
-5. **Markdown links only for external URLs** — `[text](https://...)`.
-6. **Minimum paths** in links — filename only if unique in vault.
-7. **Unique filenames** — avoid duplicates across folders; use hyphens instead of spaces.
-8. **Images in centralized folder** — `lib/assets/images/<slug>/`.
+  8. **Images in centralized folder** — `Library/assets/images/<slug>/`.
 9. **Dates in ISO 8601** without quotes — `data: 2026-03-25`.
 10. **Never touch `.obsidian/`** — it's Obsidian's internal configuration.
 

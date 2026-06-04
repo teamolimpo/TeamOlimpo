@@ -67,11 +67,11 @@ The `description` selects which agent to invoke. Critical.
 ```yaml
 permission:
   edit:
-    "lib/System/<agent-name>/**": "allow"   # own working directory
+    "Library/System/<agent-name>/**": "allow"   # own working directory
     "Team/Fucina/**": "allow"                # shared working area
   read: allow
 ```
-`Team/<agent-name>/` is **deprecated** — do not use. Add additional paths only when the agent's role explicitly requires it (e.g., `.opencode/agents/**` for Atena, `lib/Handoff/**` for agents that write handoffs).
+`Team/<agent-name>/` is **deprecated** — do not use. Add additional paths only when the agent's role explicitly requires it (e.g., `.opencode/agents/**` for Atena, `Library/Handoff/**` for agents that write handoffs).
 
 ---
 
@@ -206,7 +206,7 @@ Every agent with `task: allow` (delegation to other agents) MUST have an `## Int
 - **Member name references**: agent files must not reference other team members by name. The orchestrator manages routing.
   *Exception*: agents that orchestrate sub-agents (Poros, Atena in pipeline mode) reference other agents by name for task delegation. Allowed in operational prompts — files they *produce* still follow the no-names rule.
 - **Legacy tool references**: referencing `task_*`, `knowledge_*`, `session_*`, `context`, `timeline`, `entity_search`, `handoff` (old) — these tools DON'T EXIST. Only `synapsis_*` tools are valid.
-- **Path confusion**: both `lib/` and `Library/` exist (Library → /home/stra/Library symlink). Agent config paths use `lib/` prefix. Deliverables live under `Library/deliverables/`.
+- **Path confusion**: use `Library/` as the base prefix. Agent working dirs → `Library/System/<name>/`. Handoff → `Library/Handoff/`. Deliverables → `Library/deliverables/`.
 - **Missing IntentGate**: agents with `task: allow` without `## IntentGate — Routing Table` = ungoverned delegation. Agent doesn't know when to call whom, ends up doing everything itself or calling randomly.
 
 ---
@@ -241,7 +241,7 @@ Every line in an agent file carries operational weight. No filler, no decoration
 - Decorative adjectives ("comprehensive", "accurate", "professional")? → remove.
 - Is `description` operational or descriptive? Must be operational — it selects the agent.
 - Legacy tool references? → replace with `synapsis_*` equivalents.
-- Path uses wrong base? Agent dirs → `lib/System/<name>/`. Handoff → `lib/Handoff/`. Deliverables → `Library/deliverables/`.
+- Path uses wrong base? Agent dirs → `Library/System/<name>/`. Handoff → `Library/Handoff/`. Deliverables → `Library/deliverables/`.
 
 **Final check:** Run Token Juice (`python -m tools.token_juice process cat <file>`) on every new/modified agent file. Apply suggested compressions where they don't sacrifice clarity. Revert if compression breaks readability.
 

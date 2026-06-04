@@ -54,7 +54,7 @@ Permette di interrogare LLM di terze parti (Grok e Gemini) da riga di comando pe
 **Versione**: 0.1.0
 **Dipendenze principali**: `pymupdf`, `pymupdf4llm`, `pydantic`, `loguru`, `rich`
 
-Converte i PDF presenti in `Inbox/` in file Markdown compatibili con il vault Obsidian, salva le immagini estratte in `lib/assets/images/`, e indicizza ogni documento in un database SQLite per la ricerca full-text.
+Converte i PDF presenti in `Inbox/` in file Markdown compatibili con il vault Obsidian, salva le immagini estratte in `Library/assets/images/`, e indicizza ogni documento in un database SQLite per la ricerca full-text.
 
 **Comandi disponibili**:
 

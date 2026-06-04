@@ -28,7 +28,7 @@ from tools.taskmanager.state import StateStore, compress_events
 # Constants
 # ---------------------------------------------------------------------------
 
-_LOG_FILE = Path("lib/System/Poros/log_compression.log")
+_LOG_FILE = Path("Library/System/Poros/log_compression.log")
 
 # ---------------------------------------------------------------------------
 # App
