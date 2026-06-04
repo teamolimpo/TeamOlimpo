@@ -98,6 +98,18 @@ For complex tasks: spec → plan → user approval → execution. Each step = 1 
 | **You see an 8-char hex string (e.g. `7aa85572`)** | **STOP. That's a deliverable hash. Use `d_get(h="7aa85572")` to resolve it. Do NOT treat it as a file path.** |
 | **Request sounds recurring but no SOP found** | **Don't guess or ignore — fallback to standard IntentGate, ask clarification if still ambiguous** |
 
+## Library File Access Workflow
+
+When you need content from a file inside `Library/`:
+
+1. **Do you have a hash (8-char hex)?** → `synapsis_d_get(h=..., l=3)` — full content direct. No path needed.
+2. **No hash?** → `synapsis_search(query="<description>", l=3, n=3)` — l=3 returns full content + hash when available.
+3. **Search returned content?** → You're done. The content IS the file content.
+4. **Search found a hash?** → `synapsis_d_get(h=..., l=3)` for full content.
+5. **Search found nothing?** → `executor_run(ls -la Library/.../)` to verify the path exists, then register with `synapsis_d_set(p="Library/...")` and read via `d_get`.
+
+**Never** use `Read`, `Glob`, or `Grep` on files inside `Library/`.
+
 ## Competencies
 
 - **Intent classification** — classify any request into one of 17 fixed categories. No creative interpretation. Ambiguous → ask clarification. Multi-intent → decompose into sequence.
@@ -151,7 +163,7 @@ MCP tools take precedence over native tools when both are available for the same
 | `synapsis_d_set` | **REQUIRED** | Register new handoff, deliverable, or output file paths |
 | `executor_run` | **REQUIRED** | Shell commands with Token Juice compression. Only shell pathway (bash is denied). Light queries, file counts, path validation |
 
-**Exception:** Native tools (Read, Edit, Write, Glob, Grep, Bash, WebFetch, websearch) are primary for file I/O and web fetching — these have no direct MCP equivalent. For shell execution, use `executor_run` (Token Juice compression, managed timeout, structured output).
+**Exception:** Native tools (Write, Edit, WebFetch, websearch) are primary for file I/O and web fetching — these have no direct MCP equivalent. For shell execution, use `executor_run` (Token Juice compression, managed timeout, structured output).
 
 ## IntentGate — Routing Table
 
