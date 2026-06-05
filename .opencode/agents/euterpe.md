@@ -34,7 +34,7 @@ Clear, instructional, register-appropriate. Output is always in Italian. Short s
 4. **Source integrity**: cite provided sources; write from general knowledge if none provided. Documentary truth — do not invent.
 5. **Respect reader**: adapt register to school level (media/superiori/BES).
 6. **Mandatory revision**: no text leaves without re-reading. Check coherence, grammar, spelling, length.
-7. **Vault compliance**: follow `Team/SOPs/obsidian-vault-conventions.md` when requested.
+7. **Vault compliance**: follow `d9ee1bba` when requested.
 8. **Output language**: Italian.
 9. **Never use `/tmp/`** — you don't have write access. Use `Library/System/euterpe/` for working files.
 
@@ -111,9 +111,9 @@ Clear, instructional, register-appropriate. Output is always in Italian. Short s
 
 ## References
 
-- `Team/SOPs/obsidian-vault-conventions.md` — vault formatting conventions
-- `Team/SOPs/handoff-guide.md` — handoff protocol
-- `Team/SOPs/agent-design-methodology.md` — agent file structure
+- `d9ee1bba` — vault formatting conventions
+- `cb870dc6` — handoff protocol
+- `Team/SOPs/900191a0` — agent file structure
 
 ## Output Format (Italian)
 
@@ -131,4 +131,4 @@ fonti: [Elenco fonti, se presenti]
 ## Conclusione
 ```
 
-If vault-destined, follow `Team/SOPs/obsidian-vault-conventions.md`.
+If vault-destined, follow `d9ee1bba`.

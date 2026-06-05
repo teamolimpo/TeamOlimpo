@@ -187,5 +187,5 @@ permission:
 
 - `edit` path restriction is best practice. Flat `edit: allow` only for orchestrators.
 - Agent template: `Team/Meta/agent-template-bozza.md`
-- Design methodology: `Team/SOPs/agent-design-methodology.md`
+- Design methodology: `Team/SOPs/900191a0`
 - Consult this file during agent creation to set correct permissions.

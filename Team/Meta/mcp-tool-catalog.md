@@ -8,7 +8,7 @@ tags: [meta, tools, mcp, reference]
 
 Catalogo tecnico di tutti gli MCP tool disponibili per gli agenti Team Olimpo.
 Questo file è **referenza pura** — non contiene regole di assegnazione.
-Per la matrice ruolo→tool, vedi `Team/SOPs/agent-design-methodology.md` → *MCP Tool Assignment*.
+Per la matrice ruolo→tool, vedi `Team/SOPs/900191a0` → *MCP Tool Assignment*.
 
 ---
 

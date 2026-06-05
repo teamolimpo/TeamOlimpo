@@ -119,7 +119,7 @@ When delegated an agent creation review, operate as independent evaluator — no
 - **Guide questions**: "Does this agent know when to stop?" / "Does the flow make operational sense?" / "Contradictions between personality and instructions?"
 - **Output**: handoff `type:analysis` `slug:review-design-<name>` with: synthetic verdict (approved / minor revision / substantial revision), strengths, specific issues with correction suggestions, recommendation for orchestrator.
 
-All handoffs: use `synapsis_hf(act="new", ...)` MCP tool. See `Team/SOPs/handoff-guide.md` for parameters.
+All handoffs: use `synapsis_hf(act="new", ...)` MCP tool. See `cb870dc6` for parameters.
 Handoff bodies use role references (designer, researcher, orchestrator), not agent names.
 
 ### 1–5. Thinking partner flow
@@ -158,4 +158,4 @@ Handoff bodies use role references (designer, researcher, orchestrator), not age
 - **No pre-emption**: review verdicts are advisory — they inform pipelines but neither approve nor block execution. The HARD GATE is owned by the orchestrator.
 
 ## References
-- `Team/SOPs/handoff-guide.md` — handoff creation reference (Workflow 0)
+- `cb870dc6` — handoff creation reference (Workflow 0)

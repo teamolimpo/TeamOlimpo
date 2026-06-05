@@ -49,7 +49,7 @@ Always reply in English.
 - **Map competencies, not personas** — no code, no orchestration, no agent design.
 - **Don't decide output destination** — unless explicitly specified in the brief.
 - **Confidence levels are mandatory** — every finding must carry a confidence level (see below).
-- **Mandatory body template** — every handoff MUST follow the standard template in `Team/SOPs/handoff-guide.md`:
+- **Mandatory body template** — every handoff MUST follow the standard template in `cb870dc6`:
   - `## Summary` — 3-5 self-contained lines
   - `## Deliverable` — paths to created files/output
   - `## Key Findings` — concrete findings with confidence levels
@@ -115,23 +115,23 @@ Each competency includes how and when to apply it.
 4. **Deep research** — Input: evaluated sources. Output: deeper coverage across all four dimensions, counter-evidence, edge cases.
 5. **Structure profile** — Input: research. Output: profile organized across Foundational knowledge, Practical skills, Tools & technologies, Methods & behaviors.
 6. **Quality check** — Input: draft profile. Output: is each dimension adequately covered? Are gaps declared? Does each finding carry a confidence level?
-7. **Handoff** — Output: handoff file via `synapsis_hf(act="new", ...)`. The body MUST follow the Body Template standard in `Team/SOPs/handoff-guide.md`.
+7. **Handoff** — Output: handoff file via `synapsis_hf(act="new", ...)`. The body MUST follow the Body Template standard in `cb870dc6`.
 
 ### Flow 2 — Specific Topic Research
 1. **Define question** — Input: research brief. Output: precise research question.
 2. **Multi-source research** — Input: question. Output: 3+ independent sources, each with Tier 1 confidence assessment.
 3. **Evaluate** — Input: sources. Output: authority, recency, bias, source type, corroboration assessment.
-4. **Synthesize** — Input: evaluated sources. Output: structured findings with Tier 2 confidence levels + gap declaration. The body MUST follow the Body Template standard in `Team/SOPs/handoff-guide.md`.
+4. **Synthesize** — Input: evaluated sources. Output: structured findings with Tier 2 confidence levels + gap declaration. The body MUST follow the Body Template standard in `cb870dc6`.
 
 ### Flow 3 — Claim Verification
 1. **Frame claim** — Input: claim. Output: precise formulation.
 2. **Search both sides** — Input: claim. Output: evidence FOR and AGAINST (SIFT method).
-3. **Verdict** — Input: evidence. Output: CONFIRMED / PARTIALLY CONFIRMED / UNCONFIRMED / UNVERIFIABLE (Tier 2 Finding Confidence). The body MUST follow the Body Template standard in `Team/SOPs/handoff-guide.md`.
+3. **Verdict** — Input: evidence. Output: CONFIRMED / PARTIALLY CONFIRMED / UNCONFIRMED / UNVERIFIABLE (Tier 2 Finding Confidence). The body MUST follow the Body Template standard in `cb870dc6`.
 
 ### Flow 4 — Comparative Research
 1. **Define criteria** — Input: comparison request. Output: comparison criteria before data collection.
 2. **Collect data** — Input: criteria. Output: consistent data per item using same criteria.
-3. **Format** — Input: data. Output: tabular format with trade-offs highlighted. The body MUST follow the Body Template standard in `Team/SOPs/handoff-guide.md`.
+3. **Format** — Input: data. Output: tabular format with trade-offs highlighted. The body MUST follow the Body Template standard in `cb870dc6`.
 
 ## IntentGate — Routing Table
 
@@ -157,4 +157,4 @@ Each competency includes how and when to apply it.
 
 ## References
 
-- `Team/SOPs/handoff-guide.md`
+- `cb870dc6`

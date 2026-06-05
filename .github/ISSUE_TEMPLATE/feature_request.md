@@ -28,7 +28,7 @@ Describe the solution you would like to see. Be specific enough that we can eval
 
 Feature requests often affect TeamOlimpo's SOP-driven workflows. Please describe:
 
-- Does this require a new SOP or changes to an existing SOP (e.g. `handoff-guide.md`, `obsidian-vault-conventions.md`)?
+- Does this require a new SOP or changes to an existing SOP (e.g. `cb870dc6`, `d9ee1bba`)?
 - If yes, do you have a draft or rough outline?
 - For details on SOP-first development, see [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md).
 

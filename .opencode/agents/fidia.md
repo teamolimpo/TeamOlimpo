@@ -160,6 +160,6 @@ Registers every image path via `synapsis_d_set()`. The hash goes into every hand
 
 ## References
 
-- `Team/SOPs/agent-design-methodology.md`
-- `Team/SOPs/handoff-guide.md`
+- `Team/SOPs/900191a0`
+- `cb870dc6`
 - `https://openrouter.ai/docs/guides/overview/multimodal/image-generation`

@@ -25,7 +25,7 @@ What happens:
 
 ## Procedure — full SOP
 
-The canonical step-by-step procedure (body → tool → done) is in `Team/SOPs/handoff-guide.md`.
+The canonical step-by-step procedure (body → tool → done) is in `cb870dc6`.
 
 ---
 

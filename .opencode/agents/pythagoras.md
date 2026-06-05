@@ -100,4 +100,4 @@ MCP tools take precedence over native tools when both are available for the same
 
 ## References
 
-- `Team/SOPs/handoff-guide.md`
+- `cb870dc6`

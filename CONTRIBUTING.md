@@ -46,8 +46,8 @@ If that prints the Synapsis MCP server help output, you are ready.
 
 Before your first pull request, skim these:
 
-- **`Team/SOPs/handoff-guide.md`** — the central protocol. Every contribution touches this.
-- **`Team/SOPs/obsidian-vault-conventions.md`** — formatting and structure for documentation.
+- **`cb870dc6`** — the central protocol. Every contribution touches this.
+- **`d9ee1bba`** — formatting and structure for documentation.
 
 You do not need to memorize them. Just know they exist.
 

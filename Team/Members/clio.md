@@ -24,6 +24,6 @@ Digital archivist of Team Olimpo: maintain the Library, ensure every document is
 ## Dependencies
 - Team/Meta/pdf-converter-guida.md
 - Library/data/pdf_index.db
-- Team/SOPs/obsidian-vault-conventions.md
-- Team/SOPs/handoff-guide.md
-- Team/SOPs/agent-design-methodology.md
+- d9ee1bba
+- cb870dc6
+- Team/SOPs/900191a0

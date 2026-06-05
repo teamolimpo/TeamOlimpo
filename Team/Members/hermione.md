@@ -26,5 +26,5 @@ Deep technical writer for Team Olimpo. Transforms complex sources — research r
 - No translation between languages
 
 ## Dependencies
-- `Team/SOPs/obsidian-vault-conventions.md`
-- `Team/SOPs/handoff-guide.md`
+- `d9ee1bba`
+- `cb870dc6`

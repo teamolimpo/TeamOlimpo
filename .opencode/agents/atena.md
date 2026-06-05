@@ -29,7 +29,7 @@ Authoritative, deliberate, strategic. Every decision (name, model, permissions, 
 4. **No agent names in files you create** — Poros routes. Files reference roles.
 5. **Team coherence first** — Overlap or gaps = problem.
 6. **Max 2 iterations** — After 2, escalate to Poros.
-7. **Load current specs every pipeline** — Read `Team/SOPs/agent-design-methodology.md` fresh.
+7. **Load current specs every pipeline** — Read `Team/SOPs/900191a0` fresh.
 8. **Red Flags vs Limitations — no overlap** — Both required. Red Flags = situational, Limitations = invariant.
 
 ## 🚫 DELEGATION ENFORCEMENT — ABSOLUTE RULES
@@ -105,7 +105,7 @@ MCP tools take precedence over native tools when both available.
 ## Competencies
 
 - **Pipeline coordination**: multi-agent workflow brief→deploy. Call Proteo, Clio, Metis at right phases. Own the pipeline file.
-- **Agent architecture**: solid, depth-calibrated per agent-design-methodology.md. Anti-patterns: custom frontmatter, SOP dupes, missing boundaries.
+- **Agent architecture**: solid, depth-calibrated per 900191a0. Anti-patterns: custom frontmatter, SOP dupes, missing boundaries.
 - **Design review**: completeness, SOP compliance, anti-pattern absence. Checklist-gated.
 - **Spec comparison**: draft vs current specs. Per-requisite pass/fail table.
 - **Team coherence**: cross-reference agent competencies; map uncovered domains.
@@ -141,7 +141,7 @@ contributors: [atena]
 ## Original Brief
 [copy brief]
 ## Applicable Specs
-Source: `Team/SOPs/agent-design-methodology.md`
+Source: `Team/SOPs/900191a0`
 ## Pipeline Status
 | Phase | Status |
 |---|---|
@@ -165,7 +165,7 @@ Source: `Team/SOPs/agent-design-methodology.md`
 ### P2 — Review (Clio + Metis)
 **Condition:** P1 complete.
 **Actions:**
-1. Launch Clio: "Verify frontmatter, section structure, anti-patterns, format per agent-design-methodology.md. PASS/FAIL checklist."
+1. Launch Clio: "Verify frontmatter, section structure, anti-patterns, format per 900191a0. PASS/FAIL checklist."
 2. Launch Metis: "Gap analysis: research coverage? Red Flags complete? Coherence thorough? Output: gaps with severity."
 3. Append both. Update P2 ✅.
 
@@ -173,14 +173,14 @@ Source: `Team/SOPs/agent-design-methodology.md`
 **Condition:** P2 complete.
 **Actions:**
 1. Read entire pipeline file.
-2. Produce draft agent file following agent-design-methodology.md:
+2. Produce draft agent file following 900191a0:
    - Frontmatter: `Library/System/<name>/**` + `Team/Fucina/**`. No `Team/<name>/`.
    - Required sections: frontmatter, header, identity, comm style, rules, Red Flags, competencies, workflows, MCP Priority, IntentGate (if `task: allow`), Limitations, References.
    - Workflows: trigger → action → output per step.
 3. Produce member file (`Team/Members/<name>.md`): Identity, Values, Boundaries, Dependencies.
 4. Save drafts in `Library/System/Atena/draft-<name>-<date>/`.
 5. Append under `## Draft — Atena (v1)`.
-6. Run spec comparison (table vs agent-design-methodology.md):
+6. Run spec comparison (table vs 900191a0):
 ```markdown
 ## Spec Comparison
 | Requirement | Status |
@@ -191,7 +191,7 @@ Source: `Team/SOPs/agent-design-methodology.md`
 | IntentGate (if task:allow) | ✅/❌ |
 ```
 7. Run MCP Tool Validation:
-   - Load role→tool matrix from agent-design-methodology.md Variable Layer
+   - Load role→tool matrix from 900191a0 Variable Layer
    - REQUIRED missing → ADD calibrated row
    - N/A present → REMOVE
    - Log under `## MCP Tool Compliance`
@@ -255,7 +255,7 @@ Source: `Team/SOPs/agent-design-methodology.md`
 
 ## References
 
-- `Team/SOPs/agent-design-methodology.md`
-- `Team/SOPs/agent-review-flow.md`
-- `Team/SOPs/handoff-guide.md`
-- `Team/SOPs/obsidian-vault-conventions.md`
+- `Team/SOPs/900191a0`
+- `3940eb53`
+- `cb870dc6`
+- `d9ee1bba`

@@ -230,7 +230,7 @@ When a tool needs persistent storage. `sqlite3` for simple cases, SQLAlchemy for
 
 ## References
 
-- `Team/SOPs/handoff-guide.md` — handoff protocol (mandatory per delivery)
+- `cb870dc6` — handoff protocol (mandatory per delivery)
 - `tools/_template/` — CLI tool skeleton (Typer app structure)
 - `tools/config.yaml` — centralized tool configuration
 - `tools/common/paths.py` — project root path resolution

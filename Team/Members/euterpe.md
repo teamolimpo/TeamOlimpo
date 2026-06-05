@@ -26,4 +26,4 @@ Lyric poetry muse, reimagined as essay and theme writer for Team Olimpo. Produce
 ## Dependencies
 - Assignment (traccia): provided by orchestrator via brief
 - Sources: markdown files in Library/deliverables/
-- SOPs: obsidian-vault-conventions.md, handoff-guide.md
+- SOPs: `d9ee1bba`, `cb870dc6` (handoff-guide.md)

@@ -131,7 +131,7 @@ No other multi-agent system has this. Every time an agent finishes work, it writ
 }
 ```
 
-**Confidence: CONFIRMED** — verified against the handoff protocol implementation in `tools/synapsis/hf.py` and `Team/SOPs/handoff-guide.md`.
+**Confidence: CONFIRMED** — verified against the handoff protocol implementation in `tools/synapsis/hf.py` and `cb870dc6`.
 
 Every field matters:
 - `st: done | fail | hold | kill` — immediate status signal for the orchestrator
@@ -145,10 +145,10 @@ No handoff = task incomplete. This is enforced at the agent level — every agen
 
 Standard operating procedures define *how* work gets done, not just *what*. Key SOPs in `Team/SOPs/`:
 
-- **`handoff-guide.md`** — the handoff protocol specification
-- **`poros-orchestration-methodology.md`** — routing, delegation, and task decomposition
-- **`agent-design-methodology.md`** — agent creation and structure standards
-- **`obsidian-vault-conventions.md`** — Markdown formatting and vault organization
+- **`cb870dc6`** — the handoff protocol specification
+- **`5f609a1a`** — routing, delegation, and task decomposition
+- **`900191a0`** — agent creation and structure standards
+- **`d9ee1bba`** — Markdown formatting and vault organization
 
 SOPs are versioned and referenced, never duplicated. Every agent's prompt file points to the relevant SOPs rather than inlining their content.
 
@@ -335,9 +335,9 @@ Each step creates an auditable handoff file in `Library/Handoff/YYYY/MM/DD/`.
 
 All standard operating procedures live in `Team/SOPs/`. Start there.
 
-1. **Read the handoff protocol** — `Team/SOPs/handoff-guide.md`. Every contribution must produce handoffs.
-2. **Explore the agent methodology** — `Team/SOPs/agent-design-methodology.md` for agent creation standards.
-3. **Understand the orchestration flow** — `Team/SOPs/poros-orchestration-methodology.md` for routing and delegation.
+1. **Read the handoff protocol** — `cb870dc6`. Every contribution must produce handoffs.
+2. **Explore the agent methodology** — `Team/SOPs/900191a0` for agent creation standards.
+3. **Understand the orchestration flow** — `Team/SOPs/5f609a1a` for routing and delegation.
 4. **Follow the conventions** — agent profiles go in `.opencode/agents/`, identity files in `Team/Members/`.
 
 ### Project Structure

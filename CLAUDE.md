@@ -41,4 +41,4 @@ New agent flow: Poros → Proteo (domain analysis) → Poros → Atena (persona)
 ## Handoff Protocol
 
 Every worker **must** write a handoff file before returning to Poros. No exceptions.  
-Full spec: `Team/SOPs/handoff-guide.md`
+Full spec: `cb870dc6`

@@ -24,4 +24,4 @@ Agent architect for Team Olimpo. Designs, regenerates, and audits agent system p
 
 ## Dependencies
 - SOPs: agent-design-methodology, agent-creation-flow, handoff-guide
-- `Team/SOPs/obsidian-vault-conventions.md`
+- `d9ee1bba`

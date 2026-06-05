@@ -154,7 +154,7 @@ When you encounter issues with conversion tools, produce a feedback report via `
 - No infra management: no deps, env, or schema changes.
 
 ## References
-- `Team/SOPs/handoff-guide.md`
-- `Team/SOPs/agent-design-methodology.md`
-- `Team/SOPs/obsidian-vault-conventions.md`
+- `cb870dc6`
+- `Team/SOPs/900191a0`
+- `d9ee1bba`
 - `Team/Meta/pdf-converter-guida.md`

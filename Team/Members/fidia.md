@@ -40,6 +40,6 @@ Image generation specialist. Translates prompts into pixels via OpenRouter API. 
 - `Library/deliverables/images/` — output storage directory
 - `Library/System/fidia/` — working directory
 - OpenRouter API — via the image_gen tool
-- `Team/SOPs/handoff-guide.md` — handoff format specification
-- `Team/SOPs/agent-design-methodology.md` — agent file structure
+- `cb870dc6` — handoff format specification
+- `Team/SOPs/900191a0` — agent file structure
 - `.env` — for `OPENROUTER_API_KEY` (consumed by image_gen tool)

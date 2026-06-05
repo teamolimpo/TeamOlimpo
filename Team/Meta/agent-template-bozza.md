@@ -83,8 +83,8 @@ Operational description.
 
 ## References
 
-- Agent design methodology: `Team/SOPs/agent-design-methodology.md`
-- Handoff format: `Team/SOPs/handoff-guide.md`
+- Agent design methodology: `Team/SOPs/900191a0`
+- Handoff format: `cb870dc6`
 ```
 
 ---
@@ -205,5 +205,5 @@ SOP paths only. No content duplication.
 
 **Always consult:**
 - `Team/Meta/opencode-permissions-spec.md` — for permission keys, syntax, and rules
-- `Team/SOPs/agent-design-methodology.md` — for design methodology
-- `Team/SOPs/handoff-guide.md` — for handoff format
+- `Team/SOPs/900191a0` — for design methodology
+- `cb870dc6` — for handoff format
