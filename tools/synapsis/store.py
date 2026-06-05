@@ -2916,6 +2916,15 @@ class SynapsisStore:
         results: list[dict[str, Any]] = []
         for r in rows:
             d = dict(r)
+            # Parsa metadata JSON se presente
+            meta_raw = d.get("metadata")
+            if meta_raw and isinstance(meta_raw, str):
+                try:
+                    d["metadata"] = json.loads(meta_raw)
+                except (json.JSONDecodeError, TypeError):
+                    d["metadata"] = {}
+            elif not meta_raw:
+                d["metadata"] = {}
             # Score: combination of frequency + recency
             obs_count = d.get("observation_count", 0) or 0
             score = min(obs_count / 10.0, 1.0)  # normalize to 0-1
@@ -3253,6 +3262,7 @@ class SynapsisStore:
                             "type": r.get("entity_type"),
                             "observation_count": r.get("observation_count", 0),
                             "score": r.get("score", 0),
+                            "metadata": r.get("metadata", {}),
                         }
                     )
                 domains["entities"] = flat

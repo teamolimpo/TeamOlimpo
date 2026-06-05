@@ -311,7 +311,13 @@ def rebuild(
     total_errors = 0
     start_ts = time.time()
 
-    pbar = tqdm(files, desc="Indexing", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
+    pbar = tqdm(
+        files,
+        desc="Indexing",
+        unit="file",
+        ncols=80,
+        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
+    )
     for fp in pbar:
         try:
             rel = str(fp.relative_to(resolve_relative(".")))
@@ -414,7 +420,13 @@ def update(
 
     # Process changed files
     start_ts = time.time()
-    pbar = tqdm(changed, desc="Updating", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
+    pbar = tqdm(
+        changed,
+        desc="Updating",
+        unit="file",
+        ncols=80,
+        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
+    )
     for fp, rel, fh in pbar:
         # Delete old chunks
         cur.execute("DELETE FROM chunks WHERE file_path = ?", (rel,))
@@ -464,11 +476,10 @@ def clean(
         False,
         "--dry-run",
         "-n",
-        help="Show what would be removed without doing it.",
+        help="Show what would change without doing it.",
     ),
 ) -> None:
-    """Remove orphan chunks (files no longer on disk).
-    """
+    """Remove orphan chunks (files no longer on disk)."""
     _setup_logging(verbose)
     conn: sqlite3.Connection | None = None
     own_conn = True
@@ -505,7 +516,13 @@ def clean(
         return
 
     # Delete orphans
-    pbar = tqdm(orphans, desc="Cleaning orphans", unit="file", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}")
+    pbar = tqdm(
+        orphans,
+        desc="Cleaning orphans",
+        unit="file",
+        ncols=80,
+        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
+    )
     for o in pbar:
         cur.execute("DELETE FROM chunks WHERE file_path = ?", (o,))
         cur.execute("DELETE FROM file_state WHERE file_path = ?", (o,))

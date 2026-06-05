@@ -207,6 +207,22 @@ def search(
         if "entities" in domains:
             parts.append(f" Entities ({counts['entities']}):")
             for e in domains["entities"][:5]:
+                md = e.get("metadata", {}) or {}
+                if md and isinstance(md, dict):
+                    status = md.get("status")
+                    phase = md.get("phase")
+                    health = md.get("health")
+                    state_hash = md.get("state_hash")
+                    meta_parts_list = [
+                        f"status: {status}" if status else None,
+                        f"phase: {phase}" if phase else None,
+                        f"health: {health}" if health else None,
+                        f"state_hash: {state_hash}" if state_hash else None,
+                    ]
+                    meta_str = ", ".join(p for p in meta_parts_list if p)
+                    if meta_str:
+                        parts.append(f"   - {e['name']} ({e.get('type', '?')}) — {meta_str}")
+                        continue
                 parts.append(
                     f"   - {e['name']} ({e.get('type', '?')}) — {e.get('observation_count', 0)} obs"
                 )
@@ -1133,13 +1149,13 @@ def admin(
             return json.dumps({"error": f"chunk_indexer not available: {exc}."})
 
         if ix == "update":
-            chunk_indexer.update(verbose=False, dry_run=dry, conn=store._conn)
+            chunk_indexer.update(verbose=False, dry_run=dry)
             return json.dumps({"action": "update", "dry_run": dry, "status": "completed"})
         if ix == "rebuild":
-            chunk_indexer.rebuild(verbose=False, conn=store._conn)
+            chunk_indexer.rebuild(verbose=False)
             return json.dumps({"action": "rebuild", "status": "completed"})
         if ix == "clean":
-            chunk_indexer.clean(verbose=False, dry_run=dry, conn=store._conn)
+            chunk_indexer.clean(verbose=False, dry_run=dry)
             return json.dumps({"action": "clean", "dry_run": dry, "status": "completed"})
 
         return json.dumps({"error": f"Unhandled index_action '{ix}'."})
