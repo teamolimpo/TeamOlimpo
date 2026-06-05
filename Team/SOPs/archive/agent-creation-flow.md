@@ -28,7 +28,7 @@ For **new agents only**. For modifications, see `agent-modification-flow.md`.
 
 ## Handoff naming
 
-All handoffs follow `Team/SOPs/handoff-guide.md`:
+All handoffs follow `cb870dc6`:
 
 ```
 YYYY-MM-DD_HHMM_<agent>_<type>_<slug>.md
@@ -63,13 +63,13 @@ See the referenced SOP for full specs:
 
 | File | Specs in |
 |------|----------|
-| `.opencode/agents/<name>.md` | `agent-design-methodology.md` — Agent file structure + Prompt Minimal Standard |
-| `Team/Members/<name>.md` | `agent-design-methodology.md` — Member identity file |
-| Gap analysis / review handoff | `agent-review-flow.md` — Review checklist + reporting format |
+| `.opencode/agents/<name>.md` | `900191a0` — Agent file structure + Prompt Minimal Standard |
+| `Team/Members/<name>.md` | `900191a0` — Member identity file |
+| Gap analysis / review handoff | `3940eb53` — Review checklist + reporting format |
 
 ## References
-- `Team/SOPs/agent-design-methodology.md`
-- `Team/SOPs/agent-review-flow.md`
+- `900191a0` — OLM-SOP-003 Agent Design Methodology
+- `3940eb53` — OLM-SOP-004 Agent Review Flow
 - `Team/SOPs/agent-modification-flow.md`
-- `Team/SOPs/handoff-guide.md`
+- `cb870dc6`
 - `Team/Members/Registro.md`

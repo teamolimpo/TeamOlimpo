@@ -8,7 +8,7 @@ tags: [sops, flow, agents, modification]
 
 For **existing agents only**. For new agents, see `agent-creation-flow.md`.
 
-**Trigger**: direct user request ("modify agent X") OR a standalone audit (via `agent-review-flow.md`) that returns FAIL.
+**Trigger**: direct user request ("modify agent X") OR a standalone audit (via `3940eb53`) that returns FAIL.
 
 ---
 
@@ -22,7 +22,7 @@ For **existing agents only**. For new agents, see `agent-creation-flow.md`.
 | 4 | Poros | Route the gap analysis handoff verbatim to Atena | — | — |
 | 5 | **Atena** | Fix every gap in both files + update `Team/Members/Registro.md` | handoff `type:report` `slug:fix-<name>` | — |
 | 6 | **Proteo** | Verify content gaps addressed, no regressions | handoff `type:report` `slug:verify-content-<name>` | — |
-| 7 | **Clio** | Verify format/conformity per `agent-review-flow.md` checklist | handoff `type:report` `slug:verify-format-<name>` | ✅ Both verdicts determine next step |
+| 7 | **Clio** | Verify format/conformity per `3940eb53` checklist | handoff `type:report` `slug:verify-format-<name>` | ✅ Both verdicts determine next step |
 | 8 | Poros | Present result to user | — | ✅ User approves / requests changes |
 
 ---
@@ -57,17 +57,17 @@ Max 2 cycles of Step 5→6→7 per gap analysis. After 2 fails → escalate to u
 
 | File | Specs in |
 |------|----------|
-| Gap analysis handoff | `agent-review-flow.md` — Review checklist + reporting format |
-| `.opencode/agents/<name>.md` | `agent-design-methodology.md` — Agent file structure + Prompt Minimal Standard |
-| `Team/Members/<name>.md` | `agent-design-methodology.md` — Member identity file |
-| Content verification handoff | `agent-review-flow.md` — Proteo checks all original gaps addressed |
-| Format verification handoff | `agent-review-flow.md` — Clio runs full checklist |
+| Gap analysis handoff | `3940eb53` — Review checklist + reporting format |
+| `.opencode/agents/<name>.md` | `900191a0` — Agent file structure + Prompt Minimal Standard |
+| `Team/Members/<name>.md` | `900191a0` — Member identity file |
+| Content verification handoff | `3940eb53` — Proteo checks all original gaps addressed |
+| Format verification handoff | `3940eb53` — Clio runs full checklist |
 
 ---
 
 ## References
-- `Team/SOPs/agent-design-methodology.md`
-- `Team/SOPs/agent-review-flow.md`
+- `900191a0` — OLM-SOP-003 Agent Design Methodology
+- `3940eb53` — OLM-SOP-004 Agent Review Flow
 - `Team/SOPs/agent-creation-flow.md`
-- `Team/SOPs/handoff-guide.md`
+- `cb870dc6`
 - `Team/Members/Registro.md`
