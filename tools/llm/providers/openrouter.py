@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
+from tools.llm.image_client import ImageResult
 from tools.llm.providers.base import ChatResponse, ModelInfo
 
 if TYPE_CHECKING:
@@ -160,6 +161,62 @@ class OpenRouterProvider:
         models = [ModelInfo(id=mid, is_default=(mid == self.default_model)) for mid in ids]
         logger.debug(f"OpenRouterProvider: {len(models)} modelli trovati")
         return models
+
+    # ------------------------------------------------------------------
+    # Image generation (via OpenRouterImageClient)
+    # ------------------------------------------------------------------
+
+    def generate_image(
+        self,
+        prompt: str,
+        model: str | None = None,
+        size: str = "1K",
+        ratio: str = "1:1",
+        negative_prompt: str | None = None,
+        seed: int | None = None,
+        input_image_path: str | None = None,
+        image_config_json: str | None = None,
+    ) -> ImageResult:
+        """
+        Genera un'immagine usando OpenRouterImageClient.
+
+        Delega la chiamata a ``OpenRouterImageClient`` che gestisce
+        il retry, il parsing della risposta e l'estrazione del costo.
+
+        Args:
+            prompt: Testo del prompt per la generazione
+            model: Modello OpenRouter (default: openai/gpt-5-image-mini)
+            size: Dimensione (1K, 2K, 4K)
+            ratio: Aspect ratio (1:1, 16:9, etc.)
+            negative_prompt: Prompt negativo (modelli che lo supportano)
+            seed: Seed per riproducibilita'
+            input_image_path: Path per image-to-image
+            image_config_json: JSON extra per configurazioni avanzate
+
+        Returns:
+            ImageResult con l'immagine in base64 o errore
+        """
+        from tools.llm.config import DEFAULT_IMAGE_MODEL
+        from tools.llm.image_client import OpenRouterImageClient
+
+        effective_model = model or DEFAULT_IMAGE_MODEL
+
+        logger.debug(
+            f"OpenRouterProvider.generate_image: modello={effective_model}, "
+            f"size={size}, ratio={ratio}"
+        )
+
+        with OpenRouterImageClient(api_key=self._api_key) as client:
+            return client.generate(
+                prompt=prompt,
+                model=effective_model,
+                size=size,
+                ratio=ratio,
+                input_image_path=input_image_path,
+                negative_prompt=negative_prompt,
+                seed=seed,
+                image_config_json=image_config_json,
+            )
 
     # ------------------------------------------------------------------
     # Sessione chat (non supportata — OpenRouter e' stateless)

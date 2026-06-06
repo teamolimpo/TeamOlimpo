@@ -51,6 +51,14 @@ from tools.llm.config import (
     get_api_key,
 )
 from tools.llm.providers import PROVIDERS
+from tools.llm.providers.base import ProviderProtocol
+
+# Default image model per ciascun provider (usato se --model non specificato)
+PROVIDER_DEFAULT_IMAGE_MODELS: dict[str, str] = {
+    "grok": "grok-imagine-image-quality",
+    "gemini": "imagen-4.0-fast-generate-001",
+    "openrouter": DEFAULT_IMAGE_MODEL,
+}
 
 # App principale: gestisce il prompt singolo, batch, interattivo
 app = typer.Typer(
@@ -212,7 +220,7 @@ def _run_image_generation(
     size: str,
     ratio: str,
     output_image: str,
-    api_key: str,
+    provider_instance: ProviderProtocol,
     dry_run: bool,
     negative_prompt: str | None,
     seed: int | None,
@@ -223,11 +231,11 @@ def _run_image_generation(
 
     Args:
         prompt: Text prompt for generation.
-        model: OpenRouter model ID.
+        model: Model ID.
         size: Image size (1K, 2K, 4K).
         ratio: Aspect ratio.
         output_image: Output directory template.
-        api_key: OpenRouter API key.
+        provider_instance: Provider instance with generate_image() method.
         dry_run: If True, simulate without calling API.
         negative_prompt: Negative prompt for supported models.
         seed: Random seed for reproducibility.
@@ -235,7 +243,6 @@ def _run_image_generation(
         image_config_json: Extra JSON for advanced config.
     """
     # Lazy imports to avoid circular deps on module load
-    from tools.llm.image_client import OpenRouterImageClient
     from tools.llm.image_processor import ImageProcessor, slugify
 
     # Validate size
@@ -317,17 +324,16 @@ def _run_image_generation(
     start_time = time.monotonic()
 
     try:
-        with OpenRouterImageClient(api_key=api_key) as client:
-            result = client.generate(
-                prompt=prompt,
-                model=model,
-                size=size,
-                ratio=ratio,
-                input_image_path=input_image,
-                negative_prompt=negative_prompt,
-                seed=seed,
-                image_config_json=image_config_json,
-            )
+        result = provider_instance.generate_image(
+            prompt=prompt,
+            model=model,
+            size=size,
+            ratio=ratio,
+            input_image_path=input_image,
+            negative_prompt=negative_prompt,
+            seed=seed,
+            image_config_json=image_config_json,
+        )
     except Exception as exc:
         _output_json(
             {
@@ -526,7 +532,7 @@ def main(
     image: bool = typer.Option(
         False,
         "--image",
-        help="Genera immagine invece di testo (usa OpenRouter con modello immagine).",
+        help="Genera immagine invece di testo (usa il provider selezionato con --provider).",
     ),
     size: str = typer.Option(
         DEFAULT_IMAGE_SIZE,
@@ -618,10 +624,16 @@ def main(
             )
             raise typer.Exit(code=1)
 
-        effective_model = model or DEFAULT_IMAGE_MODEL
+        effective_model = model or PROVIDER_DEFAULT_IMAGE_MODELS.get(provider, DEFAULT_IMAGE_MODEL)
 
-        # Resolve API key — image generation always uses OpenRouter
-        api_key = get_api_key("openrouter")
+        # Resolve API key — usa il provider selezionato (come fa la chat)
+        api_key = get_api_key(provider)
+        provider_class = PROVIDERS[provider]
+        try:
+            provider_instance = provider_class(api_key=api_key)
+        except ImportError as exc:
+            print(f"Errore: {exc}", file=sys.stderr)
+            raise typer.Exit(code=1)
 
         _run_image_generation(
             prompt=prompt,
@@ -629,7 +641,7 @@ def main(
             size=size,
             ratio=ratio,
             output_image=output_image,
-            api_key=api_key,
+            provider_instance=provider_instance,
             dry_run=dry_run,
             negative_prompt=negative_prompt,
             seed=seed,

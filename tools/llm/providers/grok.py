@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 import httpx
 from loguru import logger
 
+from tools.llm.image_client import ImageResult
 from tools.llm.providers.base import ChatResponse, ModelInfo
 
 if TYPE_CHECKING:
@@ -403,6 +404,90 @@ class GrokProvider:
         models = [ModelInfo(id=mid, is_default=(mid == self.default_model)) for mid in sorted(ids)]
         logger.debug(f"GrokProvider: {len(models)} modelli trovati")
         return models
+
+    # ------------------------------------------------------------------
+    # Image generation (xai_sdk nativo)
+    # ------------------------------------------------------------------
+
+    def generate_image(
+        self,
+        prompt: str,
+        model: str | None = None,
+        size: str = "1K",
+        ratio: str = "1:1",
+        negative_prompt: str | None = None,
+        seed: int | None = None,
+        input_image_path: str | None = None,
+        image_config_json: str | None = None,
+    ) -> ImageResult:
+        """
+        Genera un'immagine usando l'SDK nativo xai_sdk.
+
+        Usa ``client.image.sample()`` che restituisce i bytes dell'immagine
+        direttamente in formato base64.
+
+        Args:
+            prompt: Testo del prompt per la generazione
+            model: Modello (default: grok-imagine-image-quality)
+            size: Dimensione (1K, 2K, 4K) — mappata a risoluzione
+            ratio: Aspect ratio (1:1, 16:9, etc.)
+            negative_prompt: Non supportato da xAI
+            seed: Seed per riproducibilita'
+            input_image_path: Non supportato da xAI
+            image_config_json: Non supportato da xAI
+
+        Returns:
+            ImageResult con l'immagine in base64 o errore
+        """
+        try:
+            from xai_sdk import Client as XaiClient
+        except ImportError as exc:
+            raise ImportError(
+                "La libreria 'xai_sdk' non e' installata. Esegui: uv add xai-sdk"
+            ) from exc
+
+        import base64
+
+        effective_model = model or "grok-imagine-image-quality"
+
+        logger.debug(
+            f"GrokProvider.generate_image: modello={effective_model}, ratio={ratio}, size={size}"
+        )
+
+        try:
+            xai_client = XaiClient(api_key=self._api_key)
+            response = xai_client.image.sample(
+                prompt=prompt,
+                model=effective_model,
+                aspect_ratio=ratio,
+                resolution=size.lower(),
+                image_format="base64",
+            )
+        except Exception as exc:
+            logger.error(f"GrokProvider.generate_image: errore API — {exc}")
+            return ImageResult(
+                success=False,
+                error_type="generic",
+                error_message=f"Errore generazione immagine xAI: {exc}",
+                model=effective_model,
+            )
+
+        # response.image contiene i bytes o gia' base64
+        img_data = response.image
+        if isinstance(img_data, bytes):
+            b64 = base64.b64encode(img_data).decode()
+        else:
+            b64 = str(img_data)
+
+        logger.debug(f"GrokProvider.generate_image: immagine generata ({len(b64)} chars base64)")
+
+        return ImageResult(
+            success=True,
+            image_base64=b64,
+            mime_type="image/jpeg",
+            model=effective_model,
+            cost=0.05,  # flat pricing per grok-imagine-image-quality
+        )
 
 
 # ---------------------------------------------------------------------------

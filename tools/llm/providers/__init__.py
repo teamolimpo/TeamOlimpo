@@ -19,6 +19,7 @@ from tools.llm.providers.openrouter import OpenRouterProvider
 # Dizionario provider: chiave = nome CLI, valore = classe provider
 PROVIDERS: dict[str, type[ProviderProtocol]] = {
     "grok": GrokProvider,
+    "xai": GrokProvider,          # alias per grok
     "gemini": GeminiProvider,
     "openrouter": OpenRouterProvider,
 }

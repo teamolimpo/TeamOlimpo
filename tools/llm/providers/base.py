@@ -10,7 +10,10 @@ Ogni provider deve implementare il Protocol ProviderProtocol:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from tools.llm.image_client import ImageResult
 
 
 @dataclass
@@ -106,6 +109,35 @@ class ProviderProtocol(Protocol):
 
         Returns:
             Lista di ModelInfo ordinata per id
+        """
+        ...
+
+    def generate_image(
+        self,
+        prompt: str,
+        model: str | None = None,
+        size: str = "1K",
+        ratio: str = "1:1",
+        negative_prompt: str | None = None,
+        seed: int | None = None,
+        input_image_path: str | None = None,
+        image_config_json: str | None = None,
+    ) -> ImageResult:
+        """
+        Genera un'immagine dal prompt testuale.
+
+        Args:
+            prompt: Testo del prompt per la generazione
+            model: Modello da usare (None = default del provider)
+            size: Dimensione immagine (1K, 2K, 4K)
+            ratio: Aspect ratio (1:1, 16:9, etc.)
+            negative_prompt: Prompt negativo (modelli che lo supportano)
+            seed: Seed per riproducibilita'
+            input_image_path: Path per image-to-image (modelli che lo supportano)
+            image_config_json: JSON extra per configurazioni avanzate
+
+        Returns:
+            ImageResult con l'immagine generata o errore
         """
         ...
 

@@ -37,6 +37,7 @@ New agent flow: Poros → Proteo (domain analysis) → Poros → Atena (persona)
 
 - Agent profiles in `.opencode/agents/`: standard OpenCode frontmatter
 - Names: Greek mythological figures
+- **All Python commands must use `uv run`** — the environment is managed by `uv`. Commands in examples, docs, and tool invocations: `uv run python -m tools.llm ...`, not bare `python -m tools.llm ...`.
 
 ## Handoff Protocol
 

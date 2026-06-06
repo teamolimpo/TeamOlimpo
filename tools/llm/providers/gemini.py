@@ -12,6 +12,7 @@ import time
 
 from loguru import logger
 
+from tools.llm.image_client import ImageResult
 from tools.llm.providers.base import ChatResponse, ModelInfo
 
 
@@ -288,3 +289,119 @@ class GeminiProvider:
         ]
         logger.debug(f"GeminiProvider: {len(models)} modelli trovati")
         return models
+
+    # ------------------------------------------------------------------
+    # Image generation (google-genai nativo — Imagen)
+    # ------------------------------------------------------------------
+
+    def generate_image(
+        self,
+        prompt: str,
+        model: str | None = None,
+        size: str = "1K",
+        ratio: str = "1:1",
+        negative_prompt: str | None = None,
+        seed: int | None = None,
+        input_image_path: str | None = None,
+        image_config_json: str | None = None,
+    ) -> ImageResult:
+        """
+        Genera un'immagine usando l'SDK nativo google-genai.
+
+        Usa due pathway:
+        - **Gemini Flash Image** (``generate_content`` con ``response_modalities=["IMAGE"]``)
+          — default, funziona su free tier
+        - **Imagen 4** (``generate_images``) — se il modello richiesto e' un imagen-*
+
+        Args:
+            prompt: Testo del prompt per la generazione
+            model: Modello (default: gemini-2.0-flash-exp-image-generation, free tier)
+            size: Dimensione (1K, 2K)
+            ratio: Aspect ratio (1:1, 16:9, etc.)
+            negative_prompt: Non supportato
+            seed: Non supportato
+            input_image_path: Non supportato
+            image_config_json: Non supportato
+
+        Returns:
+            ImageResult con l'immagine in base64 o errore
+        """
+        import base64
+
+        from google.genai import types as genai_types
+
+        effective_model = model or "gemini-2.0-flash-exp-image-generation"
+        logger.debug(f"GeminiProvider.generate_image: modello={effective_model}, ratio={ratio}")
+
+        try:
+            # Pathway Imagen (modelli imagen-*) via generate_images dedicato
+            if effective_model.startswith("imagen-"):
+                response = self._client.models.generate_images(
+                    model=effective_model,
+                    prompt=prompt,
+                    config=genai_types.GenerateImagesConfig(
+                        number_of_images=1,
+                        aspect_ratio=ratio,
+                        output_mime_type="image/png",
+                    ),
+                )
+                generated_images = response.generated_images
+                if not generated_images:
+                    return ImageResult(
+                        success=False, error_type="generic",
+                        error_message="Nessuna immagine nella risposta",
+                        model=effective_model,
+                    )
+                img = generated_images[0].image
+                if img is None or img.image_bytes is None:
+                    return ImageResult(
+                        success=False, error_type="generic",
+                        error_message="Immagine vuota nella risposta",
+                        model=effective_model,
+                    )
+                img_bytes = img.image_bytes
+
+            # Pathway Gemini Image (modelli gemini-*-image) via generate_content multimodale
+            else:
+                response = self._client.models.generate_content(
+                    model=effective_model,
+                    contents=prompt,
+                    config=genai_types.GenerateContentConfig(
+                        response_modalities=["IMAGE"],
+                        image_config=genai_types.ImageConfig(
+                            aspect_ratio=ratio,
+                            image_size=size.upper(),
+                        ),
+                    ),
+                )
+                img_bytes = None
+                for part in response.parts:
+                    if part.inline_data:
+                        img_bytes = part.inline_data.data
+                        break
+                if img_bytes is None:
+                    return ImageResult(
+                        success=False, error_type="generic",
+                        error_message="Nessuna immagine nella risposta Gemini",
+                        model=effective_model,
+                    )
+
+        except Exception as exc:
+            logger.error(f"GeminiProvider.generate_image: errore API — {exc}")
+            return ImageResult(
+                success=False,
+                error_type="generic",
+                error_message=f"Errore generazione immagine Gemini: {exc}",
+                model=effective_model,
+            )
+
+        b64 = base64.b64encode(img_bytes).decode()
+        logger.debug(f"GeminiProvider.generate_image: immagine generata ({len(b64)} chars base64)")
+
+        return ImageResult(
+            success=True,
+            image_base64=b64,
+            mime_type="image/png",
+            model=effective_model,
+            cost=0.0,  # free tier per gemini-2.0-flash-exp-image-generation
+        )

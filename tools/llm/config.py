@@ -59,6 +59,7 @@ ENV_KEY_OPENROUTER: str = "OPENROUTER_API_KEY"
 # Mappa provider -> variabile d'ambiente attesa
 PROVIDER_ENV_KEYS: dict[str, str] = {
     "grok": ENV_KEY_GROK,
+    "xai": ENV_KEY_GROK,          # alias per grok
     "gemini": ENV_KEY_GEMINI,
     "openrouter": ENV_KEY_OPENROUTER,
 }
