@@ -24,6 +24,7 @@ from tools.hermes_cli.id_manager import (
 )
 from tools.hermes_cli.report import generate_diff, generate_report, generate_stats
 from tools.hermes_cli.scanner import read_scratchpad, scan_handoff_files
+from tools.hermes_cli.models import HandoffValidation, Scratchpad
 from tools.hermes_cli.validator import validate_handoff_file, validate_scratchpad
 
 console = Console(stderr=True)
@@ -68,7 +69,7 @@ def common(
     logger.debug("Poros CLI avviato")
 
 
-def _output_json_scratchpad(sp) -> None:
+def _output_json_scratchpad(sp: Scratchpad) -> None:
     _emit_json(
         {
             "target": sp.rel_path,
@@ -81,7 +82,7 @@ def _output_json_scratchpad(sp) -> None:
     )
 
 
-def _output_text_scratchpad(sp, title_prefix: str = "") -> None:
+def _output_text_scratchpad(sp: Scratchpad, title_prefix: str = "") -> None:
     lines: list[str] = []
     title = f"poros-cli validate scratchpad{(' ' + title_prefix) if title_prefix else ''}"
 
@@ -114,7 +115,7 @@ def _output_text_scratchpad(sp, title_prefix: str = "") -> None:
     out_console.print(panel)
 
 
-def _output_json_handoff(hv) -> None:
+def _output_json_handoff(hv: HandoffValidation) -> None:
     _emit_json(
         {
             "path": str(hv.path),
@@ -128,7 +129,7 @@ def _output_json_handoff(hv) -> None:
     )
 
 
-def _output_text_handoff(hv) -> None:
+def _output_text_handoff(hv: HandoffValidation) -> None:
     lines: list[str] = []
     lines.append(f"  File: {hv.path.name}")
     lines.append(
